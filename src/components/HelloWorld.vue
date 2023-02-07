@@ -13,6 +13,11 @@ defineProps<{
       <a href="https://vuejs.org/" target="_blank" rel="noopener">Vue 3</a>.
       What's next?
     </h3>
+
+    <div class="alert alert-success d-flex align-items-center" role="alert">
+      <span class="bi bi-check-circle me-2"></span>
+      <div>Bootstrap and bootstrap-icons enabled.</div>
+    </div>
   </div>
 </template>
 
