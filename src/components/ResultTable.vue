@@ -11,7 +11,7 @@ export default {
 
 <template>
     <div class="py-3 my-5 rounded bg-body-tertiary">
-        <table class="table">
+        <table class="table table-hover">
             <thead>
                 <tr>
                     <th scope="col">Id</th>
@@ -22,9 +22,7 @@ export default {
 
             </thead>
             <tbody>
-                <tr v-for="entry in entries" :key="entry.id">
-                    <ResultEntry :entry="entry" />
-                </tr>
+                <ResultEntry v-for="entry in entries" :key="entry.id" :entry="entry" />
             </tbody>
         </table>
     </div>
