@@ -5,10 +5,13 @@ export default {
         entry: Object
     },
     methods: {
-        showResult(resultId: String) {
+        showResult(entry: object) {
             this.$router.push({
                 name: 'result',
-                params: { id: resultId}
+                params: { 
+                    id: entry.id,
+                    title: entry.Name
+                }
             });
         }
     }
@@ -16,7 +19,7 @@ export default {
 </script>
 
 <template>
-    <tr @click="showResult(entry.id)" class="pointer">
+    <tr @click="showResult(entry)" class="pointer">
         <td scope="row">{{ entry.id }}</td>
         <td>{{ entry.GC }}</td>
         <td>{{ entry.Contigs }}</td>
