@@ -17,16 +17,14 @@ onMounted(() => {
 </script>
 
 <template>
-  <div :data-bs-theme="theme">
-    <Navbar />
+  <Navbar />
 
-    <div id="content">
-      <RouterView />
-    </div>
-
-    <Footer />
-
+  <div id="content">
+    <RouterView />
   </div>
+
+  <Footer />
+
 </template>
 
 <style scoped></style>
