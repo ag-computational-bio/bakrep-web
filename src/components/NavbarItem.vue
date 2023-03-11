@@ -2,14 +2,14 @@
 export default {
     props: {
         link: { type: String, required: true },
-        title: String
+        text: String
     }
 }
 </script>
 
 <template>
     <li>
-        <router-link class="nav-link" :to="link">{{ title }}</router-link>
+        <router-link class="nav-link" :to="link">{{ text }}</router-link>
     </li>
 </template>
 
