@@ -1,16 +1,14 @@
 <script lang="ts">
-import ResultEntry from './ResultEntry.vue';
 
 export default {
     props: {
         entries: Object
     },
-    components: { ResultEntry }
 }
 </script>
 
 <template>
-    <div class="py-3 my-5 rounded bg-body-tertiary">
+    <div class="py-3 my-5 rounded bg-light shadow-sm">
         <table class="table table-hover">
             <thead>
                 <tr>
@@ -22,10 +20,19 @@ export default {
 
             </thead>
             <tbody>
-                <ResultEntry v-for="entry in entries" :key="entry.id" :entry="entry" />
+                <template v-for="entry in entries" :key="entry.id" :entry="entry">
+                    <tr @click="$router.push({ name: 'result', params: { id: entry.id, title: entry.Name }});" class="pointer">
+                        <td scope="row">{{ entry.id }}</td>
+                        <td>{{ entry.GC }}</td>
+                        <td>{{ entry.Contigs }}</td>
+                        <td>{{ entry.Name }}</td>
+                    </tr>
+                </template>
             </tbody>
         </table>
     </div>
 </template>
 
-<style></style>
+<style>
+.pointer { cursor: pointer; }
+</style>
