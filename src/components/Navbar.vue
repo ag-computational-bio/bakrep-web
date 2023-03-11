@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { ref } from 'vue';
-import NavbarItem from './NavbarItem.vue';
 const items = ref([
     {href: '/', text: 'Home'},
     {href: '/search', text: 'Search'},
@@ -19,7 +18,11 @@ const items = ref([
             </button>
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <NavbarItem :href=href :text=text v-for="{href, text} in items"/>
+                    <template v-for="{href, text} in items">
+                        <li>
+                            <router-link class="nav-link" :to="href">{{ text }}</router-link>
+                        </li>
+                    </template>
                 </ul>
             </div>
         </div>
