@@ -1,10 +1,17 @@
-<script lang="ts">
+<script setup lang="ts">
 
-export default {
-    props: {
-        entries: Object
-    },
+
+type SearchResultEntry = {
+    id: string
+    GC: number
+    Contigs: number
+    Name: string
 }
+
+defineProps({
+    entries: Array<SearchResultEntry>
+})
+
 </script>
 
 <template>
