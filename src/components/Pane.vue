@@ -30,6 +30,11 @@ export default {
                 <a class="btn btn-primary" href="#">{{ action.title }}</a>
             </li>
         </ul>
+        <div class="tab-content">
+            <div class="tab-pane" :class="{ active: isActive(item)}" v-for="item in items">
+                <slot :name=item></slot>
+            </div>
+        </div>
     </div>
 
     <!-- Tabbed Content -->
