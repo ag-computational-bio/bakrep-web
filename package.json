@@ -12,15 +12,20 @@
     "lint": "eslint . --ext .vue,.js,.jsx,.cjs,.mjs,.ts,.tsx,.cts,.mts --fix --ignore-path .gitignore"
   },
   "dependencies": {
+    "biojs-io-fasta": "^0.1.17",
     "bootstrap": "^5.2.3",
+    "btoa": "^1.2.1",
+    "datatables.net-dt": "^1.13.4",
+    "humanize-duration": "^3.28.0",
+    "igv": "^2.13.11",
     "jquery": "^3.6.3",
+    "pako": "^2.1.0",
     "vue": "^3.2.45",
     "vue-router": "^4.1.6"
   },
   "devDependencies": {
-    "@types/bootstrap": "^5.2.6",
-    "sass": "^1.58.1",
     "@rushstack/eslint-patch": "^1.1.4",
+    "@types/bootstrap": "^5.2.6",
     "@types/jsdom": "^20.0.1",
     "@types/node": "^18.11.12",
     "@vitejs/plugin-vue": "^4.0.0",
