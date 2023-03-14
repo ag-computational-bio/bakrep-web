@@ -1,6 +1,4 @@
 <script setup lang="ts">
-
-
 type SearchResultEntry = {
     id: string
     GC: number

@@ -27,4 +27,8 @@ onMounted(() => {
 
 </template>
 
-<style scoped></style>
+<style>
+main {
+  min-height: 100vh;
+}
+</style>

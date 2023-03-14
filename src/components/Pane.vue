@@ -1,22 +1,16 @@
-<script lang="ts">
+<script setup lang="ts">
+import { ref } from 'vue';
 import Panetab from './Panetab.vue';
 
-export default {
-    props: {
-        items: { required: true, type: Object },
-        action: { required: false, type: Object }
-    },
-    data() {
-        return {
-            active: this.items[0]
-        }
-    },
-    components: { Panetab },
-    methods: {
-        isActive(item: Object) {
-            return this.active === item
-        }
-    }
+let props = defineProps({
+    items: { type: Object, required: true },
+    action: { type: Object, required: false }
+})
+
+let active = ref(props.items[0])
+
+function isActive(item: Object) {
+    return active === item
 }
 </script>
 

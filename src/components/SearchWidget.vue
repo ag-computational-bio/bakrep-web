@@ -1,14 +1,12 @@
-<script lang="ts">
-export default {
-  emits: ['update:modelValue'],
-  data() {
-    return {
-      searchInput: ""
-    }
-  },
-  methods: {
-    searchRepository(input: string) {
-      let testResults = [{
+<script setup lang="ts">
+import { ref} from 'vue';
+
+let emit = defineEmits(['update:modelValue'])
+
+let searchInput = ref("")
+
+function searchRepository(input: String) {
+  let testResults = [{
     "id": 2,
     "GC": 0.75,
     "Contigs": 175,
@@ -34,10 +32,10 @@ export default {
     "Contigs": 170,
     "Name": "Tetraclinis articulata (Vahl) Masters"
   }]
-      this.$emit('update:modelValue', testResults)
-    }
-  }
+  
+  emit('update:modelValue', testResults)
 }
+
 </script>
 
 <!-- 
