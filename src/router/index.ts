@@ -1,5 +1,4 @@
 import { createRouter, createWebHistory } from "vue-router";
-import HomeView from "../views/HomeView.vue";
 
 const router = createRouter({
   linkActiveClass: "active",
@@ -9,7 +8,7 @@ const router = createRouter({
     {
       path: "/",
       name: "home",
-      component: HomeView,
+      component: () => import("../views/HomeView.vue"),
     },
     {
       path: "/about",
@@ -22,21 +21,15 @@ const router = createRouter({
     {
       path: "/search",
       name: "search",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
-      component: () => import("../views/HomeView.vue"),
+      component: () => import("../views/SearchView.vue"),
     },
     {
       path: "/imprint",
       name: "imprint",
-      // route level code-splitting
-      // this generates a separate chunk (About.[hash].js) for this route
-      // which is lazy-loaded when the route is visited.
       component: () => import("../views/ImprintView.vue"),
     },
     {
-      path: "/result/:id/:title",
+      path: "/result/:id/",
       name: "result",
       component: () => import("../views/ResultView.vue"),
       props: true
