@@ -7,6 +7,6 @@ defineProps({
 
 <template>
     <li class="nav-item">
-        <a class="nav-link" :class="active ? 'active' : ''" href="#">{{ name }}</a>
+        <a class="nav-link" :class="active" href="#">{{ name }}</a>
     </li>
 </template> 
