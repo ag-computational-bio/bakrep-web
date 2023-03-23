@@ -1,10 +1,11 @@
-<script lang="ts">
+<script setup lang="ts">
 import Pane from "../components/Pane.vue";
-import PaneTab from "../components/Panetab.vue";
-export default {
-  props: ["id", "title"],
-  components: { Pane, PaneTab }
-}
+
+let props = defineProps({ 
+  id: { type: String, required: true }, 
+  title: { type: String, required: false } 
+})
+
 </script>
 
 <template>
@@ -13,13 +14,14 @@ export default {
       <h3>{{ title }}</h3>
     </div>
     <div class="row">
-      <Pane :items="['Annotation', 'Taxonomy', 'Quality Control']" :action="{title: 'Download', link:'TBD'}" />
+      <Pane :items="['Annotation', 'Taxonomy', 'Quality Control']" :action="{title: 'Download', link:'TBD'}">
+        <template v-slot="Annotation">
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates ex quidem tempora laudantium? Veniam, quam, labore sit quae accusamus praesentium adipisci illo at eius corrupti nulla rem quod, eos nesciunt!
+        </template>
+      </Pane>
     </div>
   </main>
 </template>
 
 <style>
-main {
-  min-height: 100vh;
-}
 </style>
