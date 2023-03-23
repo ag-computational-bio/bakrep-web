@@ -1,9 +1,9 @@
 <script setup lang="ts">
 import { ref } from 'vue';
 const items = ref([
-    {href: '/', text: 'Home'},
-    {href: '/search', text: 'Search'},
-    {href: '/about', text: 'About'}
+    {href: {'name': 'home'  }, text: 'Home'},
+    {href: {'name': 'search'}, text: 'Search'},
+    {href: {'name': 'about' }, text: 'About'}
 ])
 </script>
 
