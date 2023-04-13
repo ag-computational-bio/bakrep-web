@@ -1,0 +1,6 @@
+{
+    "classification": "d__Bacteria;p__Actinobacteriota;c__Actinomycetia;o__Mycobacteriales;f__Mycobacteriaceae;g__Corynebacterium;s__Corynebacterium glutamicum",
+    "fastani_reference": "GCF_000011325.1",
+    "classification_method": "taxonomic classification defined by topology and ANI",
+    "warnings": "NaN"
+}
