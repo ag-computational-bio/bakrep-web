@@ -1,0 +1,24 @@
+version: '3.7'
+name: bakrep-web
+services:
+  api:
+    image: nginx
+    volumes:
+      - ../src/assets/Data/:/usr/share/nginx/html:ro -d nginx
+      - ./nginx.conf:/etc/nginx/conf.d/default.conf
+    ports:
+      - "8081:80"
+  server:
+    image: bakrep-web
+    build: 
+      context: ..
+    ports:
+      - "8080:5173"
+    volumes:
+      - ../:/srv/app/
+
+
+networks:
+  default:
+    name: deployments_default
+    external: true
