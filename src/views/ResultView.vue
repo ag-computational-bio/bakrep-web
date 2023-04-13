@@ -1,27 +1,55 @@
 <script setup lang="ts">
+import { getDatasetById } from "../Api";
+import { defineAsyncComponent, onMounted, ref } from "vue";
+import Loading from "../components/Loading.vue";
 import Pane from "../components/Pane.vue";
+import usePageState from "../PageState";
+import { State } from "../PageState";
 
-let props = defineProps({ 
-  id: { type: String, required: true }, 
-  title: { type: String, required: false } 
-})
+const Result = defineAsyncComponent({
+  loader: () => import('../components/Result.vue'),
+});
+
+let props = defineProps({
+  id: { type: String, required: true },
+  title: { type: String, required: false }
+});
+
+let dataset = ref();
+
+let promise = getDatasetById(props.id);
+
+let state = usePageState();
+state.value.setState(State.Loading);
+
+onMounted(() => {
+  promise.then((res) => {
+    dataset.value = res;
+    state.value.setState(State.Main);
+  });
+});
 
 </script>
 
 <template>
-  <main class="container pt-5">
+  <main class="container">
     <div class="row">
-      <h3>{{ title }}</h3>
+      <h3>Dataset</h3>
     </div>
     <div class="row">
-      <Pane :items="['Annotation', 'Taxonomy', 'Quality Control']" :action="{title: 'Download', link:'TBD'}">
-        <template v-slot="Annotation">
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Voluptates ex quidem tempora laudantium? Veniam, quam, labore sit quae accusamus praesentium adipisci illo at eius corrupti nulla rem quod, eos nesciunt!
+      <Loading :state="state">
+        <template v-slot:loading>
+          Loading
         </template>
-      </Pane>
+        <template v-slot:content>
+          <div v-for="result in dataset.results">
+            {{ result.attributes }}
+            {{ result.data }}
+          </div>
+        </template>
+      </Loading>
     </div>
   </main>
 </template>
 
-<style>
-</style>
+<style></style>
