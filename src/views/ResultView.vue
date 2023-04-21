@@ -17,16 +17,15 @@ let props = defineProps({
 
 let dataset = ref();
 
-let promise = getDatasetById(props.id);
-
 let state = usePageState();
 state.value.setState(State.Loading);
 
 onMounted(() => {
-  promise.then((res) => {
-    dataset.value = res;
-    state.value.setState(State.Main);
-  });
+  getDatasetById(props.id)
+    .then((res: Dataset) => {
+      dataset.value = res;
+      return res;
+  }).then(() => state.value.setState(State.Main));
 });
 
 </script>

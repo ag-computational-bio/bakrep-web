@@ -1,20 +1,19 @@
-
 const BASEURL = 'http://localhost:8081/';
 function getDatasetById(id: string) {
-  let promise = Promise.resolve(api<Dataset>(BASEURL + id));
-  
-  let dataset = promise.then((data: Dataset) => {
-    data.results.forEach((result: Result) => {
-      api<any>(result.url).then(response => {
-        result.data = response;
-      });
-    })
-    return data;
-  })
-  .catch(error => {
-    console.log(error);
-  })
+  let dataset: Promise<Dataset> = Promise.resolve(api<Dataset>(BASEURL + id))
+  .then((data: Dataset) => {
+    const promises = data.results.map((r) => getResultData(r.url)
+      .then((d: any) => r.data = d))
+    return Promise.all(promises).then(() => {return data})
+  });
   return dataset
+}
+
+function getResultData(url: string): any {
+  return Promise.resolve(api<any>(url))
+    .then((res) => {
+      return res
+    })
 }
 
 function api<T>(url: string): Promise<T> {
