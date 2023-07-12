@@ -1,0 +1,35 @@
+{
+    "id": "SAMD00000344",
+    "results": [
+        {
+            "md5": "bc9c6c09ceb7ce070ca15e45299f6f7e",
+            "size": 9358822,
+            "url": "http://localhost:8081/SAMD00000344.bakta.json.gz",
+            "attributes": {
+                "type": "annotation",
+                "filetype": "json",
+                "tool": "bakta"
+            }
+        },
+        {
+            "md5": "c6c1826b214871b19d2feab14209921a",
+            "size": 392,
+            "url": "http://localhost:8081/SAMD00000344.checkm.json.gz",
+            "attributes": {
+                "type": "qualitycontrol",
+                "filetype": "json",
+                "tool": "checkm"
+            }
+        },
+        {
+            "md5": "172dd9fbf02da0ac4c6512cb218f232b",
+            "size": 316,
+            "url": "http://localhost:8081//SAMD00000344.gtdbtk.json.gz",
+            "attributes": {
+                "type": "taxonomy",
+                "filetype": "json",
+                "tool": "gtdbtk"
+            }
+        }
+    ]
+}

@@ -1,0 +1,21 @@
+{
+    "marker": {
+        "marker_lineage": "root (UID1)",
+        "#genomes": 5656,
+        "#markers": 56,
+        "#marker_sets": 24
+    },
+    "gene_copies": {
+        "0": 0,
+        "1": 0,
+        "2": 56,
+        "3": 0,
+        "4": 0,
+        "5+": 0
+    },
+    "quality": {
+        "completeness": 100.0,
+        "contamination": 100.0,
+        "strain_heterogeneity": 1.79
+    }
+}

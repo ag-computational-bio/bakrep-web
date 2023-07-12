@@ -1,9 +1,11 @@
 <script setup lang="ts">
-import TheWelcome from "../components/TheWelcome.vue";
+
 </script>
 
 <template>
-  <main>
-    <TheWelcome />
-  </main>
+    <main class="container pt-5">
+        Welcome to the online presence 
+    </main>
 </template>
+
+<style></style>
