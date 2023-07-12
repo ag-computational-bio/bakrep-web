@@ -7,7 +7,7 @@ type SearchResultEntry = {
 }
 
 defineProps({
-    entries: Array<SearchResultEntry>
+    entries: Array as PropType<SearchResultEntry>
 })
 
 </script>
