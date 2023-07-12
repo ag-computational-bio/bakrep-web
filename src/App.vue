@@ -19,16 +19,13 @@ onMounted(() => {
 <template>
   <Navbar />
 
-  <div id="content">
+  <div id="content" class="mt-5 min-vh-100 pt-5">
     <RouterView />
   </div>
 
-  <Footer />
+  <Footer class="mt-5" />
 
 </template>
 
 <style>
-main {
-  min-height: 100vh;
-}
 </style>
