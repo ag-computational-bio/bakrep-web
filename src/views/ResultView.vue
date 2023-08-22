@@ -1,12 +1,14 @@
 <script setup lang="ts">
-import { getDatasetById } from "../Api";
+import { getDatasetById, getReference } from "../Api";
 import { onMounted, ref } from "vue";
 import Loading from "../components/Loading.vue";
 import ContigBar from "../components/ContigBar.vue";
 import Pane from "../components/Pane.vue";
 import usePageState from "../PageState";
 import { State } from "../PageState";
-import Modal from "../components/Modal.vue"
+import Modal from "../components/Modal.vue";
+import NRatio from "@/components/NRatio.vue";
+
 
 let props = defineProps({
   id: { type: String, required: true },
@@ -23,50 +25,81 @@ let toggle = ref({
   'taxonomy': true,
   'checkm': true
 });
+
+let active_tab = ref("")
+
 let state = usePageState();
 state.value.setState(State.Loading);
 
-let showModal = ref<number | null>()
-const resolve = async (ref: string): Promise<string> => {
-  const response = await fetch('https://psos.computational.bio/api/v1/dbxref/resolve/' + ref, {
-    mode: 'no-cors',
-    headers: {
-      'Access-Control-Allow-Origin': '*'
-    }
-  }).then((res) => {
-    console.log(res)
-    if (res.ok) {
-      return res.json();
-    } else {
-      throw new Error(res.statusText);
-    }
-  })
-  console.log(response)
-  return response[0].locations.html[0];
+let showRefModal = ref<number | null>()
+
+let showActionModal = ref(false)
+
+function ratioToPercentage(value: number) {
+  return Math.round(value * 10000) / 100 + '%'
 }
 
-onMounted(() => {
-  getDatasetById(props.id)
-    .then((res: Dataset) => {
-      res.results.forEach((result: Result) => {
-        if (result.attributes.type == 'annotation') {
-          annotation.value = result
-        } else if (result.attributes.type == 'taxonomy') {
-          taxonomy.value = result
-        }
-      })
-      dataset.value = res;
-      return res;
+function renameContig(contig: string): number {
+  // SAMD00000344.contig00001
+  // 1
+  return Number(contig.split('contig')[1])
+}
+
+// Calculates significant figures with suffixes K/M/B/T, e.g. 1234 = 1.23K
+function sigfig(num: number, sigfigs_opt?: number) {
+  // Set default sigfigs to 3
+  sigfigs_opt = (typeof sigfigs_opt === "undefined") ? 3 : sigfigs_opt;
+  // Only assigns sig figs and suffixes for numbers > 1
+  if (num <= 1) return num.toPrecision(sigfigs_opt);
+  // Calculate for numbers > 1
+  var power10 = log10(num);
+  var power10ceiling = Math.floor(power10) + 1;
+  // 0 = '', 1 = 'K', 2 = 'M', 3 = 'B', 4 = 'T'
+  var SUFFIXES = ['', 'K', 'M', 'B', 'T'];
+  // 100: power10 = 2, suffixNum = 0, suffix = ''
+  // 1000: power10 = 3, suffixNum = 1, suffix = 'K'
+  var suffixNum = Math.floor(power10 / 3);
+  var suffix = SUFFIXES[suffixNum];
+  // Would be 1 for '', 1000 for 'K', 1000000 for 'M', etc.
+  var suffixPower10 = Math.pow(10, suffixNum * 3);
+  var base = num / suffixPower10;
+  var baseRound = base.toPrecision(sigfigs_opt);
+  return baseRound + suffix;
+}
+
+function log10(num: number) {
+  // Per http://stackoverflow.com/questions/3019278/how-can-i-specify-the-base-for-math-log-in-javascript#comment29970629_16868744
+  // Handles floating-point errors log10(1000) otherwise fails at (2.99999996)
+  return (Math.round(Math.log(num) / Math.LN10 * 1e6) / 1e6);
+}
+
+function position(start: number, end: number) {
+  let start_string = sigfig(start);
+  let end_string = sigfig(end);
+
+  return `${start_string} - ${end_string}`
+}
+
+getDatasetById(props.id)
+  .then((res: Dataset) => {
+    res.results.forEach((result: Result) => {
+      if (result.attributes.type == 'annotation') {
+        annotation.value = result
+      } else if (result.attributes.type == 'taxonomy') {
+        taxonomy.value = result
+      }
     })
-    .then(() => state.value.setState(State.Main));
-});
+    dataset.value = res;
+    return res;
+  })
+  .then(() => state.value.setState(State.Main));
 
 </script>
 
 <template>
   <main class="container">
     <div class="row">
-      <h2>Dataset</h2>
+      <h2>Dataset: </h2>
     </div>
 
     <Loading :state="state">
@@ -74,173 +107,224 @@ onMounted(() => {
         Loading
       </template>
       <template v-slot:content>
-        <Pane :action="{'title': 'Test'}" :items="['test', 'test2']">
-          <template v-slot:test>
-            <h3 class="py-3">Test</h3>
+        <Pane :action="{ 'title': 'Download' }" :items="['summary', 'annotation', 'taxonomy']" :value="active_tab"
+          @update:value="newValue => active_tab = newValue">
+          <template v-if="active_tab == 'summary'">
+            <div class="col-4">
+              <table class="table">
+                <tr>
+                  <th scope="row">Genus</th>
+                  <td>{{ annotation.data.genome.genus }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Species</th>
+                  <td>{{ annotation.data.genome.species }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Strain</th>
+                  <td>{{ annotation.data.genome.strain }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Complete</th>
+                  <td>{{ annotation.data.genome.complete }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Gram</th>
+                  <td>{{ annotation.data.genome.gram }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Translation Table</th>
+                  <td>{{ annotation.data.genome.translation_table }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">No Sequences</th>
+                  <td>{{ annotation.data.stats.no_sequences }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Size</th>
+                  <td>{{ annotation.data.stats.size }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">GC Ratio</th>
+                  <td>{{ ratioToPercentage(annotation.data.stats.gc) }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">n Ratio</th>
+                  <td>
+                    <NRatio :value="annotation.data.stats.n_ratio"></NRatio>
+                  </td>
+                </tr>
+                <tr>
+                  <th scope="row">n50</th>
+                  <td>{{ annotation.data.stats.n50 }}</td>
+                </tr>
+                <tr>
+                  <th scope="row">Coding Ratio</th>
+                  <td>{{ ratioToPercentage(annotation.data.stats.coding_ratio) }}</td>
+                </tr>
+              </table>
+            </div>
           </template>
-          <template v-slot:test2>
-            <h3 class="py-3">Test2</h3>
-          </template>
-        </Pane>
-      </template>
-      <template v-slot:content-old>
-        <div class="row" v-for="result in dataset.results">
-          <div v-if="result.attributes.type == 'annotation'">
-            <div class="h5" @click="toggle.annotation = !toggle.annotation"><i class="bi"
-                :class="toggle.annotation ? 'bi-caret-down' : 'bi-caret-right'"></i>Annotation</div>
+          <template v-if="active_tab == 'annotation'">
+            <!-- <div class="h5" @click="toggle.annotation = !toggle.annotation"><i class="bi"
+                :class="toggle.annotation ? 'bi-caret-down' : 'bi-caret-right'"></i>Annotation</div> -->
             <div v-if="toggle.annotation">
               <table class="table">
                 <tr>
                   <th>Genus</th>
-                  <td>{{ result.data.genome.genus }}</td>
+                  <td>{{ annotation.data.genome.genus }}</td>
                 </tr>
                 <tr>
                   <th>Species</th>
-                  <td>{{ result.data.genome.species }}</td>
+                  <td>{{ annotation.data.genome.species }}</td>
                 </tr>
                 <tr>
                   <th>Strain</th>
-                  <td>{{ result.data.genome.strain }}</td>
+                  <td>{{ annotation.data.genome.strain }}</td>
                 </tr>
                 <tr>
                   <th>Complete</th>
-                  <td>{{ result.data.genome.complete }}</td>
+                  <td>{{ annotation.data.genome.complete }}</td>
                 </tr>
                 <tr>
                   <th>Gram</th>
-                  <td>{{ result.data.genome.gram }}</td>
+                  <td>{{ annotation.data.genome.gram }}</td>
                 </tr>
                 <tr>
                   <th>Translation Table</th>
-                  <td>{{ result.data.genome.translation_table }}</td>
+                  <td>{{ annotation.data.genome.translation_table }}</td>
                 </tr>
-              </table>
-
-              <table class="table">
                 <tr>
                   <th>No Sequences</th>
-                  <td>{{ result.data.stats.no_sequences }}</td>
+                  <td>{{ annotation.data.stats.no_sequences }}</td>
                 </tr>
                 <tr>
                   <th>Size</th>
-                  <td>{{ result.data.stats.size }}</td>
+                  <td>{{ annotation.data.stats.size }}</td>
                 </tr>
                 <tr>
                   <th>GC Ratio</th>
-                  <td>{{ result.data.stats.gc }}</td>
+                  <td>{{ ratioToPercentage(annotation.data.stats.gc) }}</td>
                 </tr>
                 <tr>
                   <th>n Ratio</th>
-                  <td>{{ result.data.stats.n_ratio }}</td>
+                  <td>
+                    <NRatio :value="annotation.data.stats.n_ratio"></NRatio>
+                  </td>
                 </tr>
                 <tr>
                   <th>n50</th>
-                  <td>{{ result.data.stats.n50 }}</td>
+                  <td>{{ annotation.data.stats.n50 }}</td>
                 </tr>
                 <tr>
                   <th>Coding Ratio</th>
-                  <td>{{ result.data.stats.coding_ratio }}</td>
+                  <td>{{ ratioToPercentage(annotation.data.stats.coding_ratio) }}</td>
                 </tr>
               </table>
-
+              <h3>Contig Lengths:</h3>
               <div>
-                <ContigBar :features="result.data.features" :length="result.data.stats.size" :n50="result.data.stats.n50">
+                <ContigBar :sequences="annotation.data.sequences" :length="annotation.data.stats.size"
+                  :n50="annotation.data.stats.n50">
                 </ContigBar>
               </div>
 
-              <button class="btn btn-primary" @click="featureTable = !featureTable">
+              <button class="my-4 btn btn-primary" @click="featureTable = !featureTable">
                 <template v-if="featureTable">
-                  Hide
+                  Hide Table
                 </template>
                 <template v-else>
-                  Show
+                  Show Table
                 </template>
               </button>
               <table class="table" v-if="featureTable">
-                <thead>
-                  <th>Type</th>
-                  <th>Contig</th>
-                  <th>Start</th>
-                  <th>Stop</th>
-                  <th>Strand</th>
-                  <th>Gene</th>
-                  <th>Product</th>
-                  <th>Start Type</th>
-                  <th>RBS Motif</th>
+                <!-- <thead>
+                  <th>contig</th>
+                  <th>length</th>
                   <th>X-Refs</th>
-                  <th>Amino Acid Sequence</th>
+                  <th>Details</th>
+                </thead> -->
+                <thead>
+                  <th>Contig</th>
+                  <th>Position</th>
+                  <th>Product</th>
+                  <th>X-Refs</th>
                 </thead>
-                <tr v-for="(feature, index) in result.data.features">
-                  <td>{{ feature.type }}</td>
-                  <td>{{ feature.contig }}</td>
-                  <td>{{ feature.start }}</td>
-                  <td>{{ feature.stop }}</td>
-                  <td>{{ feature.strand }}</td>
-                  <td>{{ feature.gene }}</td>
+                <tr v-for="(feature, index) in annotation.data.features">
+                  <td>{{ renameContig(feature.contig) }}</td>
+                  <td class="text-nowrap">{{ position(feature.start, feature.stop) }}</td>
                   <td>{{ feature.product }}</td>
-                  <td>{{ feature.start_type }}</td>
-                  <td>{{ feature.rbs_motif }}</td>
                   <td>
-                    <span class="btn" id="show-modal" @click="showModal = index">Refs</span>
-                    <!-- use the modal component, pass in the prop -->
-                    <Modal v-if="showModal == index" @close="showModal = null">
+                    <div class="bg-light btn py-2 rounded text-dark" id="show-modal" @click="showRefModal = index">Refs
+                    </div>
+                    <Modal v-if="showRefModal == index" @close="showRefModal = null">
                       <template v-slot:header>
                         <h2>References</h2>
                       </template>
                       <template v-slot:body>
                         <ul>
-                          <li v-for="ref in feature.db_xrefs"><a :href="resolve(ref).then((res)=>res)" target="_blank">{{ ref }}</a></li>
+                          <li v-for="ref in feature.db_xrefs"><a
+                              :href="getReference(ref).then((ref) => { return ref[0].locations.html[0] })"
+                              target="_blank">{{ ref }}</a></li>
                         </ul>
                       </template>
                     </Modal>
                   </td>
-                  <!-- <td><a v-for="ref in feature.db_xrefs"
-                      :href="'https://psos.computational.bio/api/v1/dbxref/resolve/' + ref">{{ ref }}</a></td> -->
-                  <td>{{ feature.aa }}</td>
                 </tr>
               </table>
             </div>
-          </div>
-          <div v-else-if="result.attributes.type == 'taxonomy'">
-            <div class="h5" @click="toggle.taxonomy = !toggle.taxonomy"><i class="bi"
-                :class="toggle.taxonomy ? 'bi-caret-down' : 'bi-caret-right'"></i>Taxonomy</div>
+          </template>
+          <template v-if="active_tab == 'taxonomy'">
+            <!-- <div class="h5" @click="toggle.taxonomy = !toggle.taxonomy"><i class="bi"
+                :class="toggle.taxonomy ? 'bi-caret-down' : 'bi-caret-right'"></i>Taxonomy</div> -->
             <div v-if="toggle.taxonomy">
               <div>
-                GTDB:
-                <div>
-                  <a v-for="entry in result.data.classification.split(';')"
-                    :href="'https://gtdb.ecogenomic.org/tree?r=' + entry">{{ entry }};</a>
+                <span class="fw-bold">GTDB Tree:</span>
+                <div v-for="(entry, index) in taxonomy.data.classification.split(';')">
+                  <a :style="{ 'margin-left': (index * 5) + 'px' }"
+                    :href="'https://gtdb.ecogenomic.org/tree?r=' + entry">{{
+                      entry }};</a>
                 </div>
               </div>
               <div>
-                Fastani:
-                <div>
-                  {{ result.data.fastani_reference }}
-                </div>
-              </div>
-
-              <div>
-                <div class="start-0">
-                  Classification Method:
-                </div>
-
-                <div>
-                  {{ result.data.classification_method }}
-                </div>
+                <table class="table">
+                  <tr>
+                    <th>Fastani</th>
+                    <td>{{ taxonomy.data.fastani_reference }}</td>
+                  </tr>
+                  <tr>
+                    <th>Classification Method:</th>
+                    <td>{{ taxonomy.data.classification_method }}</td>
+                  </tr>
+                </table>
               </div>
 
               <div class="warning">
-                <template v-if="result.data.warning != 'NaN'">
-                  {{ result.data.warning }}
+                <template v-if="taxonomy.data.warning != 'NaN'">
+                  {{ taxonomy.data.warning }}
                 </template>
               </div>
             </div>
-          </div>
-          <div v-else-if="result.attributes.type == ''"></div>
-        </div>
+          </template>
+          <template v-slot:action>
+            <div class="btn btn-primary ms-auto" @click="showActionModal = true">
+              Download
+            </div>
+            <Modal v-if="showActionModal == true" @close="showActionModal = false">
+              <template v-slot:header>
+                <h2>Download Dataset</h2>
+              </template>
+              <template v-slot:body>
+                  <ul>
+                    <li>Link to One</li>
+                    <li>Link to Two
+                    </li>
+                    <li>Link to Three</li>
+                    <li>Link to All?</li>
+                  </ul>
+              </template>
+            </Modal>
+          </template>
+        </Pane>
       </template>
     </Loading>
-  </main>
-</template>
-
-<style></style>
+</main></template>
