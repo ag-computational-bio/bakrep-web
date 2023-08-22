@@ -18,7 +18,8 @@
     "pako": "^2.1.0",
     "vue": "^3.2.45",
     "vue-chartjs": "^5.2.0",
-    "vue-router": "^4.1.6"
+    "vue-router": "^4.1.6",
+    "zod": "^3.22.2"
   },
   "devDependencies": {
     "@rushstack/eslint-patch": "^1.1.4",
