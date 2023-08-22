@@ -15,6 +15,7 @@ import type { BaktaResult } from "@/model/BaktaResults";
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
 import FeatureTable from "./FeatureTable.vue";
 import BaktaAnnotationTable from "./BaktaAnnotationTable.vue";
+import BaktaGenomeViewer from "./genome-viewer/BaktaGenomeViewer.vue";
 const route = useRoute();
 const id = computed(() => route.params.id as string);
 const api = useApi();
@@ -46,7 +47,12 @@ const toggle = ref({
   checkm: true,
 });
 
-type Tab = "summary" | "annotation" | "taxonomy" | "bakta-annotation-table";
+type Tab =
+  | "summary"
+  | "annotation"
+  | "taxonomy"
+  | "bakta-annotation-table"
+  | "bakta-genome-viewer";
 const active_tab: Ref<Tab> = ref("summary");
 
 const state = usePageState();
@@ -71,10 +77,14 @@ const showActionModal = ref(false);
             'annotation',
             'taxonomy',
             'bakta-annotation-table',
+            'bakta-genome-viewer',
           ]"
           :value="active_tab"
           @update:value="(newValue) => (active_tab = newValue)"
         >
+          <template v-if="active_tab === 'bakta-genome-viewer'">
+            <BaktaGenomeViewer :data="baktaResult" />
+          </template>
           <template v-if="active_tab === 'bakta-annotation-table'">
             <BaktaAnnotationTable :data="baktaResult" />
           </template>
