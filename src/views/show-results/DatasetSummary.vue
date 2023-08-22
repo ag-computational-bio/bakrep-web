@@ -56,6 +56,7 @@
   <div v-else>No bakta result provided</div>
 </template>
 <script setup lang="ts">
+import NRatio from "@/components/NRatio.vue";
 import type { BaktaResult } from "@/model/BaktaResults";
 import { ratioToPercentage } from "@/util";
 import type { PropType } from "vue";
