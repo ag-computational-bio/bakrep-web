@@ -7,29 +7,34 @@ let searchInput = ref("")
 
 function searchRepository(input: String) {
   let testResults = [{
-    "id": 2,
+    "id": "SAMD00000344",
     "GC": 0.75,
     "Contigs": 175,
+    "Length": 2359987,
     "Name": "Decumaria L."
   }, {
-    "id": 3,
+    "id": "SAMD00000344",
     "GC": 0.23,
     "Contigs": 171,
+    "Length": 2359987,
     "Name": "Avicennia germinans (L.) L."
   }, {
-    "id": 4,
+    "id": "SAMD00000344",
     "GC": 0.40,
     "Contigs": 19,
+    "Length": 2359987,
     "Name": "Cetraria ericetorum Opiz ssp. reticulata (Rasanen) Karnefelt"
   }, {
-    "id": 5,
+    "id": "SAMD00000344",
     "GC": 0.61,
     "Contigs": 66,
+    "Length": 2359987,
     "Name": "Rudbeckia laciniata L. var. laciniata"
   }, {
-    "id": 6,
+    "id": "SAMD00000344",
     "GC": 0.49,
     "Contigs": 170,
+    "Length": 2359987,
     "Name": "Tetraclinis articulata (Vahl) Masters"
   }]
   
