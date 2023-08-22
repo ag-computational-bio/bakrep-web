@@ -2,8 +2,9 @@
 import { ref } from 'vue';
 const items = ref([
     {href: {'name': 'home'  }, text: 'Home'},
-    {href: {'name': 'search'}, text: 'Search'},
-    {href: {'name': 'about' }, text: 'About'}
+    {href: {'name': 'browse'  }, text: 'Browse'},
+    {href: {'name': 'search'}, text: 'Search'}
+    //{href: {'name': 'about' }, text: 'About'},
 ])
 </script>
 
@@ -23,6 +24,10 @@ const items = ref([
                             <router-link class="nav-link" :to="href">{{ text }}</router-link>
                         </li>
                     </template>
+                </ul>
+                <ul class="navbar-nav">
+                    <!-- <li><a class="nav-link " href="https://www.microbiologyresearch.org/content/journal/mgen/10.1099/mgen.0.000685">Citation</a></li> -->
+                    <li><a style="font-size: 2em" class="nav-link" href="https://github.com/ag-computational-bio" target="_blank"><i class="bi bi-github text-dark"></i></a></li>
                 </ul>
             </div>
         </div>

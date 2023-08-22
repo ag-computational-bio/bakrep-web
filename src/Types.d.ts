@@ -2,13 +2,25 @@ type Result = {
     md5: string
     size: number
     url: string
-    attributes: object
+    attributes: {
+        type: string
+    }
     data: object|null
 }
 
 type Dataset = {
     id: string
     results: Array<Result>
+}
+
+type Reference = {
+    dbxref: string,
+    locations: {
+        html: Array<string>,
+        xml: Array<string>,
+        json: Array<string>
+    }
+    status: string
 }
 
 type Feature = {
@@ -20,6 +32,17 @@ type Feature = {
     gene: any,
     product: string
     length: number
+}
+
+type Sequence = {
+    id: string,
+    description: string,
+    sequence: string,
+    length: number,
+    complete: boolean,
+    type: string,
+    topology: string,
+    simple_id: string
 }
 
 type Annotation = {

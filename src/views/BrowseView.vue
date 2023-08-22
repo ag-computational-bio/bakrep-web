@@ -1,12 +1,8 @@
 <script setup lang="ts">
-import { ref} from 'vue';
+import { ref } from "vue";
+import ResultTable from "@/components/ResultTable.vue";
 
-let emit = defineEmits(['update:modelValue'])
-
-let searchInput = ref("")
-
-function searchRepository(input: String) {
-  let testResults = [{
+const entries = ref([{
     "id": "SAMD00000344",
     "GC": 0.75,
     "Contigs": 175,
@@ -36,24 +32,27 @@ function searchRepository(input: String) {
     "Contigs": 170,
     "Length": 2359987,
     "Name": "Tetraclinis articulata (Vahl) Masters"
-  }]
-  
-  emit('update:modelValue', testResults)
-}
+  }
+])
 
 </script>
 
-<!-- 
-  An initial Searchwidget, will need to be refined depending on the search parameters and language
- -->
-
 <template>
-  <div class="p-3 rounded bg-body-tertiary">
-    <div class="input-group">
-      <button @click="searchRepository(searchInput)" class="btn btn-outline-secondary" type="button" id="button-search">Search</button>
-      <input type="text" v-model.lazy="searchInput" placeholder="search bakrep for..." class="form-control" aria-describedby="button-search" aria-label="Search Button"/>
+  <main class="container pt-5">
+
+    <div class="row">
+      <h2>Browse the Genome Databank</h2>
     </div>
-  </div>
+
+    <div class="row mt-3 mb-1">
+      <h3>Entries:</h3>
+    </div>
+
+    <div class="row">
+      <ResultTable :entries=entries />
+    </div>
+  </main>
 </template>
 
-<style></style>
+<style>
+</style>

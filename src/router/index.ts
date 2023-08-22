@@ -33,6 +33,11 @@ const router = createRouter({
       name: "result",
       component: () => import("../views/ResultView.vue"),
       props: true
+    },
+    {
+      path: "/browse",
+      name: 'browse',
+      component: () => import("../views/BrowseView.vue")
     }
   ],
 });

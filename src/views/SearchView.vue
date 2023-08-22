@@ -12,7 +12,7 @@ const entries = ref([])
       <SearchWidget v-model="entries"/>
     </div>
 
-    <div class="row">
+    <div class="row py-3 my-5">
       <ResultTable :entries=entries />
     </div>
   </main>
