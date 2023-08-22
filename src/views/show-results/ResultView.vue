@@ -14,6 +14,7 @@ import GtdbtkTaxonomy from "./GtdbtkTaxonomy.vue";
 import type { BaktaResult } from "@/model/BaktaResults";
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
 import FeatureTable from "./FeatureTable.vue";
+import BaktaAnnotationTable from "./BaktaAnnotationTable.vue";
 const route = useRoute();
 const id = computed(() => route.params.id as string);
 const api = useApi();
@@ -45,7 +46,7 @@ const toggle = ref({
   checkm: true,
 });
 
-type Tab = "summary" | "annotation" | "taxonomy";
+type Tab = "summary" | "annotation" | "taxonomy" | "bakta-annotation-table";
 const active_tab: Ref<Tab> = ref("summary");
 
 const state = usePageState();
@@ -57,7 +58,7 @@ const showActionModal = ref(false);
 <template>
   <main class="container">
     <div class="row">
-      <h2>Dataset:</h2>
+      <h2>Dataset: {{ id }}</h2>
     </div>
 
     <Loading :state="state">
@@ -65,10 +66,18 @@ const showActionModal = ref(false);
       <template v-slot:content>
         <Pane
           :action="{ title: 'Download' }"
-          :items="['summary', 'annotation', 'taxonomy']"
+          :items="[
+            'summary',
+            'annotation',
+            'taxonomy',
+            'bakta-annotation-table',
+          ]"
           :value="active_tab"
           @update:value="(newValue) => (active_tab = newValue)"
         >
+          <template v-if="active_tab === 'bakta-annotation-table'">
+            <BaktaAnnotationTable :data="baktaResult" />
+          </template>
           <template v-if="active_tab == 'summary'">
             <div class="col-4">
               <DatasetSummary :annotation="baktaResult" />
