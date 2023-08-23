@@ -111,7 +111,6 @@ function setupIgv() {
     loadDefaultGenomes: false,
   };
   igv.createBrowser(igvref.value, config).then((x) => {
-    console.log(x);
     igvObj.value = x;
   });
 }

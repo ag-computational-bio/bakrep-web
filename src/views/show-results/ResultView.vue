@@ -26,7 +26,6 @@ const baktaResult: Ref<BaktaResult | undefined> = ref();
 const gtdbtkResult: Ref<GtdbtkResult | undefined> = ref();
 
 function loadData() {
-  console.log(api);
   return api.getDataset(id.value).then((x) => {
     dataset.value = x;
     return Promise.all([

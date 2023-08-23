@@ -66,7 +66,6 @@ class BakrepApiImpl implements BakrepApi {
 }
 
 function useApi(): BakrepApi {
-  console.log(baseurl);
   return new BakrepApiImpl(baseurl);
 }
 
