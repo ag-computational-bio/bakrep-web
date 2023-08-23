@@ -6,7 +6,7 @@
 import type { BaktaResult, Feature, Sequence } from "@/model/BaktaResults";
 import type { IGVBrowser } from "igv";
 import igv from "igv";
-import { computed, onMounted, ref, watch, type PropType, type Ref } from "vue";
+import { computed, onMounted, onBeforeUnmount, ref, watch, type PropType, type Ref } from "vue";
 import bakta from "./bakta-helper";
 import cog from "./cog-helper";
 
@@ -114,6 +114,11 @@ function setupIgv() {
     igvObj.value = x;
   });
 }
+function destroyIgv() {
+  if (igvObj.value) {
+    igv.removeBrowser(igvObj.value)
+  }
+}
 
 function refresh() {
   if (igvObj.value) igvObj.value.visibilityChange();
@@ -149,6 +154,7 @@ const genus = computed(() => {
 });
 watch(() => props.data, refresh);
 onMounted(setupIgv);
+onBeforeUnmount(destroyIgv);
 </script>
 
 <style></style>
