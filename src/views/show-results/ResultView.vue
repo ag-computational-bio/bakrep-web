@@ -79,7 +79,7 @@ const showActionModal = ref(false);
         <Pane
           :action="{ title: 'Download' }"
           :items="tabs"
-          :value="active_tab"
+          :activeItem="active_tab"
           @update:value="(newValue) => (active_tab = newValue)"
         >
           <template v-if="active_tab === 'bakta-genome-viewer'">
@@ -157,4 +157,3 @@ const showActionModal = ref(false);
     </Loading>
   </main>
 </template>
-./bakta/genome-viewer/BaktaGenomeViewer.vue

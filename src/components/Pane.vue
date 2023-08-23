@@ -1,5 +1,4 @@
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
 import Panetab from "./Panetab.vue";
 
 type Action = {
@@ -8,17 +7,12 @@ type Action = {
 };
 
 let props = defineProps({
+  activeItem: {type: String},
   items: { type: Array<string>, required: true },
   action: { type: Object, required: true },
 });
 
 const emits = defineEmits(["update:value"]);
-
-let value = ref(props.items[0]);
-
-onMounted(() => {
-  emits("update:value", value);
-});
 </script>
 
 <template>
@@ -27,11 +21,10 @@ onMounted(() => {
     <ul class="nav nav-pills py-3">
       <Panetab
         @click="
-          value = item;
           $emit('update:value', item);
         "
         :name="item"
-        :active="value == item"
+        :active="activeItem == item"
         v-for="item in items"
         :key="item"
       />
