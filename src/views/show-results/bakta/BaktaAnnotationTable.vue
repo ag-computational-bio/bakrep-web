@@ -8,10 +8,10 @@
 </template>
 
 <script setup lang="ts">
-import DataTable from "datatables.net-vue3";
-import DataTablesCore from "datatables.net-bs5";
-import { ref, computed, type PropType } from "vue";
 import type { BaktaResult } from "@/model/BaktaResults";
+import DataTablesCore from "datatables.net-bs5";
+import DataTable from "datatables.net-vue3";
+import { computed, ref, type PropType } from "vue";
 DataTable.use(DataTablesCore);
 const props = defineProps({
   data: {

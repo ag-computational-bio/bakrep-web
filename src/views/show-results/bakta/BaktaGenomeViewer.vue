@@ -3,12 +3,12 @@
 </template>
 
 <script setup lang="ts">
+import type { BaktaResult, Feature, Sequence } from "@/model/BaktaResults";
+import type { IGVBrowser } from "igv";
+import igv from "igv";
+import { computed, onMounted, ref, watch, type PropType, type Ref } from "vue";
 import bakta from "./bakta-helper";
 import cog from "./cog-helper";
-import igv from "igv";
-import type { IGVBrowser } from "igv";
-import type { BaktaResult, Feature, Sequence } from "@/model/BaktaResults";
-import { watch, type PropType, type Ref, ref, computed, onMounted } from "vue";
 
 const props = defineProps({
   data: { type: Object as PropType<BaktaResult> },

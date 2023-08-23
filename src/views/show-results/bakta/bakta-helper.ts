@@ -1,6 +1,6 @@
 import type { BaktaResult, Feature } from "@/model/BaktaResults";
 
-function genomeName(bakta: BaktaResult): string {
+function genomeName(bakta: BaktaResult | undefined): string {
   if (!bakta) return "N.A.";
   if (!bakta.genome.genus && !bakta.genome.genus && !bakta.genome.species) {
     return "N.A.";
@@ -20,7 +20,8 @@ function genomeName(bakta: BaktaResult): string {
   }
 }
 
-function formattedSize(bakta: BaktaResult): string {
+function formattedSize(bakta: BaktaResult | undefined): string {
+  if (!bakta) return "0 bp";
   return new Intl.NumberFormat("en-GB").format(bakta.stats.size) + " bp";
 }
 
@@ -38,34 +39,34 @@ type FeatureCount = {
   crispr: number;
   tRNA: number;
 };
-function featureCount(bakta: BaktaResult): FeatureCount {
-  return bakta.features.reduce(
-    (acc: Record<string, number>, cur: Feature) => {
-      const key = cur.type;
-      if (!(key in acc)) {
-        acc[key] = 0;
-      }
-      acc[key] = acc[key] + 1;
-      return acc;
-    },
-    {
-      oriC: 0,
-      oriV: 0,
-      oriT: 0,
-      cds: 0,
-      gap: 0,
-      sorf: 0,
-      "ncRNA-region": 0,
-      ncRNA: 0,
-      rRNA: 0,
-      tmRNA: 0,
-      crispr: 0,
-      tRNA: 0,
+function featureCount(bakta: BaktaResult | undefined): FeatureCount {
+  const fc: FeatureCount = {
+    oriC: 0,
+    oriV: 0,
+    oriT: 0,
+    cds: 0,
+    gap: 0,
+    sorf: 0,
+    "ncRNA-region": 0,
+    ncRNA: 0,
+    rRNA: 0,
+    tmRNA: 0,
+    crispr: 0,
+    tRNA: 0,
+  };
+  if (!bakta) return fc;
+  return bakta.features.reduce((acc: Record<string, number>, cur: Feature) => {
+    const key = cur.type;
+    if (!(key in acc)) {
+      acc[key] = 0;
     }
-  ) as FeatureCount;
+    acc[key] = acc[key] + 1;
+    return acc;
+  }, fc) as FeatureCount;
 }
 
-function sequencesCountString(bakta: BaktaResult): string {
+function sequencesCountString(bakta: BaktaResult | undefined): string {
+  if (!bakta) return "0 contigs";
   const data = bakta.sequences.map(
     (x) => (x.complete ? "complete " : "") + x.type
   );

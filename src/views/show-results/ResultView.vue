@@ -14,8 +14,9 @@ import GtdbtkTaxonomy from "./GtdbtkTaxonomy.vue";
 import type { BaktaResult } from "@/model/BaktaResults";
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
 import FeatureTable from "./FeatureTable.vue";
-import BaktaAnnotationTable from "./BaktaAnnotationTable.vue";
-import BaktaGenomeViewer from "./genome-viewer/BaktaGenomeViewer.vue";
+import BaktaAnnotationTable from "./bakta/BaktaAnnotationTable.vue";
+import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
+import BaktaStats from "./bakta/BaktaStats.vue";
 const route = useRoute();
 const id = computed(() => route.params.id as string);
 const api = useApi();
@@ -47,12 +48,17 @@ const toggle = ref({
   checkm: true,
 });
 
-type Tab =
-  | "summary"
-  | "annotation"
-  | "taxonomy"
-  | "bakta-annotation-table"
-  | "bakta-genome-viewer";
+const tabs = [
+  "summary",
+  "annotation",
+  "taxonomy",
+  "bakta-annotation-table",
+  "bakta-genome-viewer",
+  "bakta-stats",
+];
+
+type Tab = (typeof tabs)[number];
+
 const active_tab: Ref<Tab> = ref("summary");
 
 const state = usePageState();
@@ -72,18 +78,15 @@ const showActionModal = ref(false);
       <template v-slot:content>
         <Pane
           :action="{ title: 'Download' }"
-          :items="[
-            'summary',
-            'annotation',
-            'taxonomy',
-            'bakta-annotation-table',
-            'bakta-genome-viewer',
-          ]"
+          :items="tabs"
           :value="active_tab"
           @update:value="(newValue) => (active_tab = newValue)"
         >
           <template v-if="active_tab === 'bakta-genome-viewer'">
             <BaktaGenomeViewer :data="baktaResult" />
+          </template>
+          <template v-if="active_tab === 'bakta-stats'">
+            <BaktaStats :data="baktaResult" />
           </template>
           <template v-if="active_tab === 'bakta-annotation-table'">
             <BaktaAnnotationTable :data="baktaResult" />
@@ -154,3 +157,4 @@ const showActionModal = ref(false);
     </Loading>
   </main>
 </template>
+./bakta/genome-viewer/BaktaGenomeViewer.vue
