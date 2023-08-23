@@ -17,6 +17,7 @@ import FeatureTable from "./FeatureTable.vue";
 import BaktaAnnotationTable from "./bakta/BaktaAnnotationTable.vue";
 import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
 import BaktaStats from "./bakta/BaktaStats.vue";
+import CenteredLargeSpinner from "@/components/CenteredLargeSpinner.vue";
 const route = useRoute();
 const id = computed(() => route.params.id as string);
 const api = useApi();
@@ -73,7 +74,7 @@ const showActionModal = ref(false);
     </div>
 
     <Loading :state="state">
-      <template v-slot:loading> Loading </template>
+      <template v-slot:loading> <CenteredLargeSpinner /> </template>
       <template v-slot:content>
         <Pane
           :action="{ title: 'Download' }"
