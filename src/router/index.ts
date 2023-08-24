@@ -31,14 +31,14 @@ const router = createRouter({
     {
       path: "/result/:id/",
       name: "result",
-      component: () => import("../views/ResultView.vue"),
-      props: true
+      component: () => import("../views/show-results/ResultView.vue"),
+      props: true,
     },
     {
       path: "/browse",
-      name: 'browse',
-      component: () => import("../views/BrowseView.vue")
-    }
+      name: "browse",
+      component: () => import("../views/BrowseView.vue"),
+    },
   ],
 });
 

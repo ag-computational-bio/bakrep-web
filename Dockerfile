@@ -1,12 +1,10 @@
-FROM node:16.10.0
+FROM nginx:stable-alpine
 
-RUN npm install -g npm@8.1.3
-RUN npm install -g @vue/cli@4.5.15
+LABEL org.opencontainers.image.authors="lukas.jelonek@computational.bio.uni-giessen.de"
+LABEL org.opencontainers.image.url='https://github.com/ag-computational-bio/bakrep-web'
+LABEL org.opencontainers.image.documentation='https://github.com/ag-computational-bio/bakrep-web/README.md'
+LABEL org.opencontainers.image.title='Bakrep Web Frontend'
+LABEL org.opencontainers.image.description='Web frontend for bakrep'
 
-RUN mkdir /srv/app && chown node:node /srv/app
-
-USER node
-
-WORKDIR /srv/app
-
-CMD npm run dev -- --host
+COPY nginx.conf /etc/nginx/conf.d/default.conf
+COPY dist/ /usr/share/nginx/html
