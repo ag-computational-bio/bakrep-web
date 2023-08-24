@@ -1,6 +1,14 @@
 name: Build docker image
 
-on: [push]
+on:
+  push:
+    branches:
+      - main
+    tags:
+      - v*.*.*
+  pull_request:
+    branches:
+      - "main"
 
 jobs:
   build:
@@ -13,8 +21,27 @@ jobs:
           node-version: 18
       - run: npm ci
       - run: npm run test:unit:ci
-      - run: npm run build      
+      - run: npm run build
 
+      - name: Docker meta
+        id: meta
+        uses: docker/metadata-action@v4
+        with:
+          # list of Docker images to use as base name for tags
+          images: |
+            harbor.computational.bio.uni-giessen.de/bakrep/ui
+          # generate Docker tags based on the following events/attributes
+          tags: |
+            type=schedule
+            type=ref,event=branch
+            type=ref,event=pr
+            type=semver,pattern={{version}}
+            type=semver,pattern={{major}}.{{minor}}
+            type=semver,pattern={{major}}
+            type=sha
+
+      - name: log
+        run: echo "TAGS ${{ steps.meta.outputs.tags }}"
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v2
       - name: Set up Docker Buildx
@@ -29,5 +56,14 @@ jobs:
         uses: docker/build-push-action@v4
         with:
           context: .
-          push: true
-          tags: harbor.computational.bio.uni-giessen.de/bakrep/ui:latest
+          push: ${{ github.event_name != 'pull_request' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+
+      - name: Deploy
+        if: ${{ github.ref == 'refs/heads/main' && github.event_name != 'pull_request' }}
+        uses: actions-hub/kubectl@master
+        env:
+          KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
+        with:
+          args: set image deployment/bakrep-ui bakrep-ui=harbor.computational.bio.uni-giessen.de/bakrep/ui:${{ github.sha }}
