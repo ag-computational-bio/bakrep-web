@@ -72,4 +72,4 @@ jobs:
           KUBE_CONFIG: ${{ secrets.KUBE_CONFIG }}
           SHA: ${{ steps.short-sha.outputs.sha }}
         with:
-          args: set image deployment/bakrep-ui bakrep-ui=harbor.computational.bio.uni-giessen.de/bakrep/ui:sha-${{ SHA }}
+          args: set image deployment/bakrep-ui bakrep-ui=harbor.computational.bio.uni-giessen.de/bakrep/ui:sha-${{ env.SHA }}
