@@ -45,6 +45,8 @@ function renameContig(contig: string): number {
   return Number(contig.split('contig')[1])
 }
 
+
+// from: https://script.google.com/home/projects/1J_I0Vcmz_mSsKurJnYQPmFo-9c2h5DILVCVGY90KPgygfH4ngszi83is/edit?pli=1
 // Calculates significant figures with suffixes K/M/B/T, e.g. 1234 = 1.23K
 function sigfig(num: number, sigfigs_opt?: number) {
   // Set default sigfigs to 3
@@ -245,13 +247,17 @@ getDatasetById(props.id)
                 </thead> -->
                 <thead>
                   <th>Contig</th>
-                  <th>Position</th>
+                  <th>Start</th>
+                  <th>End</th>
+                  <th>Type</th>
+                  <th>Gene</th>
                   <th>Product</th>
                   <th>X-Refs</th>
                 </thead>
                 <tr v-for="(feature, index) in annotation.data.features">
                   <td>{{ renameContig(feature.contig) }}</td>
-                  <td class="text-nowrap">{{ position(feature.start, feature.stop) }}</td>
+                  <td class="text-nowrap">{{ sigfig(feature.start, 2) }}</td>
+                  <td class="text-nowrap">{{ sigfig(feature.stop, 2) }}</td>
                   <td>{{ feature.product }}</td>
                   <td>
                     <div class="bg-light btn py-2 rounded text-dark" id="show-modal" @click="showRefModal = index">Refs
