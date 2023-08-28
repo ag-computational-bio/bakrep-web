@@ -11,6 +11,7 @@ type SearchResultEntry = {
 defineProps({
   entries: { type: Array as PropType<SearchResultEntry[]>, default: () => [] },
 });
+
 </script>
 
 <template>
@@ -21,8 +22,10 @@ defineProps({
           <th scope="col">Id</th>
           <th scope="col">GC</th>
           <th scope="col">Contigs</th>
-          <th scope="col">Length</th>
-          <th scope="col">Name</th>
+          <th scope="col">Genome Size</th>
+          <th scope="col">Species</th>
+          <th scope="col">ST Type</th>
+          <th scope="col">Quality & Contamination</th>
         </tr>
       </thead>
       <tbody>
@@ -39,8 +42,14 @@ defineProps({
             <td scope="row">{{ entry.id }}</td>
             <td>{{ entry.GC * 100 + "%" }}</td>
             <td>{{ entry.Contigs }}</td>
-            <td>{{ entry.Length }}</td>
+            <td>
+              {{
+                Math.round(entry.Length / 1000).toLocaleString("en") + "KB"
+              }}
+            </td>
             <td>{{ entry.Name }}</td>
+            <td class="text-nowrap">ST - Type</td>
+            <td>Quality</td>
           </tr>
         </template>
       </tbody>
