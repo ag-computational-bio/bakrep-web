@@ -13,6 +13,7 @@ import DatasetSummary from "./DatasetSummary.vue";
 import GtdbtkTaxonomy from "./GtdbtkTaxonomy.vue";
 import type { BaktaResult } from "@/model/BaktaResults";
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
+import type { CheckmResult } from "@/model/CheckmResults";
 import FeatureTable from "./FeatureTable.vue";
 import BaktaAnnotationTable from "./bakta/BaktaAnnotationTable.vue";
 import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
@@ -25,6 +26,7 @@ const dataset: Ref<Dataset | undefined> = ref();
 
 const baktaResult: Ref<BaktaResult | undefined> = ref();
 const gtdbtkResult: Ref<GtdbtkResult | undefined> = ref();
+const checkmResult: Ref<CheckmResult | undefined> = ref();
 
 function loadData() {
   return api.getDataset(id.value).then((x) => {
@@ -32,6 +34,7 @@ function loadData() {
     return Promise.all([
       api.fetchBaktaResult(x).then((r) => (baktaResult.value = r)),
       api.fetchGtdbtkResult(x).then((r) => (gtdbtkResult.value = r)),
+      api.fetchCheckmResult(x).then((r) => (checkmResult.value = r)),
     ]).then(() => {
       active_tab.value = "summary";
       state.value.setState(State.Main);
@@ -51,6 +54,7 @@ const toggle = ref({
 const tabs = [
   "summary",
   "annotation",
+  "assembly",
   "taxonomy",
   "bakta-annotation-table",
   "bakta-genome-viewer",
@@ -74,14 +78,12 @@ const showActionModal = ref(false);
     </div>
 
     <Loading :state="state">
-      <template v-slot:loading> <CenteredLargeSpinner /> </template>
+      <template v-slot:loading>
+        <CenteredLargeSpinner />
+      </template>
       <template v-slot:content>
-        <Pane
-          :action="{ title: 'Download' }"
-          :items="tabs"
-          :activeItem="active_tab"
-          @update:value="(newValue) => (active_tab = newValue)"
-        >
+        <Pane :action="{ title: 'Download' }" :items="tabs" :activeItem="active_tab"
+          @update:value="(newValue) => (active_tab = newValue)">
           <template v-if="active_tab === 'bakta-genome-viewer'">
             <BaktaGenomeViewer :data="baktaResult" />
           </template>
@@ -101,26 +103,11 @@ const showActionModal = ref(false);
                 :class="toggle.annotation ? 'bi-caret-down' : 'bi-caret-right'"></i>Annotation</div> -->
             <div v-if="toggle.annotation">
               <DatasetSummary :annotation="baktaResult" />
-              <h3>Contig Lengths:</h3>
-              <div v-if="baktaResult">
-                <ContigBar
-                  :sequences="baktaResult.sequences"
-                  :length="baktaResult.stats.size"
-                  :n50="baktaResult.stats.n50"
-                />
-              </div>
-
-              <button
-                class="my-4 btn btn-primary"
-                @click="featureTable = !featureTable"
-              >
+              <button class="my-4 btn btn-primary" @click="featureTable = !featureTable">
                 <template v-if="featureTable"> Hide Table </template>
                 <template v-else> Show Table </template>
               </button>
-              <FeatureTable
-                v-if="featureTable"
-                :features="baktaResult?.features"
-              />
+              <FeatureTable v-if="featureTable" :features="baktaResult?.features" />
             </div>
           </template>
           <template v-if="active_tab == 'taxonomy'">
@@ -128,17 +115,52 @@ const showActionModal = ref(false);
                 :class="toggle.taxonomy ? 'bi-caret-down' : 'bi-caret-right'"></i>Taxonomy</div> -->
             <GtdbtkTaxonomy :result="gtdbtkResult" />
           </template>
+          <template v-if="active_tab == 'assembly'">
+            <!-- 
+              Contig Length
+              Size, contig, no seq,
+              completeness
+              contamination
+              gram
+              Translation Table            
+            -->
+            <table v-if="baktaResult && checkmResult" class="table">
+              <tr>
+                <th scope="row">Size</th>
+                <td>{{ baktaResult.stats.size }}</td>
+              </tr>
+              <tr>
+                <th scope="row">No. Sequences</th>
+                <td>{{ baktaResult.stats.no_sequences }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Completeness</th>
+                <td>{{ baktaResult.stats.size }}</td>
+              </tr>
+              <tr>
+                <th scope="row">n50</th>
+                <td>{{ baktaResult.stats.n50 }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Translation Table</th>
+                <td>{{ baktaResult.genome.translation_table }}</td>
+              </tr>
+              <tr>
+                <th scope="row">Gram</th>
+                <td>{{ baktaResult.genome.gram }}</td>
+              </tr>
+            </table>
+            <h3>Contig Lengths:</h3>
+            <div v-if="baktaResult">
+              <ContigBar :sequences="baktaResult.sequences" :length="baktaResult.stats.size"
+                :n50="baktaResult.stats.n50" />
+            </div>
+          </template>
           <template v-slot:action>
-            <div
-              class="btn btn-primary ms-auto"
-              @click="showActionModal = true"
-            >
+            <div class="btn btn-primary ms-auto" @click="showActionModal = true">
               Download
             </div>
-            <Modal
-              v-if="showActionModal == true"
-              @close="showActionModal = false"
-            >
+            <Modal v-if="showActionModal == true" @close="showActionModal = false">
               <template v-slot:header>
                 <h2>Download Dataset</h2>
               </template>

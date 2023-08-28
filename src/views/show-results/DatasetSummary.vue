@@ -17,18 +17,6 @@
       <td>{{ annotation.genome.complete }}</td>
     </tr>
     <tr>
-      <th scope="row">Gram</th>
-      <td>{{ annotation.genome.gram }}</td>
-    </tr>
-    <tr>
-      <th scope="row">Translation Table</th>
-      <td>{{ annotation.genome.translation_table }}</td>
-    </tr>
-    <tr>
-      <th scope="row">No Sequences</th>
-      <td>{{ annotation.stats.no_sequences }}</td>
-    </tr>
-    <tr>
       <th scope="row">Size</th>
       <td>{{ annotation.stats.size }}</td>
     </tr>
@@ -41,10 +29,6 @@
       <td>
         <NRatio :value="annotation.stats.n_ratio"></NRatio>
       </td>
-    </tr>
-    <tr>
-      <th scope="row">n50</th>
-      <td>{{ annotation.stats.n50 }}</td>
     </tr>
     <tr>
       <th scope="row">Coding Ratio</th>

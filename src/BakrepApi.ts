@@ -1,4 +1,5 @@
 import { BaktaResultSchema, type BaktaResult } from "./model/BaktaResults";
+import { CheckmResultSchema, type CheckmResult } from "./model/CheckmResults";
 import { DatasetSchema, type Dataset } from "./model/Dataset";
 import { GtdbtkResultSchema, type GtdbtkResult } from "./model/GtdbtkResult";
 
@@ -12,6 +13,7 @@ interface BakrepApi {
   fetchUrlContentAsJson(url: string): Promise<any>;
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult>;
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult>;
+  fetchCheckmResult(dataseT: Dataset): Promise<CheckmResult>;
 }
 
 class BakrepApiImpl implements BakrepApi {
@@ -49,19 +51,35 @@ class BakrepApiImpl implements BakrepApi {
     return fetch(bakta[0].url).then(this.toJson).then(BaktaResultSchema.parse);
   }
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult> {
-    const bakta = dataset.results.filter(
+    const gtdb = dataset.results.filter(
       (x) => x.attributes.tool === "gtdbtk" && x.attributes.filetype === "json"
     );
-    if (bakta.length == 0) {
+    if (gtdb.length == 0) {
       return Promise.reject(
         `Unsupported: Dataset does not contain gtdbtk result: ${dataset}`
       );
     }
-    if (bakta.length > 1)
+    if (gtdb.length > 1)
       return Promise.reject(
         `Unsupported: Dataset constains multiple gtdbtk results: ${dataset}`
       );
-    return fetch(bakta[0].url).then(this.toJson).then(GtdbtkResultSchema.parse);
+    return fetch(gtdb[0].url).then(this.toJson).then(GtdbtkResultSchema.parse);
+  }
+  fetchCheckmResult(dataset: Dataset): Promise<CheckmResult> {
+    const checkm = dataset.results.filter(
+      (x) => x.attributes.tool === "checkm2" && x.attributes.filetype === "json"
+    );
+    if (checkm.length == 0) {
+      return Promise.reject(
+        `Unsupported: Dataset does not contain checkm result: ${dataset}`
+      );
+    }
+    if (checkm.length > 1) {
+      return Promise.reject(
+        `Unsupported: Dataset constains multiple checkm results: ${dataset}`
+      );
+    }
+    return fetch(checkm[0].url).then(this.toJson).then(CheckmResultSchema.parse);
   }
 }
 
