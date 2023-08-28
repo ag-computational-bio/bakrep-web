@@ -2,15 +2,15 @@
   <table class="table">
     <thead>
       <th>Contig</th>
-      <th>Position</th>
+      <th>Start</th>
+      <th>Stop</th>
       <th>Product</th>
       <th>X-Refs</th>
     </thead>
     <tr v-for="(feature, index) in features" :key="index">
       <td>{{ renameContig(feature.contig) }}</td>
-      <td class="text-nowrap">
-        {{ position(feature.start, feature.stop) }}
-      </td>
+      <td class="text-nowrap">{{ feature.start }}</td>
+      <td class="text-nowrap">{{ feature.stop }}</td>
       <td>{{ feature.product }}</td>
       <td>
         <div
@@ -55,12 +55,5 @@ function renameContig(contig: string): number {
   // SAMD00000344.contig00001
   // 1
   return Number(contig.split("contig")[1]);
-}
-
-function position(start: number, end: number) {
-  const start_string = sigfig(start);
-  const end_string = sigfig(end);
-
-  return `${start_string} - ${end_string}`;
 }
 </script>
