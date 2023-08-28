@@ -13,7 +13,7 @@ interface BakrepApi {
   fetchUrlContentAsJson(url: string): Promise<any>;
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult>;
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult>;
-  fetchCheckmResult(dataseT: Dataset): Promise<CheckmResult>;
+  fetchCheckmResult(dataset: Dataset): Promise<CheckmResult>;
 }
 
 class BakrepApiImpl implements BakrepApi {
