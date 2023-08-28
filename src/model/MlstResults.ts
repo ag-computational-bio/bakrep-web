@@ -1,11 +1,9 @@
 import { z } from "zod";
 
-const AllelSchema = z.set(z.string());
-
 const MlstEntrySchema = z.object({
-  allels: z.object({
-    AllelSchema,
-  }),
+  allels: z.optional(z.nullable(z.object({
+    // z.set(z.string()),
+  }))),
   id: z.string(),
   sequence_type: z.string(),
   scheme: z.string(),
@@ -14,8 +12,7 @@ const MlstEntrySchema = z.object({
 
 const MlstResultSchema = z.array(MlstEntrySchema);
 
-export type Allels = z.infer<typeof AllelSchema>;
 export type MlstEntry = z.infer<typeof MlstEntrySchema>;
 export type MlstResult = z.infer<typeof MlstResultSchema>;
 
-export { MlstResultSchema, AllelSchema, MlstEntrySchema };
+export { MlstResultSchema, MlstEntrySchema };
