@@ -3,7 +3,11 @@
     <div>
       <span class="fw-bold">GTDB Tree:</span>
       <div v-for="(entry, index) in entries" :key="index" :title="entry.level">
-        <a :style="{ 'margin-left': index * 5 + 'px' }" :href="entry.url">
+        <a
+          :style="{ 'margin-left': index * 5 + 'px' }"
+          :href="entry.url"
+          target="_blank"
+        >
           {{ entry.label }}
         </a>
       </div>
