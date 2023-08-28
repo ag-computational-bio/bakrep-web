@@ -1,30 +1,77 @@
 <template>
-  <div v-if="annotation">
-    <display-tuple label="Genus:" :value="annotation.genome.genus" />
-    <display-tuple label="Species:" :value="annotation.genome.species" />
-    <display-tuple label="Strain:" :value="annotation.genome.strain" />
-    <display-tuple label="Completeness:" :value="annotation.genome.complete" />
-    <display-tuple label="Gram:" :value="annotation.genome.gram" />
-    <display-tuple
-      label="Translation Table:"
-      :value="annotation.genome.translation_table"
-    />
-    <display-tuple label="Genome Size:" :value="annotation.stats.size" />
-    <display-tuple label="GC Ratio:" :value="annotation.stats.gc" />
-    <display-tuple label="N Ratio" :value="annotation.stats.n_ratio" />
-    <display-tuple label="N50" :value="annotation.stats.n50" />
-    <display-tuple
-      label="Coding Ratio"
-      :value="annotation.stats.coding_ratio"
-    />
-  </div>
+  <table v-if="annotation" class="table">
+    <tr>
+      <th scope="row">Genus</th>
+      <td>{{ annotation.genome.genus }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Species</th>
+      <td>{{ annotation.genome.species }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Strain</th>
+      <td>{{ annotation.genome.strain }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Complete</th>
+      <td>{{ annotation.genome.complete }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Gram</th>
+      <td>{{ annotation.genome.gram }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Translation Table</th>
+      <td>{{ annotation.genome.translation_table }}</td>
+    </tr>
+    <tr>
+      <th scope="row">No Sequences</th>
+      <td>{{ annotation.stats.no_sequences }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Size</th>
+      <td>{{ annotation.stats.size }}</td>
+    </tr>
+    <tr>
+      <th scope="row">GC Ratio</th>
+      <td>{{ ratioToPercentage(annotation.stats.gc) }}</td>
+    </tr>
+    <tr>
+      <th scope="row">n Ratio</th>
+      <td>
+        <NRatio :value="annotation.stats.n_ratio"></NRatio>
+      </td>
+    </tr>
+    <tr>
+      <th scope="row">n50</th>
+      <td>{{ annotation.stats.n50 }}</td>
+    </tr>
+    <tr>
+      <th scope="row">Coding Ratio</th>
+      <td>
+        {{ ratioToPercentage(annotation.stats.coding_ratio) }}
+      </td>
+    </tr>
+  </table>
   <div v-else>No bakta result provided</div>
 </template>
 <script setup lang="ts">
+import NRatio from "@/components/NRatio.vue";
 import type { BaktaResult } from "@/model/BaktaResults";
+import { ratioToPercentage } from "@/util";
 import type { PropType } from "vue";
-import DisplayTuple from "@/views/show-results/bakta/DisplayTuple.vue";
 defineProps({
   annotation: { type: Object as PropType<BaktaResult>, default: undefined },
 });
 </script>
+
+<style>
+th {
+  font-weight: bold;
+}
+
+td {
+  font-weight: bold;
+  color: gray;
+}
+</style>
