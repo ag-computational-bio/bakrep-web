@@ -84,20 +84,20 @@ class BakrepApiImpl implements BakrepApi {
     return fetch(checkm[0].url).then(this.toJson).then(CheckmResultSchema.parse);
   }
   fetchMlstResult(dataset: Dataset): Promise<MlstResult> {
-    const checkm = dataset.results.filter(
-      (x) => x.attributes.tool === "checkm2" && x.attributes.filetype === "json"
+    const mlst = dataset.results.filter(
+      (x) => x.attributes.tool === "mlst" && x.attributes.filetype === "json"
     );
-    if (checkm.length == 0) {
+    if (mlst.length == 0) {
       return Promise.reject(
-        `Unsupported: Dataset does not contain checkm result: ${dataset}`
+        `Unsupported: Dataset does not contain mlst result: ${dataset}`
       );
     }
-    if (checkm.length > 1) {
+    if (mlst.length > 1) {
       return Promise.reject(
-        `Unsupported: Dataset constains multiple checkm results: ${dataset}`
+        `Unsupported: Dataset constains multiple mlst results: ${dataset}`
       );
     }
-    return fetch(checkm[0].url).then(this.toJson).then(CheckmResultSchema.parse);
+    return fetch(mlst[0].url).then(this.toJson).then(MlstResultSchema.parse);
   }
 }
 
