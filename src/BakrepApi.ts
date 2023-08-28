@@ -2,6 +2,7 @@ import { BaktaResultSchema, type BaktaResult } from "./model/BaktaResults";
 import { CheckmResultSchema, type CheckmResult } from "./model/CheckmResults";
 import { DatasetSchema, type Dataset } from "./model/Dataset";
 import { GtdbtkResultSchema, type GtdbtkResult } from "./model/GtdbtkResult";
+import { MlstResultSchema, type MlstResult } from "./model/MlstResults";
 
 let baseurl: string = "http://localhost:8080";
 function initApi(url: string) {
@@ -14,6 +15,7 @@ interface BakrepApi {
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult>;
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult>;
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult>;
+  fetchMlstResult(dataset: Dataset): Promise<MlstResult>;
 }
 
 class BakrepApiImpl implements BakrepApi {
@@ -66,6 +68,22 @@ class BakrepApiImpl implements BakrepApi {
     return fetch(gtdb[0].url).then(this.toJson).then(GtdbtkResultSchema.parse);
   }
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult> {
+    const checkm = dataset.results.filter(
+      (x) => x.attributes.tool === "checkm2" && x.attributes.filetype === "json"
+    );
+    if (checkm.length == 0) {
+      return Promise.reject(
+        `Unsupported: Dataset does not contain checkm result: ${dataset}`
+      );
+    }
+    if (checkm.length > 1) {
+      return Promise.reject(
+        `Unsupported: Dataset constains multiple checkm results: ${dataset}`
+      );
+    }
+    return fetch(checkm[0].url).then(this.toJson).then(CheckmResultSchema.parse);
+  }
+  fetchMlstResult(dataset: Dataset): Promise<MlstResult> {
     const checkm = dataset.results.filter(
       (x) => x.attributes.tool === "checkm2" && x.attributes.filetype === "json"
     );
