@@ -19,6 +19,7 @@ import BaktaAnnotationTable from "./bakta/BaktaAnnotationTable.vue";
 import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
 import BaktaStats from "./bakta/BaktaStats.vue";
 import CenteredLargeSpinner from "@/components/CenteredLargeSpinner.vue";
+import type { MlstResult } from "@/model/MlstResults";
 const route = useRoute();
 const id = computed(() => route.params.id as string);
 const api = useApi();
@@ -27,6 +28,7 @@ const dataset: Ref<Dataset | undefined> = ref();
 const baktaResult: Ref<BaktaResult | undefined> = ref();
 const gtdbtkResult: Ref<GtdbtkResult | undefined> = ref();
 const checkmResult: Ref<CheckmResult | undefined> = ref();
+const mlstResult: Ref<MlstResult | undefined> = ref();
 
 function loadData() {
   return api.getDataset(id.value).then((x) => {
@@ -35,6 +37,7 @@ function loadData() {
       api.fetchBaktaResult(x).then((r) => (baktaResult.value = r)),
       api.fetchGtdbtkResult(x).then((r) => (gtdbtkResult.value = r)),
       api.fetchCheckmResult(x).then((r) => (checkmResult.value = r)),
+      api.fetchMlstResult(x).then((r) => (mlstResult.value = r)),
     ]).then(() => {
       active_tab.value = "summary";
       state.value.setState(State.Main);
@@ -113,7 +116,7 @@ const showActionModal = ref(false);
           <template v-if="active_tab == 'taxonomy'">
             <!-- <div class="h5" @click="toggle.taxonomy = !toggle.taxonomy"><i class="bi"
                 :class="toggle.taxonomy ? 'bi-caret-down' : 'bi-caret-right'"></i>Taxonomy</div> -->
-            <GtdbtkTaxonomy :result="gtdbtkResult" />
+            <GtdbtkTaxonomy :gtdb="gtdbtkResult" :mlst="mlstResult" />
           </template>
           <template v-if="active_tab == 'assembly'">
             <!-- 

@@ -1,5 +1,5 @@
 <template>
-  <div v-if="result">
+  <div v-if="gtdb && mlst">
     <div>
       <span class="fw-bold">GTDB Tree:</span>
       <div v-for="(entry, index) in entries" :key="index" :title="entry.level">
@@ -16,18 +16,30 @@
       <table class="table">
         <tr>
           <th>Fastani</th>
-          <td>{{ result.fastani_reference }}</td>
+          <td>{{ gtdb.fastani_reference }}</td>
         </tr>
         <tr>
           <th>Classification Method:</th>
-          <td>{{ result.classification_method }}</td>
+          <td>{{ gtdb.classification_method }}</td>
+        </tr>
+        <tr>
+          <th scope="row">Sequence Type</th>
+          <td>{{ mlst[0].sequence_type }}</td>
+        </tr>
+        <tr>
+          <th scope="row">ST type</th>
+          <td>{{ mlst[0].scheme }}</td>
+        </tr>
+        <tr>
+          <th scope="row">Alleles</th>
+          <td>{{ mlst[0].allels }}</td>
         </tr>
       </table>
     </div>
 
     <div class="warning">
-      <template v-if="result.warnings != 'NaN'">
-        {{ result.warnings }}
+      <template v-if="gtdb.warnings != 'NaN'">
+        {{ gtdb.warnings }}
       </template>
     </div>
   </div>
@@ -35,10 +47,12 @@
 </template>
 <script setup lang="ts">
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
+import type { MlstResult } from "@/model/MlstResults";
 import type { PropType } from "vue";
 import { computed } from "vue";
 const props = defineProps({
-  result: { type: Object as PropType<GtdbtkResult>, default: undefined },
+  gtdb: { type: Object as PropType<GtdbtkResult>, default: undefined },
+  mlst: { type: Object as PropType<MlstResult>, default: undefined },
 });
 
 const mapping: Record<string, string> = {
@@ -67,8 +81,8 @@ function toEntry(level: string, value: string): TreeEntry {
 }
 
 const entries = computed(() => {
-  if (props.result) {
-    const c = props.result.classification;
+  if (props.gtdb) {
+    const c = props.gtdb.classification;
     return [
       toEntry("domain", c.domain),
       toEntry("phylum", c.phylum),
