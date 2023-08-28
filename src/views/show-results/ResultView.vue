@@ -1,7 +1,6 @@
 <script setup lang="ts">
 import { computed, onMounted, ref, type Ref } from "vue";
 import usePageState, { State } from "@/PageState";
-import ContigBar from "@/components/ContigBar.vue";
 import Loading from "@/components/Loading.vue";
 import Modal from "@/components/Modal.vue";
 import Pane from "@/components/Pane.vue";
@@ -11,6 +10,7 @@ import type { Dataset } from "@/model/Dataset";
 import { useRoute } from "vue-router";
 import DatasetSummary from "./DatasetSummary.vue";
 import GtdbtkTaxonomy from "./GtdbtkTaxonomy.vue";
+import DisplayAssembly from "./DisplayAssembly.vue";
 import type { BaktaResult } from "@/model/BaktaResults";
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
 import type { CheckmResult } from "@/model/CheckmResults";
@@ -119,45 +119,7 @@ const showActionModal = ref(false);
             <GtdbtkTaxonomy :gtdb="gtdbtkResult" :mlst="mlstResult" />
           </template>
           <template v-if="active_tab == 'assembly'">
-            <!-- 
-              Contig Length
-              Size, contig, no seq,
-              completeness
-              contamination
-              gram
-              Translation Table            
-            -->
-            <table v-if="baktaResult && checkmResult" class="table">
-              <tr>
-                <th scope="row">Size</th>
-                <td>{{ baktaResult.stats.size }}</td>
-              </tr>
-              <tr>
-                <th scope="row">No. Sequences</th>
-                <td>{{ baktaResult.stats.no_sequences }}</td>
-              </tr>
-              <tr>
-                <th scope="row">Completeness</th>
-                <td>{{ baktaResult.stats.size }}</td>
-              </tr>
-              <tr>
-                <th scope="row">n50</th>
-                <td>{{ baktaResult.stats.n50 }}</td>
-              </tr>
-              <tr>
-                <th scope="row">Translation Table</th>
-                <td>{{ baktaResult.genome.translation_table }}</td>
-              </tr>
-              <tr>
-                <th scope="row">Gram</th>
-                <td>{{ baktaResult.genome.gram }}</td>
-              </tr>
-            </table>
-            <h3>Contig Lengths:</h3>
-            <div v-if="baktaResult">
-              <ContigBar :sequences="baktaResult.sequences" :length="baktaResult.stats.size"
-                :n50="baktaResult.stats.n50" />
-            </div>
+            <DisplayAssembly :checkm="checkmResult" :bakta="baktaResult" />
           </template>
           <template v-slot:action>
             <div class="btn btn-primary ms-auto" @click="showActionModal = true">
