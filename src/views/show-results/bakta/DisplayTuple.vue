@@ -9,7 +9,7 @@
 import { computed } from "vue";
 const props = defineProps({
   label: { type: String, default: "" },
-  value: { type: [String, Number], default: "" },
+  value: { type: [String, Number, Boolean], default: "" },
   break: { type: Number, default: 4 },
 });
 
