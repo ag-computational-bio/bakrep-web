@@ -7,7 +7,7 @@ const MlstEntrySchema = z.object({
     AllelSchema,
   }),
   id: z.string(),
-  sequence_tye: z.string(),
+  sequence_type: z.string(),
   scheme: z.string(),
   filename: z.string(),
 });
