@@ -1,6 +1,8 @@
 import { BaktaResultSchema, type BaktaResult } from "./model/BaktaResults";
+import { CheckmResultSchema, type CheckmResult } from "./model/CheckmResults";
 import { DatasetSchema, type Dataset } from "./model/Dataset";
 import { GtdbtkResultSchema, type GtdbtkResult } from "./model/GtdbtkResult";
+import { MlstResultSchema, type MlstResult } from "./model/MlstResults";
 
 let baseurl: string = "http://localhost:8080";
 function initApi(url: string) {
@@ -12,6 +14,8 @@ interface BakrepApi {
   fetchUrlContentAsJson(url: string): Promise<any>;
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult>;
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult>;
+  fetchCheckmResult(dataset: Dataset): Promise<CheckmResult>;
+  fetchMlstResult(dataset: Dataset): Promise<MlstResult>;
 }
 
 class BakrepApiImpl implements BakrepApi {
@@ -49,19 +53,51 @@ class BakrepApiImpl implements BakrepApi {
     return fetch(bakta[0].url).then(this.toJson).then(BaktaResultSchema.parse);
   }
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult> {
-    const bakta = dataset.results.filter(
+    const gtdb = dataset.results.filter(
       (x) => x.attributes.tool === "gtdbtk" && x.attributes.filetype === "json"
     );
-    if (bakta.length == 0) {
+    if (gtdb.length == 0) {
       return Promise.reject(
         `Unsupported: Dataset does not contain gtdbtk result: ${dataset}`
       );
     }
-    if (bakta.length > 1)
+    if (gtdb.length > 1)
       return Promise.reject(
         `Unsupported: Dataset constains multiple gtdbtk results: ${dataset}`
       );
-    return fetch(bakta[0].url).then(this.toJson).then(GtdbtkResultSchema.parse);
+    return fetch(gtdb[0].url).then(this.toJson).then(GtdbtkResultSchema.parse);
+  }
+  fetchCheckmResult(dataset: Dataset): Promise<CheckmResult> {
+    const checkm = dataset.results.filter(
+      (x) => x.attributes.tool === "checkm2" && x.attributes.filetype === "json"
+    );
+    if (checkm.length == 0) {
+      return Promise.reject(
+        `Unsupported: Dataset does not contain checkm result: ${dataset}`
+      );
+    }
+    if (checkm.length > 1) {
+      return Promise.reject(
+        `Unsupported: Dataset constains multiple checkm results: ${dataset}`
+      );
+    }
+    return fetch(checkm[0].url).then(this.toJson).then(CheckmResultSchema.parse);
+  }
+  fetchMlstResult(dataset: Dataset): Promise<MlstResult> {
+    const mlst = dataset.results.filter(
+      (x) => x.attributes.tool === "mlst" && x.attributes.filetype === "json"
+    );
+    if (mlst.length == 0) {
+      return Promise.reject(
+        `Unsupported: Dataset does not contain mlst result: ${dataset}`
+      );
+    }
+    if (mlst.length > 1) {
+      return Promise.reject(
+        `Unsupported: Dataset constains multiple mlst results: ${dataset}`
+      );
+    }
+    return fetch(mlst[0].url).then(this.toJson).then(MlstResultSchema.parse);
   }
 }
 
