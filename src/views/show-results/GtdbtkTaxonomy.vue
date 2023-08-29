@@ -15,24 +15,24 @@
     <div>
       <table class="table">
         <tr>
-          <th>Fastani</th>
-          <td>{{ gtdb.fastani_reference }}</td>
+          <th scope="row" class="label">Fastani</th>
+          <td class="value">{{ gtdb.fastani_reference }}</td>
         </tr>
         <tr>
-          <th>Classification Method:</th>
-          <td>{{ gtdb.classification_method }}</td>
+          <th scope="row" class="label">Classification Method:</th>
+          <td class="value">{{ gtdb.classification_method }}</td>
         </tr>
         <tr>
-          <th scope="row">Sequence Type</th>
-          <td>{{ mlst[0].sequence_type }}</td>
+          <th scope="row" class="label">Sequence Type</th>
+          <td class="value">{{ mlst[0].sequence_type }}</td>
         </tr>
         <tr>
-          <th scope="row">ST type</th>
-          <td>{{ mlst[0].scheme }}</td>
+          <th scope="row" class="label">ST type</th>
+          <td class="value">{{ mlst[0].scheme }}</td>
         </tr>
         <tr>
-          <th scope="row">Alleles</th>
-          <td>{{ mlst[0].allels }}</td>
+          <th scope="row" class="label">Alleles</th>
+          <td class="value">{{ mlst[0].allels }}</td>
         </tr>
       </table>
     </div>

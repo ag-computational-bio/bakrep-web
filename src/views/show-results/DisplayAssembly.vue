@@ -1,28 +1,28 @@
 <template>
   <table v-if="bakta && checkm" class="table">
     <tr>
-      <th scope="row">Size</th>
-      <td>{{ bakta.stats.size }}</td>
+      <th scope="row" class="label">Size</th>
+      <td class="value">{{ bakta.stats.size }}</td>
     </tr>
     <tr>
-      <th scope="row">No. Sequences</th>
-      <td>{{ bakta.stats.no_sequences }}</td>
+      <th scope="row" class="label">No. Sequences</th>
+      <td class="value">{{ bakta.stats.no_sequences }}</td>
     </tr>
     <tr>
-      <th scope="row">Completeness</th>
-      <td>{{ checkm.quality.completeness }}</td>
+      <th scope="row" class="label">Completeness</th>
+      <td class="value">{{ checkm.quality.completeness }}</td>
     </tr>
     <tr>
-      <th scope="row">n50</th>
-      <td>{{ bakta.stats.n50 }}</td>
+      <th scope="row" class="label">n50</th>
+      <td class="value">{{ bakta.stats.n50 }}</td>
     </tr>
     <tr>
-      <th scope="row">Translation Table</th>
-      <td>{{ bakta.genome.translation_table }}</td>
+      <th scope="row" class="label">Translation Table</th>
+      <td class="value">{{ bakta.genome.translation_table }}</td>
     </tr>
     <tr>
-      <th scope="row">Gram</th>
-      <td>{{ bakta.genome.gram }}</td>
+      <th scope="row" class="label">Gram</th>
+      <td class="value">{{ bakta.genome.gram }}</td>
     </tr>
   </table>
   <h3>Contig Lengths:</h3>
@@ -42,3 +42,14 @@ defineProps({
   checkm: { type: Object as PropType<CheckmResult>, default: undefined },
 });
 </script>
+
+<style>
+th {
+  font-weight: bold;
+}
+
+td {
+  font-weight: bold;
+  color: gray;
+}
+</style>
