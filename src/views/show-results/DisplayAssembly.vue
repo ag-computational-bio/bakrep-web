@@ -1,37 +1,46 @@
 <template>
-  <table v-if="bakta && checkm" class="table">
-    <tr>
-      <th scope="row" class="label">Size</th>
-      <td class="value">{{ bakta.stats.size }}</td>
-    </tr>
-    <tr>
-      <th scope="row" class="label">No. Sequences</th>
-      <td class="value">{{ bakta.stats.no_sequences }}</td>
-    </tr>
-    <tr>
-      <th scope="row" class="label">Completeness</th>
-      <td class="value">{{ checkm.quality.completeness }}</td>
-    </tr>
-    <tr>
-      <th scope="row" class="label">n50</th>
-      <td class="value">{{ bakta.stats.n50 }}</td>
-    </tr>
-    <tr>
-      <th scope="row" class="label">Translation Table</th>
-      <td class="value">{{ bakta.genome.translation_table }}</td>
-    </tr>
-    <tr>
-      <th scope="row" class="label">Gram</th>
-      <td class="value">{{ bakta.genome.gram }}</td>
-    </tr>
+  <table class="table statstable">
+    <template v-if="bakta">
+      <tr>
+        <th scope="row">Size</th>
+        <td>{{ bakta.stats.size }}</td>
+      </tr>
+      <tr>
+        <th scope="row">No. Sequences</th>
+        <td>{{ bakta.stats.no_sequences }}</td>
+      </tr>
+    </template>
+    <template v-else>
+      <tr>
+        <th scope="row">There is no bakta file available</th>
+      </tr>
+    </template>
+    <template v-if="checkm">
+      <tr>
+        <th scope="row">Completeness</th>
+        <td>{{ checkm.quality.completeness }}</td>
+      </tr>
+    </template>
+    <template v-else>
+      <tr>
+        <th scope="row">There is no checkm file available</th>
+      </tr>
+    </template>
+    <template v-if="bakta">
+      <tr>
+        <th scope="row">n50</th>
+        <td>{{ bakta.stats.n50 }}</td>
+      </tr>
+      <tr>
+        <th scope="row">Translation Table</th>
+        <td>{{ bakta.genome.translation_table }}</td>
+      </tr>
+      <tr>
+        <th scope="row">Gram</th>
+        <td>{{ bakta.genome.gram }}</td>
+      </tr>
+    </template>
   </table>
-  <div v-else class="rounded bg-info">
-    We are missing the files to display the content here.
-    <ul>
-      <li v-if="!bakta">bakta file is missing.</li>
-      <li v-if="!checkm">Checkm file is missing.</li>
-    </ul>
-  </div>
   <div v-if="bakta">
     <h3>Contig Lengths:</h3>
     <ContigBar :sequences="bakta.sequences" :length="bakta.stats.size" :n50="bakta.stats.n50" />

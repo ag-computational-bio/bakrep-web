@@ -1,38 +1,38 @@
 <template>
-  <table v-if="annotation" class="table">
+  <table v-if="annotation" class="table statstable">
     <tr>
-      <th scope="row" class="label">Genus</th>
-      <td class="value">{{ annotation.genome.genus }}</td>
+      <th scope="row">Genus</th>
+      <td>{{ annotation.genome.genus }}</td>
     </tr>
     <tr>
-      <th scope="row" class="label">Species</th>
-      <td class="value">{{ annotation.genome.species }}</td>
+      <th scope="row">Species</th>
+      <td>{{ annotation.genome.species }}</td>
     </tr>
     <tr>
-      <th scope="row" class="label">Strain</th>
-      <td class="value">{{ annotation.genome.strain }}</td>
+      <th scope="row">Strain</th>
+      <td>{{ annotation.genome.strain }}</td>
     </tr>
     <tr>
-      <th scope="row" class="label">Complete</th>
-      <td class="value">{{ annotation.genome.complete }}</td>
+      <th scope="row">Complete</th>
+      <td>{{ annotation.genome.complete }}</td>
     </tr>
     <tr>
-      <th scope="row" class="label">Size</th>
-      <td class="value">{{ annotation.stats.size }}</td>
+      <th scope="row">Size</th>
+      <td>{{ annotation.stats.size }}</td>
     </tr>
     <tr>
-      <th scope="row" class="label">GC Ratio</th>
-      <td class="value">{{ ratioToPercentage(annotation.stats.gc) }}</td>
+      <th scope="row">GC Ratio</th>
+      <td>{{ ratioToPercentage(annotation.stats.gc) }}</td>
     </tr>
     <tr>
-      <th scope="row" class="label">n Ratio</th>
-      <td class="value">
+      <th scope="row">n Ratio</th>
+      <td>
         <NRatio :value="annotation.stats.n_ratio"></NRatio>
       </td>
     </tr>
     <tr>
-      <th scope="row" class="label">Coding Ratio</th>
-      <td class="value">
+      <th scope="row">Coding Ratio</th>
+      <td>
         {{ ratioToPercentage(annotation.stats.coding_ratio) }}
       </td>
     </tr>
