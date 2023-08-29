@@ -6,7 +6,15 @@
 import type { BaktaResult, Feature, Sequence } from "@/model/BaktaResults";
 import type { IGVBrowser } from "igv";
 import igv from "igv";
-import { computed, onMounted, onBeforeUnmount, ref, watch, type PropType, type Ref } from "vue";
+import {
+  computed,
+  onMounted,
+  onBeforeUnmount,
+  ref,
+  watch,
+  type PropType,
+  type Ref,
+} from "vue";
 import bakta from "./bakta-helper";
 import cog from "./cog-helper";
 
@@ -40,7 +48,7 @@ type IgvFeature = {
 };
 function createFeatures(
   baktaEntry: Feature,
-  sequences: Sequence[]
+  sequences: Sequence[],
 ): IgvFeature | IgvFeature[] {
   const feature: IgvFeature = {
     chr: baktaEntry.contig,
@@ -116,7 +124,7 @@ function setupIgv() {
 }
 function destroyIgv() {
   if (igvObj.value) {
-    igv.removeBrowser(igvObj.value)
+    igv.removeBrowser(igvObj.value);
   }
 }
 
@@ -156,5 +164,3 @@ watch(() => props.data, refresh);
 onMounted(setupIgv);
 onBeforeUnmount(destroyIgv);
 </script>
-
-<style></style>

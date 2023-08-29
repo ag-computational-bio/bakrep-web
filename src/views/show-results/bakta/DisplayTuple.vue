@@ -17,7 +17,7 @@ const labelClass = computed(() => "col-md-" + props.break);
 const valueClass = computed(() => "col-md-" + (12 - props.break));
 </script>
 
-<style>
+<style scoped>
 .label {
   font-weight: bold;
 }

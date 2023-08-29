@@ -48,14 +48,3 @@ defineProps({
   annotation: { type: Object as PropType<BaktaResult>, default: undefined },
 });
 </script>
-
-<style>
-th {
-  font-weight: bold;
-}
-
-td {
-  font-weight: bold;
-  color: gray;
-}
-</style>

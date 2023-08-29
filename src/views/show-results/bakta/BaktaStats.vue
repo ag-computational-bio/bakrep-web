@@ -90,4 +90,3 @@ const size = computed(() => bakta.formattedSize(props.data));
 const featureCount = computed(() => bakta.featureCount(props.data));
 const sequencesCount = computed(() => bakta.sequencesCountString(props.data));
 </script>
-@/views/show-results/bakta/genome-viewer/bakta-helper
