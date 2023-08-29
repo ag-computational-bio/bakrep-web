@@ -25,8 +25,15 @@
       <td class="value">{{ bakta.genome.gram }}</td>
     </tr>
   </table>
-  <h3>Contig Lengths:</h3>
+  <div v-else class="rounded bg-info">
+    We are missing the files to display the content here.
+    <ul>
+      <li v-if="!bakta">bakta file is missing.</li>
+      <li v-if="!checkm">Checkm file is missing.</li>
+    </ul>
+  </div>
   <div v-if="bakta">
+    <h3>Contig Lengths:</h3>
     <ContigBar :sequences="bakta.sequences" :length="bakta.stats.size" :n50="bakta.stats.n50" />
   </div>
 </template>
@@ -38,8 +45,8 @@ import type { PropType } from 'vue';
 import ContigBar from '@/components/ContigBar.vue';
 
 defineProps({
-  bakta: { type: Object as PropType<BaktaResult>, default: undefined },
-  checkm: { type: Object as PropType<CheckmResult>, default: undefined },
+  bakta: { type: Object as PropType<BaktaResult> },
+  checkm: { type: Object as PropType<CheckmResult> },
 });
 </script>
 

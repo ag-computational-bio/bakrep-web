@@ -1,5 +1,5 @@
 <template>
-  <div v-if="gtdb && mlst">
+  <div v-if="gtdb || mlst">
     <div>
       <span class="fw-bold">GTDB Tree:</span>
       <div v-for="(entry, index) in entries" :key="index" :title="entry.level">
@@ -10,36 +10,47 @@
     </div>
     <div>
       <table class="table">
-        <tr>
-          <th scope="row" class="label">Fastani</th>
-          <td class="value">{{ gtdb.fastani_reference }}</td>
-        </tr>
-        <tr>
-          <th scope="row" class="label">Classification Method:</th>
-          <td class="value">{{ gtdb.classification_method }}</td>
-        </tr>
-        <tr>
-          <th scope="row" class="label">Sequence Type</th>
-          <td class="value">{{ mlst[0].sequence_type }}</td>
-        </tr>
-        <tr>
-          <th scope="row" class="label">ST type</th>
-          <td class="value">{{ mlst[0].scheme }}</td>
-        </tr>
-        <tr>
-          <th scope="row" class="label">Alleles</th>
-          <td class="value">{{ mlst[0].allels }}</td>
-        </tr>
+        <div v-if="gtdb">
+          <tr>
+            <th scope="row" class="label">Fastani</th>
+            <td class="value">{{ gtdb.fastani_reference }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="label">Classification Method:</th>
+            <td class="value">{{ gtdb.classification_method }}</td>
+          </tr>
+        </div>
+        <div v-if="mlst">
+          <tr>
+            <th scope="row" class="label">Sequence Type</th>
+            <td class="value">{{ mlst[0].sequence_type }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="label">ST type</th>
+            <td class="value">{{ mlst[0].scheme }}</td>
+          </tr>
+          <tr>
+            <th scope="row" class="label">Alleles</th>
+            <td class="value">{{ mlst[0].allels }}</td>
+          </tr>
+        </div>
       </table>
     </div>
 
     <div class="warning">
-      <template v-if="gtdb.warnings != 'NaN'">
+      <template v-if="gtdb && gtdb.warnings != 'NaN'">
         {{ gtdb.warnings }}
       </template>
     </div>
   </div>
-  <div v-else>No gtdbtk result available.</div>
+  <div v-else>No gtdbtk or mlst result available.</div>
+  <div v-if="!mlst || !gtdb" class="rounded bg-info">
+    There are missing data to represent all fields:
+    <ul>
+      <li v-if="!mlst">mlst file is missing.</li>
+      <li v-if="!gtdb">gtdb file is missing.</li>
+    </ul>
+  </div>
 </template>
 <script setup lang="ts">
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
