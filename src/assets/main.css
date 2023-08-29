@@ -1,0 +1,8 @@
+.statstable>th {
+    font-weight: bold;
+}
+
+.statstable>td {
+    font-weight: bold;
+    color: gray;
+}

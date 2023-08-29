@@ -1,5 +1,5 @@
 <template>
-  <div v-if="gtdb || mlst">
+  <div>
     <div>
       <span class="fw-bold">GTDB Tree:</span>
       <div v-for="(entry, index) in entries" :key="index" :title="entry.level">
@@ -9,31 +9,41 @@
       </div>
     </div>
     <div>
-      <table class="table">
-        <div v-if="gtdb">
+      <table class="table statstable">
+        <template v-if="gtdb">
           <tr>
-            <th scope="row" class="label">Fastani</th>
-            <td class="value">{{ gtdb.fastani_reference }}</td>
+            <th scope="row">Fastani</th>
+            <td>{{ gtdb.fastani_reference }}</td>
           </tr>
           <tr>
-            <th scope="row" class="label">Classification Method:</th>
-            <td class="value">{{ gtdb.classification_method }}</td>
+            <th scope="row">Classification Method:</th>
+            <td>{{ gtdb.classification_method }}</td>
           </tr>
-        </div>
-        <div v-if="mlst">
+        </template>
+        <template v-else>
           <tr>
-            <th scope="row" class="label">Sequence Type</th>
-            <td class="value">{{ mlst[0].sequence_type }}</td>
+            <th scope="row">There is no GTDB file available.</th>
+          </tr>
+        </template>
+        <template v-if="mlst">
+          <tr>
+            <th scope="row">Sequence Type</th>
+            <td>{{ mlst[0].sequence_type }}</td>
           </tr>
           <tr>
-            <th scope="row" class="label">ST type</th>
-            <td class="value">{{ mlst[0].scheme }}</td>
+            <th scope="row">ST type</th>
+            <td>{{ mlst[0].scheme }}</td>
           </tr>
           <tr>
-            <th scope="row" class="label">Alleles</th>
-            <td class="value">{{ mlst[0].allels }}</td>
+            <th scope="row">Alleles</th>
+            <td>{{ mlst[0].allels }}</td>
           </tr>
-        </div>
+        </template>
+        <template v-else>
+          <tr>
+            <th scope="row">There is no MLST file available.</th>
+          </tr>
+        </template>
       </table>
     </div>
 
@@ -42,14 +52,6 @@
         {{ gtdb.warnings }}
       </template>
     </div>
-  </div>
-  <div v-else>No gtdbtk or mlst result available.</div>
-  <div v-if="!mlst || !gtdb" class="rounded bg-info">
-    There are missing data to represent all fields:
-    <ul>
-      <li v-if="!mlst">mlst file is missing.</li>
-      <li v-if="!gtdb">gtdb file is missing.</li>
-    </ul>
   </div>
 </template>
 <script setup lang="ts">
