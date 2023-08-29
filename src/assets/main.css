@@ -1,8 +1,10 @@
-.statstable > th {
+.statstable > tr > th,
+.statstable > tbody > tr > th {
   font-weight: bold;
 }
 
-.statstable > td {
+.statstable > tr > td,
+.statstable > tbody > tr > td {
   font-weight: bold;
   color: gray;
 }
