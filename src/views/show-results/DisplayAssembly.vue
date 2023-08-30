@@ -2,21 +2,21 @@
   <table class="table statstable">
     <template v-if="bakta">
       <tr>
-        <th scope="row">Genome size</th>
-        <td>{{ bakta.stats.size }}</td>
+        <th scope="row">Genome size:</th>
+        <td>{{ bakta.stats.size.toLocaleString("gb") + "bp" }}</td>
       </tr>
       <tr>
-        <th scope="row">GC</th>
+        <th scope="row">GC:</th>
         <td>{{ ratioToPercentage(bakta.stats.gc) }}</td>
       </tr>
       <tr>
-        <th scope="row">No. Sequences</th>
+        <th scope="row">No. Sequences:</th>
         <td>{{ bakta.stats.no_sequences }}</td>
       </tr>
     </template>
     <template v-if="bakta">
       <tr>
-        <th scope="row">N50</th>
+        <th scope="row">N50:</th>
         <td>{{ bakta.stats.n50 }}</td>
       </tr>
     </template>
@@ -27,14 +27,14 @@
     </template>
     <template v-if="checkm">
       <tr>
-        <th scope="row">Completeness</th>
-        <td>{{ checkm.quality.completeness }}</td>
+        <th scope="row">Completeness:</th>
+        <td>{{ checkm.quality.completeness + "%" }}</td>
       </tr>
     </template>
     <template v-if="checkm">
       <tr>
-        <th scope="row">Contamination</th>
-        <td>{{ checkm.quality.contamination }}</td>
+        <th scope="row">Contamination:</th>
+        <td>{{ checkm.quality.contamination + "%"}}</td>
       </tr>
     </template>
     <template v-else>
