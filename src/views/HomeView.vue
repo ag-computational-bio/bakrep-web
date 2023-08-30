@@ -21,13 +21,12 @@
         </div>
       </div>
       <div class="col-8 px-4">
-        <h2>Project Description - Bakrep</h2>
-
+        <h2>BakRep</h2>
                 The large amount of bacterial genomic data in public genome databases is an important resource for research in various fields. However, most of this data has been processed differently, making accurate comparisons challenging. <em>Blackwell et al</em>., used a uniform approach to assemble and characterise 661,405 bacterial genomes retrieved from the European Nucleotide Archive (ENA) in November of 2018. We build up on this resource and further analyse the assembled genomes in a standardised manner. We conducted a robust taxonomic classification using the Genome Taxonomy Database (GTDB) and furthermore subtyped all eligible genomes via multilocus-sequence typing. In addition we annotated all genomes assigning functional categories, e.g. COG and E.C., and database cross references to public databases. The overarching goal is to make this standardised resource available to non-bioinformaticians via an interactive website. This website will provide researchers with a flexible search engine to query the repository.            </div>
         </div>
         <div class="row py-4">            
-            <div class="col btn btn-primary me-5 py-2" @click="$router.push('browse')">Browse Genomes</div>
-            <div class="col btn btn-light ms-5 py-2" @click="$router.push('search')">Go To Search</div>
+            <div class="col btn btn-primary me-5 py-2" @click="$router.push('browse')">Browse</div>
+            <div class="col btn btn-light ms-5 py-2" @click="$router.push('search')">Search</div>
         </div>
     </main>
 </template>
