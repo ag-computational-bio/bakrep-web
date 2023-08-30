@@ -1,7 +1,7 @@
 <template>
   <div>
     <div>
-      <span class="fw-bold">GTDB Tree:</span>
+      <span class="fw-bold">Phylogeny:</span>
       <div v-for="(entry, index) in entries" :key="index" :title="entry.level">
         <a
           :style="{ 'margin-left': index * 5 + 'px' }"
@@ -16,36 +16,36 @@
       <table class="table statstable">
         <template v-if="gtdb">
           <tr>
-            <th scope="row">Fastani</th>
+            <th scope="row">Reference genome:</th>
             <td>{{ gtdb.fastani_reference }}</td>
           </tr>
           <tr>
-            <th scope="row">Classification Method:</th>
+            <th scope="row">Classification method:</th>
             <td>{{ gtdb.classification_method }}</td>
           </tr>
         </template>
         <template v-else>
           <tr>
-            <th scope="row">There is no GTDB file available.</th>
+            <th scope="row">NA</th>
           </tr>
         </template>
         <template v-if="mlst">
           <tr>
-            <th scope="row">Sequence Type</th>
+            <th scope="row">MLST sequence type:</th>
             <td>{{ mlst[0].sequence_type }}</td>
           </tr>
           <tr>
-            <th scope="row">ST type</th>
+            <th scope="row">Schema:</th>
             <td>{{ mlst[0].scheme }}</td>
           </tr>
           <tr>
-            <th scope="row">Alleles</th>
+            <th scope="row">Alleles:</th>
             <td>{{ mlst[0].allels }}</td>
           </tr>
         </template>
         <template v-else>
           <tr>
-            <th scope="row">There is no MLST file available.</th>
+            <th scope="row">NA</th>
           </tr>
         </template>
       </table>
