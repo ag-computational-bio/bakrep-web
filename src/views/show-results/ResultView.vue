@@ -55,18 +55,17 @@ const toggle = ref({
 });
 
 const tabs = [
-  "summary",
-  "annotation",
-  "assembly",
-  "taxonomy",
-  "bakta-annotation-table",
-  "bakta-genome-viewer",
-  "bakta-stats",
+  { id: "summary", title: "Summary" },
+  { id: "assembly", title: "Assembly" },
+  { id: "taxonomy", title: "Taxonomy" },
+  { id: "annotation-stats", title: "Annotation (Stats)" },
+  { id: "annotation-table", title: "Features (annotation-table)" },
+  { id: "genome-viewer", title: "Genome Viewer" },
 ];
 
 type Tab = (typeof tabs)[number];
 
-const active_tab: Ref<Tab> = ref("summary");
+const active_tab: Ref<String> = ref("summary");
 
 const state = usePageState();
 state.value.setState(State.Loading);
@@ -86,14 +85,14 @@ const showActionModal = ref(false);
       </template>
       <template v-slot:content>
         <Pane :action="{ title: 'Download' }" :items="tabs" :activeItem="active_tab"
-          @update:value="(newValue) => (active_tab = newValue)">
-          <template v-if="active_tab === 'bakta-genome-viewer'">
+          @update:value="(newValue) => (active_tab = newValue)" >
+          <template v-if="active_tab === 'genome-viewer'">
             <BaktaGenomeViewer :data="baktaResult" />
           </template>
-          <template v-if="active_tab === 'bakta-stats'">
+          <template v-if="active_tab === 'annotation-stats'">
             <BaktaStats :data="baktaResult" />
           </template>
-          <template v-if="active_tab === 'bakta-annotation-table'">
+          <template v-if="active_tab === 'annotation-table'">
             <BaktaAnnotationTable :data="baktaResult" />
           </template>
           <template v-if="active_tab == 'summary'">
