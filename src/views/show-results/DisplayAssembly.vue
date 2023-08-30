@@ -2,7 +2,7 @@
   <table class="table statstable">
     <template v-if="bakta">
       <tr>
-        <th scope="row">Size</th>
+        <th scope="row">Genome size</th>
         <td>{{ bakta.stats.size }}</td>
       </tr>
       <tr>
@@ -10,9 +10,15 @@
         <td>{{ bakta.stats.no_sequences }}</td>
       </tr>
     </template>
+    <template v-if="bakta">
+      <tr>
+        <th scope="row">N50</th>
+        <td>{{ bakta.stats.n50 }}</td>
+      </tr>
+    </template>
     <template v-else>
       <tr>
-        <th scope="row">There is no bakta file available</th>
+        <th scope="row">NA</th>
       </tr>
     </template>
     <template v-if="checkm">
@@ -21,23 +27,15 @@
         <td>{{ checkm.quality.completeness }}</td>
       </tr>
     </template>
-    <template v-else>
+    <template v-if="checkm">
       <tr>
-        <th scope="row">There is no checkm file available</th>
+        <th scope="row">Contamination</th>
+        <td>{{ checkm.quality.contamination }}</td>
       </tr>
     </template>
-    <template v-if="bakta">
+    <template v-else>
       <tr>
-        <th scope="row">n50</th>
-        <td>{{ bakta.stats.n50 }}</td>
-      </tr>
-      <tr>
-        <th scope="row">Translation Table</th>
-        <td>{{ bakta.genome.translation_table }}</td>
-      </tr>
-      <tr>
-        <th scope="row">Gram</th>
-        <td>{{ bakta.genome.gram }}</td>
+        <th scope="row">NA</th>
       </tr>
     </template>
   </table>
