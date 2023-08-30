@@ -3,7 +3,7 @@
     <template v-if="bakta">
       <tr>
         <th scope="row">Genome size:</th>
-        <td>{{ bakta.stats.size.toLocaleString("gb") + "bp" }}</td>
+        <td>{{ bakta.stats.size.toLocaleString("gb") + " bp" }}</td>
       </tr>
       <tr>
         <th scope="row">GC:</th>
@@ -17,7 +17,7 @@
     <template v-if="bakta">
       <tr>
         <th scope="row">N50:</th>
-        <td>{{ bakta.stats.n50 }}</td>
+        <td>{{ bakta.stats.n50.toLocaleString("gb") + " bp" }}</td>
       </tr>
     </template>
     <template v-else>
