@@ -15,7 +15,7 @@ const emits = defineEmits(["update:value"]);
   <!-- Tabbed Navigation -->
   <div class="shadow-sm p-4">
     <ul class="nav nav-pills py-3">
-      <Panetab @click="$emit('update:value', item.id)" :tab="item" :active="activeItem == item.id" v-for="item in items" :key="item.id" />>
+      <Panetab @click="$emit('update:value', item.id)" :tab="item" :active="activeItem == item.id" v-for="item in items" :key="item.id" />
     </ul>
     <div class="tab-content">
       <slot></slot>
