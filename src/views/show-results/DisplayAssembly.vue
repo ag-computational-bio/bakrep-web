@@ -10,7 +10,7 @@
         <td>{{ ratioToPercentage(bakta.stats.gc) }}</td>
       </tr>
       <tr>
-        <th scope="row">No. Sequences:</th>
+        <th scope="row">No. sequences:</th>
         <td>{{ bakta.stats.no_sequences }}</td>
       </tr>
     </template>
