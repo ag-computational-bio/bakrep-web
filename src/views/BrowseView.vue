@@ -41,11 +41,7 @@ const entries = ref([{
   <main class="container pt-5">
 
     <div class="row">
-      <h2>Browse the Genome Databank</h2>
-    </div>
-
-    <div class="row mt-3 mb-1">
-      <h3>Entries:</h3>
+      <h2>Browse BakRep Genomes</h2>
     </div>
 
     <div class="row">
