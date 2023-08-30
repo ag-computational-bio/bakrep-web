@@ -1,5 +1,5 @@
 export function ratioToPercentage(value: number) {
-  return Math.round(value * 10000) / 100 + "%";
+  return Math.round(value * 10000) / 100 + " %";
 }
 
 // Calculates significant figures with suffixes K/M/B/T, e.g. 1234 = 1.23K
