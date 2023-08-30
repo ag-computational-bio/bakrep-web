@@ -2,8 +2,8 @@
 import { computed, onMounted, ref, type Ref } from "vue";
 import usePageState, { State } from "@/PageState";
 import Loading from "@/components/Loading.vue";
-import Modal from "@/components/Modal.vue";
 import Pane from "@/components/Pane.vue";
+import DownloadLinks from "@/components/DownloadLinks.vue";
 
 import { useApi } from "@/BakrepApi";
 import type { Dataset } from "@/model/Dataset";
@@ -63,9 +63,11 @@ const tabs: Tab[] = [
   { id: "annotation-stats", name: "Annotation" },
   { id: "annotation-table", name: "Features" },
   { id: "genome-viewer", name: "Genome Viewer" },
+  { id: "download", name: "Download" },
 ];
 
 const active_tab: Ref<string> = ref("summary");
+
 
 const state = usePageState();
 state.value.setState(State.Loading);
@@ -82,8 +84,7 @@ state.value.setState(State.Loading);
         <CenteredLargeSpinner />
       </template>
       <template v-slot:content>
-        <Pane :items="tabs" :activeItem="active_tab"
-          @update:value="(newValue) => (active_tab = newValue)" >
+        <Pane :items="tabs" :activeItem="active_tab" @update:value="(newValue) => (active_tab = newValue)">
           <template v-if="active_tab === 'genome-viewer'">
             <BaktaGenomeViewer :data="baktaResult" />
           </template>
@@ -95,12 +96,11 @@ state.value.setState(State.Loading);
           </template>
           <template v-if="active_tab == 'summary'">
             <div class="col-4">
-              <DatasetSummary
-                :annotation="baktaResult"
-                :id="id"
-                :checkm="checkmResult"
-              />
+              <DatasetSummary :annotation="baktaResult" :id="id" :checkm="checkmResult" />
             </div>
+          </template>
+          <template v-if="active_tab == 'download'">
+            <DownloadLinks :dataset="dataset" />
           </template>
           <template v-if="active_tab == 'annotation'">
             <!-- <div class="h5" @click="toggle.annotation = !toggle.annotation"><i class="bi"
