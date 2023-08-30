@@ -54,23 +54,21 @@ const toggle = ref({
   checkm: true,
 });
 
-const tabs = [
-  { id: "summary", title: "Summary" },
-  { id: "assembly", title: "Assembly" },
-  { id: "taxonomy", title: "Taxonomy" },
-  { id: "annotation-stats", title: "Annotation (Stats)" },
-  { id: "annotation-table", title: "Features (annotation-table)" },
-  { id: "genome-viewer", title: "Genome Viewer" },
+export type Tab = { id: string; name: string };
+
+const tabs: Tab[] = [
+  { id: "summary", name: "Summary" },
+  { id: "assembly", name: "Assembly" },
+  { id: "taxonomy", name: "Taxonomy" },
+  { id: "annotation-stats", name: "Annotation" },
+  { id: "annotation-table", name: "Features" },
+  { id: "genome-viewer", name: "Genome Viewer" },
 ];
 
-type Tab = (typeof tabs)[number];
-
-const active_tab: Ref<String> = ref("summary");
+const active_tab: Ref<string> = ref("summary");
 
 const state = usePageState();
 state.value.setState(State.Loading);
-
-const showActionModal = ref(false);
 </script>
 
 <template>
@@ -84,7 +82,7 @@ const showActionModal = ref(false);
         <CenteredLargeSpinner />
       </template>
       <template v-slot:content>
-        <Pane :action="{ title: 'Download' }" :items="tabs" :activeItem="active_tab"
+        <Pane :items="tabs" :activeItem="active_tab"
           @update:value="(newValue) => (active_tab = newValue)" >
           <template v-if="active_tab === 'genome-viewer'">
             <BaktaGenomeViewer :data="baktaResult" />
@@ -123,24 +121,6 @@ const showActionModal = ref(false);
           </template>
           <template v-if="active_tab == 'assembly'">
             <DisplayAssembly :checkm="checkmResult" :bakta="baktaResult" />
-          </template>
-          <template v-slot:action>
-            <div class="btn btn-primary ms-auto" @click="showActionModal = true">
-              Download
-            </div>
-            <Modal v-if="showActionModal == true" @close="showActionModal = false">
-              <template v-slot:header>
-                <h2>Download Dataset</h2>
-              </template>
-              <template v-slot:body>
-                <ul>
-                  <li>Link to One</li>
-                  <li>Link to Two</li>
-                  <li>Link to Three</li>
-                  <li>Link to All?</li>
-                </ul>
-              </template>
-            </Modal>
           </template>
         </Pane>
       </template>
