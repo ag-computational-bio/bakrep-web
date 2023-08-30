@@ -98,14 +98,18 @@ const showActionModal = ref(false);
           </template>
           <template v-if="active_tab == 'summary'">
             <div class="col-4">
-              <DatasetSummary :annotation="baktaResult" />
+              <DatasetSummary
+                :annotation="baktaResult"
+                :id="id"
+                :checkm="checkmResult"
+              />
             </div>
           </template>
           <template v-if="active_tab == 'annotation'">
             <!-- <div class="h5" @click="toggle.annotation = !toggle.annotation"><i class="bi"
                 :class="toggle.annotation ? 'bi-caret-down' : 'bi-caret-right'"></i>Annotation</div> -->
             <div v-if="toggle.annotation">
-              <DatasetSummary :annotation="baktaResult" />
+              <DatasetSummary :annotation="baktaResult" :id="id" :checkm="checkmResult" />
               <button class="my-4 btn btn-primary" @click="featureTable = !featureTable">
                 <template v-if="featureTable"> Hide Table </template>
                 <template v-else> Show Table </template>

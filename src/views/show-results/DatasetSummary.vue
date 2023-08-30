@@ -1,50 +1,64 @@
 <template>
-  <table v-if="annotation" class="table statstable">
-    <tr>
-      <th scope="row">Genus:</th>
-      <td>{{ annotation.genome.genus }}</td>
-    </tr>
-    <tr>
-      <th scope="row">Species:</th>
-      <td>{{ annotation.genome.species }}</td>
-    </tr>
-    <tr>
-      <th scope="row">Strain:</th>
-      <td>{{ annotation.genome.strain }}</td>
-    </tr>
-    <tr>
-      <th scope="row">Complete:</th>
-      <td>{{ annotation.genome.complete }}</td>
-    </tr>
-    <tr>
-      <th scope="row">Genome size:</th>
-      <td>{{ annotation.stats.size }}</td>
-    </tr>
-    <tr>
-      <th scope="row">GC:</th>
-      <td>{{ ratioToPercentage(annotation.stats.gc) }}</td>
-    </tr>
-    <tr>
-      <th scope="row">N ratio:</th>
-      <td>
-        <NRatio :value="annotation.stats.n_ratio"></NRatio>
-      </td>
-    </tr>
-    <tr>
-      <th scope="row">Coding ratio:</th>
-      <td>
-        {{ ratioToPercentage(annotation.stats.coding_ratio) }}
-      </td>
-    </tr>
+  <table class="table statstable">
+    <template v-if="annotation">
+      <tr>
+        <th scope="row">ID:</th>
+        <td>{{ id }}</td>
+      </tr>
+      <tr>
+        <th scope="row">Species:</th>
+        <td>{{ species }}</td>
+      </tr>
+      <tr>
+        <th scope="row">Strain:</th>
+        <td>{{ annotation.genome.strain }}</td>
+      </tr>
+      <tr>
+        <th scope="row">Genome size:</th>
+        <td>{{ annotation.stats.size + " bp" }}</td>
+      </tr>
+      <tr>
+        <th scope="row">GC:</th>
+        <td>{{ ratioToPercentage(annotation.stats.gc) }}</td>
+      </tr>
+    </template>
+    <template v-else>
+      <tr>
+        <th scope="row">There is no bakta file availabe.</th>
+      </tr>
+    </template>
+    <template v-if="checkm">
+      <tr>
+        <th scope="row">Completeness:</th>
+        <td>{{ checkm.quality.completeness + "%" }}</td>
+      </tr>
+      <tr>
+        <th scope="row">Contamination:</th>
+        <td>{{ checkm.quality.contamination + "%" }}</td>
+      </tr>
+    </template>
+    <template v-else>
+      <tr>
+        <th scope="row">There is no checkm file available.</th>
+      </tr>
+    </template>
   </table>
-  <div v-else>No bakta result provided</div>
 </template>
 <script setup lang="ts">
-import NRatio from "@/components/NRatio.vue";
 import type { BaktaResult } from "@/model/BaktaResults";
+import type { CheckmResult } from "@/model/CheckmResults";
 import { ratioToPercentage } from "@/util";
-import type { PropType } from "vue";
-defineProps({
-  annotation: { type: Object as PropType<BaktaResult>, default: undefined },
+import { computed, type PropType } from "vue";
+
+const props = defineProps({
+  annotation: { type: Object as PropType<BaktaResult> },
+  checkm: { type: Object as PropType<CheckmResult> },
+  id: { type: String },
 });
+
+const species = computed(() => {
+  return props.annotation?.genome.genus + " "
+    + props.annotation?.genome.species.charAt(0).toLocaleUpperCase() + props.annotation?.genome.species.slice(1);
+})
+
 </script>
