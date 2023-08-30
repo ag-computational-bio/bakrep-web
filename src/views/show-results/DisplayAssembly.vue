@@ -28,13 +28,13 @@
     <template v-if="checkm">
       <tr>
         <th scope="row">Completeness:</th>
-        <td>{{ checkm.quality.completeness + "%" }}</td>
+        <td>{{ checkm.quality.completeness + " %" }}</td>
       </tr>
     </template>
     <template v-if="checkm">
       <tr>
         <th scope="row">Contamination:</th>
-        <td>{{ checkm.quality.contamination + "%"}}</td>
+        <td>{{ checkm.quality.contamination + " %" }}</td>
       </tr>
     </template>
     <template v-else>
