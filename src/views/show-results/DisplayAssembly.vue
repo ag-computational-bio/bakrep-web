@@ -6,6 +6,10 @@
         <td>{{ bakta.stats.size }}</td>
       </tr>
       <tr>
+        <th scope="row">GC</th>
+        <td>{{ ratioToPercentage(bakta.stats.gc) }}</td>
+      </tr>
+      <tr>
         <th scope="row">No. Sequences</th>
         <td>{{ bakta.stats.no_sequences }}</td>
       </tr>
@@ -53,6 +57,7 @@
 import type { BaktaResult } from "@/model/BaktaResults";
 import type { CheckmResult } from "@/model/CheckmResults";
 import type { PropType } from "vue";
+import { ratioToPercentage } from "@/util";
 import ContigBar from "@/components/ContigBar.vue";
 
 defineProps({
