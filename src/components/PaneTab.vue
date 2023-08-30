@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import type { Tab } from '@/model/Tabs';
+import type { Tab } from '@/views/show-results/ResultView.vue'
 import type { PropType } from 'vue';
 
 defineProps({
@@ -10,6 +10,6 @@ defineProps({
 
 <template>
   <li class="nav-item">
-    <a class="nav-link" :class="{ active }" href="#">{{ tab.title }}</a>
+    <a class="nav-link" :class="{ active }" href="#">{{ tab.name }}</a>
   </li>
 </template>
