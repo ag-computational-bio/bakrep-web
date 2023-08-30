@@ -7,7 +7,7 @@
       </tr>
       <tr>
         <th scope="row">Species:</th>
-        <td>{{ annotation.genome.genus + " " + annotation.genome.species }}</td>
+        <td>{{ species }}</td>
       </tr>
       <tr>
         <th scope="row">Strain:</th>
@@ -15,7 +15,7 @@
       </tr>
       <tr>
         <th scope="row">Genome size:</th>
-        <td>{{ annotation.stats.size.toLocaleString('gb') + " bp" }}</td>
+        <td>{{ annotation.stats.size + " bp" }}</td>
       </tr>
       <tr>
         <th scope="row">GC:</th>
@@ -55,4 +55,10 @@ const props = defineProps({
   checkm: { type: Object as PropType<CheckmResult> },
   id: { type: String },
 });
+
+const species = computed(() => {
+  return props.annotation?.genome.genus + " "
+    + props.annotation?.genome.species.charAt(0).toLocaleUpperCase() + props.annotation?.genome.species.slice(1);
+})
+
 </script>

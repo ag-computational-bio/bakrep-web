@@ -1,16 +1,7 @@
 <template>
   <div class="row mb-5">
-    <div class="col-md-6">
-      <h5>Input</h5>
-      <display-tuple label="Organism:" :value="name" />
-      <display-tuple label="Sequences:" :value="sequencesCount" />
-      <display-tuple label="Genome size:" :value="size" />
-    </div>
-  </div>
-
-  <div class="row mb-5">
     <div class="col-md-10">
-      <h5>Output</h5>
+      <h5>Number of Features</h5>
       <div class="row">
         <div class="col-md-4">
           <display-tuple
