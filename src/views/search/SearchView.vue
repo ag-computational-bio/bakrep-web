@@ -31,7 +31,6 @@ function search() {
 function handleKey(evt: KeyboardEvent) {
   console.log(evt);
   if (evt.key === "Enter") {
-    console.log("Search");
     search();
     evt.preventDefault();
   }
@@ -46,7 +45,7 @@ onMounted(search);
         <div class="input-group">
           <input
             type="text"
-            v-model.lazy="searchText"
+            v-model="searchText"
             placeholder="search bakrep for..."
             class="form-control"
             aria-describedby="button-search"
