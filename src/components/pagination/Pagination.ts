@@ -48,6 +48,10 @@ function lastElement(data: PaginationData): number {
   if (last > data.total) return data.total;
   return last;
 }
+function firstElement(data: PaginationData): number {
+  if (data.total === 0) return 0;
+  return data.offset + 1;
+}
 
 export function toModel(data: PaginationData): PaginationModel {
   const lp = lastPage(data);
@@ -68,7 +72,7 @@ export function toModel(data: PaginationData): PaginationModel {
 
 export function toPosition(data: PaginationData): PositionInResult {
   return {
-    firstElement: data.offset + 1,
+    firstElement: firstElement(data),
     lastElement: lastElement(data),
   };
 }
