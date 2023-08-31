@@ -37,6 +37,8 @@ function contamination(entry: BakrepSearchResultEntry): string {
   if (!entry.checkm2) return "?";
   return entry.checkm2.quality.contamination + "";
 }
+
+let drag = false;
 </script>
 
 <template>
@@ -56,11 +58,15 @@ function contamination(entry: BakrepSearchResultEntry): string {
       <tbody>
         <template v-for="entry in entries" :key="entry.id">
           <tr
-            @click="
-              $router.push({
-                name: 'result',
-                params: { id: entry.id, title: entry.id },
-              })
+            @mousedown="drag = false"
+            @mousemove="drag = true"
+            @mouseup="
+              if (!drag) {
+                $router.push({
+                  name: 'result',
+                  params: { id: entry.id, title: entry.id },
+                });
+              }
             "
             class="pointer"
           >
