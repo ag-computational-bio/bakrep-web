@@ -3,7 +3,10 @@ import { useApi } from "@/BakrepApi";
 import ResultTable from "./ResultTable.vue";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
 import { onMounted, ref, type Ref } from "vue";
-
+import usePageState, { State } from "@/PageState";
+import Loading from "@/components/Loading.vue";
+import CenteredLargeSpinner from "@/components/CenteredLargeSpinner.vue";
+const state = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
 
 const api = useApi();
@@ -19,6 +22,8 @@ function search() {
       value: searchText.value,
     };
 
+  state.value.setState(State.Loading);
+
   api
     .search({
       query: query,
@@ -26,7 +31,10 @@ function search() {
       offset: 0,
       limit: 10,
     })
-    .then((r) => (entries.value = r.results));
+    .then((r) => {
+      entries.value = r.results;
+      state.value.setState(State.Main);
+    });
 }
 function handleKey(evt: KeyboardEvent) {
   if (evt.key === "Enter") {
@@ -63,9 +71,16 @@ onMounted(search);
       </div>
     </div>
 
-    <div class="row py-3 my-5">
-      <ResultTable :entries="entries" />
-    </div>
+    <Loading :state="state">
+      <template v-slot:loading>
+        <CenteredLargeSpinner />
+      </template>
+      <template v-slot:content>
+        <div class="row py-3 my-5">
+          <ResultTable :entries="entries" />
+        </div>
+      </template>
+    </Loading>
   </main>
 </template>
 
