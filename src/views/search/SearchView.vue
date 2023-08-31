@@ -2,11 +2,16 @@
 import { useApi } from "@/BakrepApi";
 import CenteredLargeSpinner from "@/components/CenteredLargeSpinner.vue";
 import Loading from "@/components/Loading.vue";
-import { empty, type PaginationData } from "@/components/pagination/Pagination";
+import {
+  empty,
+  toPosition,
+  type PaginationData,
+  type PositionInResult,
+} from "@/components/pagination/Pagination";
 import Pagination from "@/components/pagination/Pagination.vue";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
 import usePageState, { State } from "@/PageState";
-import { onMounted, ref, type Ref } from "vue";
+import { computed, onMounted, ref, type Ref } from "vue";
 import ResultTable from "./ResultTable.vue";
 const state = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
@@ -46,6 +51,9 @@ function handleKey(evt: KeyboardEvent) {
     evt.preventDefault();
   }
 }
+const positionInResults: Ref<PositionInResult> = computed(() =>
+  toPosition(pagination.value),
+);
 onMounted(search);
 </script>
 
@@ -81,7 +89,10 @@ onMounted(search);
       </template>
       <template v-slot:content>
         <div class="row py-3 my-5">
-          Total results: {{ pagination.total }}
+          Showing search results {{ positionInResults.firstElement }}-{{
+            positionInResults.lastElement
+          }}
+          of {{ pagination.total }} results
           <ResultTable :entries="entries" />
           <Pagination
             class="mt-3"

@@ -12,6 +12,11 @@ export type PaginationModel = {
   showDotsAfter: boolean;
 };
 
+export type PositionInResult = {
+  lastElement: number;
+  firstElement: number;
+};
+
 export function currentPage(data: PaginationData): number {
   if (data.total === 0) return NaN;
   if (data.total < data.offset) return NaN;
@@ -37,6 +42,13 @@ export function pages(data: PaginationData, before = 2, after = 2): number[] {
   for (let i = start; i <= end; i++) pages.push(i);
   return pages;
 }
+
+function lastElement(data: PaginationData): number {
+  const last = data.offset + data.limit;
+  if (last > data.total) return data.total;
+  return last;
+}
+
 export function toModel(data: PaginationData): PaginationModel {
   const lp = lastPage(data);
   const vp = pages(data);
@@ -51,6 +63,13 @@ export function toModel(data: PaginationData): PaginationModel {
     visiblePages: vp,
     showDotsBefore: dotsBefore,
     showDotsAfter: dotsAfter,
+  };
+}
+
+export function toPosition(data: PaginationData): PositionInResult {
+  return {
+    firstElement: data.offset + 1,
+    lastElement: lastElement(data),
   };
 }
 export function empty(): PaginationData {
