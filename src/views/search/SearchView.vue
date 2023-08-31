@@ -1,18 +1,20 @@
 <script setup lang="ts">
 import { useApi } from "@/BakrepApi";
-import ResultTable from "./ResultTable.vue";
-import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
-import { onMounted, ref, type Ref } from "vue";
-import usePageState, { State } from "@/PageState";
-import Loading from "@/components/Loading.vue";
 import CenteredLargeSpinner from "@/components/CenteredLargeSpinner.vue";
+import Loading from "@/components/Loading.vue";
+import { empty, type PaginationData } from "@/components/pagination/Pagination";
+import Pagination from "@/components/pagination/Pagination.vue";
+import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
+import usePageState, { State } from "@/PageState";
+import { onMounted, ref, type Ref } from "vue";
+import ResultTable from "./ResultTable.vue";
 const state = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
 
 const api = useApi();
-
+const pagination: Ref<PaginationData> = ref(empty());
 const searchText = ref("");
-function search() {
+function search(offset = 0) {
   let query;
   if (!searchText.value) query = {};
   else
@@ -28,12 +30,14 @@ function search() {
     .search({
       query: query,
       sort: [{ field: "bakta.stats.no_sequences", ord: "asc" }],
-      offset: 0,
+      offset: offset,
       limit: 10,
     })
     .then((r) => {
       entries.value = r.results;
       state.value.setState(State.Main);
+      pagination.value.offset = r.offset;
+      pagination.value.total = r.total;
     });
 }
 function handleKey(evt: KeyboardEvent) {
@@ -60,7 +64,7 @@ onMounted(search);
             @keydown="handleKey"
           />
           <button
-            @click="search"
+            @click="search(0)"
             class="btn btn-outline-secondary"
             type="button"
             id="button-search"
@@ -78,6 +82,11 @@ onMounted(search);
       <template v-slot:content>
         <div class="row py-3 my-5">
           <ResultTable :entries="entries" />
+          <Pagination
+            class="mt-3"
+            :value="pagination"
+            @update:offset="search"
+          />
         </div>
       </template>
     </Loading>
