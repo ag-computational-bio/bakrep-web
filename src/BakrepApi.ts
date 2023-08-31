@@ -8,6 +8,7 @@ import { DatasetSchema, type Dataset } from "./model/Dataset";
 import { GtdbtkResultSchema, type GtdbtkResult } from "./model/GtdbtkResult";
 import { MlstResultSchema, type MlstResult } from "./model/MlstResults";
 import type { SearchInfo, SearchRequest } from "./model/Search";
+import json5 from "json5";
 
 let baseurl: string = "http://localhost:8080";
 function initApi(url: string) {
@@ -33,7 +34,7 @@ class BakrepApiImpl implements BakrepApi {
 
   toJson(r: Response): Promise<any> {
     if (!r.ok) throw r.text().then((t) => Promise.reject(t));
-    return r.json();
+    return r.text().then(json5.parse);
   }
 
   getDataset(id: string): Promise<Dataset> {

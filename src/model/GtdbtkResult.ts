@@ -12,7 +12,7 @@ const ClassfificationSchema = z.object({
 
 const GtdbtkResultSchema = z.object({
   classification: ClassfificationSchema,
-  fastani_reference: z.string(),
+  fastani_reference: z.union([z.string(), z.nan()]),
   classification_method: z.string(),
   warnings: z.string(),
 });
