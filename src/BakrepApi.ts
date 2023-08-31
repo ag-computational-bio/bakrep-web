@@ -1,8 +1,13 @@
+import {
+  BakrepSearchResultSchema,
+  type BakrepSearchResult,
+} from "./model/BakrepSearchResult";
 import { BaktaResultSchema, type BaktaResult } from "./model/BaktaResults";
 import { CheckmResultSchema, type CheckmResult } from "./model/CheckmResults";
 import { DatasetSchema, type Dataset } from "./model/Dataset";
 import { GtdbtkResultSchema, type GtdbtkResult } from "./model/GtdbtkResult";
 import { MlstResultSchema, type MlstResult } from "./model/MlstResults";
+import type { SearchInfo, SearchRequest } from "./model/Search";
 
 let baseurl: string = "http://localhost:8080";
 function initApi(url: string) {
@@ -16,6 +21,8 @@ interface BakrepApi {
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult>;
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult>;
   fetchMlstResult(dataset: Dataset): Promise<MlstResult>;
+  search(request: SearchRequest): Promise<BakrepSearchResult>;
+  searchinfo(): Promise<SearchInfo>;
 }
 
 class BakrepApiImpl implements BakrepApi {
@@ -39,65 +46,84 @@ class BakrepApiImpl implements BakrepApi {
   }
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult> {
     const bakta = dataset.results.filter(
-      (x) => x.attributes.tool === "bakta" && x.attributes.filetype === "json"
+      (x) => x.attributes.tool === "bakta" && x.attributes.filetype === "json",
     );
     if (bakta.length == 0) {
       return Promise.reject(
-        `Unsupported: Dataset does not contain bakta result: ${dataset}`
+        `Unsupported: Dataset does not contain bakta result: ${dataset}`,
       );
     }
     if (bakta.length > 1)
       return Promise.reject(
-        `Unsupported: Dataset constains multiple bakta results: ${dataset}`
+        `Unsupported: Dataset constains multiple bakta results: ${dataset}`,
       );
     return fetch(bakta[0].url).then(this.toJson).then(BaktaResultSchema.parse);
   }
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult> {
     const gtdb = dataset.results.filter(
-      (x) => x.attributes.tool === "gtdbtk" && x.attributes.filetype === "json"
+      (x) => x.attributes.tool === "gtdbtk" && x.attributes.filetype === "json",
     );
     if (gtdb.length == 0) {
       return Promise.reject(
-        `Unsupported: Dataset does not contain gtdbtk result: ${dataset}`
+        `Unsupported: Dataset does not contain gtdbtk result: ${dataset}`,
       );
     }
     if (gtdb.length > 1)
       return Promise.reject(
-        `Unsupported: Dataset constains multiple gtdbtk results: ${dataset}`
+        `Unsupported: Dataset constains multiple gtdbtk results: ${dataset}`,
       );
     return fetch(gtdb[0].url).then(this.toJson).then(GtdbtkResultSchema.parse);
   }
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult> {
     const checkm = dataset.results.filter(
-      (x) => x.attributes.tool === "checkm2" && x.attributes.filetype === "json"
+      (x) =>
+        x.attributes.tool === "checkm2" && x.attributes.filetype === "json",
     );
     if (checkm.length == 0) {
       return Promise.reject(
-        `Unsupported: Dataset does not contain checkm result: ${dataset}`
+        `Unsupported: Dataset does not contain checkm result: ${dataset}`,
       );
     }
     if (checkm.length > 1) {
       return Promise.reject(
-        `Unsupported: Dataset constains multiple checkm results: ${dataset}`
+        `Unsupported: Dataset constains multiple checkm results: ${dataset}`,
       );
     }
-    return fetch(checkm[0].url).then(this.toJson).then(CheckmResultSchema.parse);
+    return fetch(checkm[0].url)
+      .then(this.toJson)
+      .then(CheckmResultSchema.parse);
   }
   fetchMlstResult(dataset: Dataset): Promise<MlstResult> {
     const mlst = dataset.results.filter(
-      (x) => x.attributes.tool === "mlst" && x.attributes.filetype === "json"
+      (x) => x.attributes.tool === "mlst" && x.attributes.filetype === "json",
     );
     if (mlst.length == 0) {
       return Promise.reject(
-        `Unsupported: Dataset does not contain mlst result: ${dataset}`
+        `Unsupported: Dataset does not contain mlst result: ${dataset}`,
       );
     }
     if (mlst.length > 1) {
       return Promise.reject(
-        `Unsupported: Dataset constains multiple mlst results: ${dataset}`
+        `Unsupported: Dataset constains multiple mlst results: ${dataset}`,
       );
     }
     return fetch(mlst[0].url).then(this.toJson).then(MlstResultSchema.parse);
+  }
+  searchinfo(): Promise<SearchInfo> {
+    return fetch(baseurl + "/search/_info")
+      .then(this.toJson)
+      .then((j) => j as SearchInfo);
+  }
+  search(request: SearchRequest): Promise<BakrepSearchResult> {
+    return fetch(baseurl + "/search", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(request),
+    })
+      .then(this.toJson)
+      .then((j) => BakrepSearchResultSchema.parse(j));
   }
 }
 
@@ -105,5 +131,5 @@ function useApi(): BakrepApi {
   return new BakrepApiImpl(baseurl);
 }
 
-export type { BakrepApi };
 export { initApi, useApi };
+export type { BakrepApi };

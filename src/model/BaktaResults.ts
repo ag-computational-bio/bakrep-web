@@ -1,6 +1,6 @@
 import { z } from "zod";
 
-const GenomeSchema = z.object({
+export const GenomeSchema = z.object({
   genus: z.string(),
   species: z.string(),
   strain: z.string(),
@@ -9,7 +9,7 @@ const GenomeSchema = z.object({
   translation_table: z.number(),
 });
 
-const StatsSchema = z.object({
+export const StatsSchema = z.object({
   no_sequences: z.number(),
   size: z.number(),
   gc: z.number(),

@@ -21,7 +21,7 @@ const router = createRouter({
     {
       path: "/search",
       name: "search",
-      component: () => import("../views/SearchView.vue"),
+      component: () => import("../views/search/SearchView.vue"),
     },
     {
       path: "/imprint",
