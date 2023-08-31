@@ -29,7 +29,6 @@ function search() {
     .then((r) => (entries.value = r.results));
 }
 function handleKey(evt: KeyboardEvent) {
-  console.log(evt);
   if (evt.key === "Enter") {
     search();
     evt.preventDefault();
