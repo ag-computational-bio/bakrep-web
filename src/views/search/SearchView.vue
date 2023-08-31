@@ -81,6 +81,7 @@ onMounted(search);
       </template>
       <template v-slot:content>
         <div class="row py-3 my-5">
+          Total results: {{ pagination.total }}
           <ResultTable :entries="entries" />
           <Pagination
             class="mt-3"
