@@ -16,7 +16,7 @@ defineProps({
 
 <template>
   <div class="rounded bg-light shadow-sm">
-    <table class="table table-hover">
+    <table class="table table-hover table-light">
       <thead>
         <tr>
           <th scope="col">Id</th>
