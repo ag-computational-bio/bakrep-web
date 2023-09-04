@@ -8,3 +8,9 @@
   font-weight: bold;
   color: gray;
 }
+
+.statstable ul {
+  color: gray;
+  list-style-type: none;
+  padding-left: 0rem;
+}

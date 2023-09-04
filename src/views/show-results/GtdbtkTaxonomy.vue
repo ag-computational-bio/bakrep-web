@@ -39,8 +39,14 @@
             <td>{{ mlst[0].scheme }}</td>
           </tr>
           <tr>
-            <th scope="row">Alleles:</th>
-            <td>{{ mlst[0].allels }}</td>
+            <th scope="row" class="align-top">Alleles:</th>
+            <td>
+              <ul v-if="mlst[0].alleles">
+                <li v-for="e of Object.entries(mlst[0].alleles)">
+                  {{ e[0] }}: {{ e[1] }}
+                </li>
+              </ul>
+            </td>
           </tr>
         </template>
         <template v-else>

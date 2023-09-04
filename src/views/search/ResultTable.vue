@@ -22,7 +22,7 @@ function genomeSize(entry: BakrepSearchResultEntry): string {
   return Math.round(entry.bakta.stats.size / 1000).toLocaleString("en") + " KB";
 }
 function species(entry: BakrepSearchResultEntry): string {
-  if (!entry.gtdbtk) return "?";
+  if (!entry.gtdbtk || !entry.gtdbtk.classification.species) return "?";
   return entry.gtdbtk.classification.species;
 }
 function sequenceType(entry: BakrepSearchResultEntry): string {
