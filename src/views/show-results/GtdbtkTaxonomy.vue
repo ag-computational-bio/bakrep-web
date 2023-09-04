@@ -97,13 +97,13 @@ const entries = computed(() => {
   if (props.gtdb) {
     const c = props.gtdb.classification;
     return [
-      toEntry("domain", c.domain),
-      toEntry("phylum", c.phylum),
-      toEntry("class", c.class),
-      toEntry("order", c.order),
-      toEntry("family", c.family),
-      toEntry("genus", c.genus),
-      toEntry("species", c.species),
+      toEntry("domain", c.domain ? c.domain : ""),
+      toEntry("phylum", c.phylum ? c.phylum : ""),
+      toEntry("class", c.class ? c.class : ""),
+      toEntry("order", c.order ? c.order : ""),
+      toEntry("family", c.family ? c.family : ""),
+      toEntry("genus", c.genus ? c.genus : ""),
+      toEntry("species", c.species ? c.species : ""),
     ];
   }
   return [];
