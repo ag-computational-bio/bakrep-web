@@ -24,6 +24,7 @@
     "vue": "^3.2.45",
     "vue-chartjs": "^5.2.0",
     "vue-router": "^4.1.6",
+    "vue-slider-component": "^4.1.0-beta.7",
     "zod": "^3.22.2"
   },
   "devDependencies": {
