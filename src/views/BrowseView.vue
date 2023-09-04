@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import ResultTable from "@/components/ResultTable.vue";
+import QueryFilter from "@/components/QueryFilter.vue";
 
 const entries = ref([{
     "id": "SAMD00000344",
@@ -39,9 +40,14 @@ const entries = ref([{
 
 <template>
   <main class="container pt-5">
-
     <div class="row">
       <h2>Browse BakRep Genomes</h2>
+    </div>
+
+    <div class="row">
+      <div class="col">
+        <QueryFilter />
+      </div>
     </div>
 
     <div class="row">
