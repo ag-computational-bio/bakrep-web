@@ -1,13 +1,23 @@
 <script setup lang="ts">
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
-import type { PropType } from "vue";
+import { computed, type PropType } from "vue";
+import type { SortDirection, SortOption } from "@/model/Search";
+import SortSymbol from "./SortSymbol.vue";
 
-defineProps({
+const props = defineProps({
   entries: {
     type: Array as PropType<BakrepSearchResultEntry[]>,
     default: () => [],
   },
+  ordering: {
+    type: Array as PropType<SortOption[]>,
+    default: () => [],
+  },
 });
+
+const emit = defineEmits<{
+  (e: "update:ordering", key: string, direction: SortDirection | null): void;
+}>();
 
 function gc(entry: BakrepSearchResultEntry): string {
   if (!entry.bakta) return "?";
@@ -39,6 +49,11 @@ function contamination(entry: BakrepSearchResultEntry): string {
 }
 
 let drag = false;
+
+function passOrdering(sortkey: string, newdirection: SortDirection | null) {
+  emit("update:ordering", sortkey, newdirection);
+}
+
 </script>
 
 <template>
@@ -46,13 +61,70 @@ let drag = false;
     <table class="mt-3 table table-hover">
       <thead>
         <tr>
-          <th scope="col">Id</th>
-          <th scope="col">GC</th>
-          <th scope="col">Contigs</th>
-          <th scope="col">Genome Size</th>
-          <th scope="col">Species</th>
-          <th scope="col">ST Type</th>
-          <th scope="col">Quality & Contamination</th>
+          <th scope="col">
+            Id
+            <SortSymbol
+              :ordering="ordering"
+              sortkey="id"
+              @update:ordering="passOrdering"
+            />
+          </th>
+          <th scope="col">
+            GC
+            <SortSymbol
+              :ordering="ordering"
+              sortkey="bakta.stats.gc"
+              @update:ordering="passOrdering"
+            />
+          </th>
+          <th scope="col">
+            Contigs
+            <SortSymbol
+              :ordering="ordering"
+              sortkey="bakta.stats.no_sequences"
+              @update:ordering="passOrdering"
+            />
+          </th>
+          <th scope="col">
+            Genome Size
+            <SortSymbol
+              :ordering="ordering"
+              sortkey="bakta.stats.size"
+              @update:ordering="passOrdering"
+            />
+          </th>
+          <th scope="col">
+            Species
+            <SortSymbol
+              :ordering="ordering"
+              sortkey="gtdbtk.classification.species.keyword"
+              @update:ordering="passOrdering"
+            />
+          </th>
+          <th scope="col">
+            ST Type
+            <SortSymbol
+              :ordering="ordering"
+              sortkey="mlst.sequence_type.keyword"
+              @update:ordering="passOrdering"
+            />
+          </th>
+          <th scope="col">
+            Completeness
+            <SortSymbol
+              :ordering="ordering"
+              sortkey="checkm2.quality.completeness"
+              @update:ordering="passOrdering"
+            />
+          </th>
+          <th scope="col">
+            Contamination
+            <SortSymbol
+              :ordering="ordering"
+              sortkey="checkm2.quality.contamination"
+              @update:ordering="passOrdering"
+            />
+          </th>
         </tr>
       </thead>
       <tbody>
@@ -78,7 +150,8 @@ let drag = false;
             </td>
             <td>{{ species(entry) }}</td>
             <td class="text-nowrap">{{ sequenceType(entry) }}</td>
-            <td>{{ completeness(entry) }} % / {{ contamination(entry) }} %</td>
+            <td>{{ completeness(entry) }} %</td>
+            <td>{{ contamination(entry) }} %</td>
           </tr>
         </template>
       </tbody>

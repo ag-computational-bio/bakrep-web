@@ -62,9 +62,11 @@ export function isRange(d: unknown): d is Range {
   return d != null && typeof d === "object" && "from" in d && "to" in d;
 }
 
+export type SortDirection = "asc" | "desc";
+
 export type SortOption = {
   field: string;
-  ord: "asc" | "desc";
+  ord: SortDirection;
 };
 
 export type SearchRequest = {

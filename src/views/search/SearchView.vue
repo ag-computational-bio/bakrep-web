@@ -17,6 +17,8 @@ import type {
   CompoundQuery,
   SearchInfo,
   SearchInfoField,
+  SortDirection,
+  SortOption,
 } from "@/model/Search";
 import type { Rule, NestedRule } from "@/components/querybuilder/Rule";
 import QueryBuilder from "@/components/querybuilder/QueryBuilder.vue";
@@ -26,8 +28,8 @@ const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
 
 const api = useApi();
 const pagination: Ref<PaginationData> = ref(empty());
-const searchText = ref("");
-
+const query: Ref<CompoundQuery> = ref({ op: "and", value: [] });
+const ordering: Ref<SortOption[]> = ref([{ field: "id", ord: "asc" }]);
 const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
 function init() {
   api.searchinfo().then((r) => (searchinfo.value = r));
@@ -88,7 +90,7 @@ function search(offset = 0) {
   api
     .search({
       query: unref(query),
-      sort: [{ field: "gtdbtk.classification.species.keyword", ord: "asc" }],
+      sort: ordering.value,
       offset: offset,
       limit: 10,
     })
@@ -99,17 +101,22 @@ function search(offset = 0) {
       pagination.value.total = r.total;
     });
 }
-function handleKey(evt: KeyboardEvent) {
-  if (evt.key === "Enter") {
-    search();
-    evt.preventDefault();
-  }
-}
+
 const positionInResults: Ref<PositionInResult> = computed(() =>
   toPosition(pagination.value),
 );
 
-const query: Ref<CompoundQuery> = ref({ op: "and", value: [] });
+function updateOrdering(sortkey: string, direction: SortDirection | null) {
+  const idx = ordering.value.findIndex((s) => s.field === sortkey);
+  if (direction == null) {
+    if (idx > -1) ordering.value.splice(idx, 1);
+  } else {
+    if (idx > -1) ordering.value[idx].ord = direction;
+    else
+      ordering.value = [{ field: sortkey, ord: direction }, ...ordering.value];
+  }
+  search();
+}
 
 onMounted(init);
 </script>
@@ -143,7 +150,11 @@ onMounted(init);
             positionInResults.lastElement
           }}
           of {{ pagination.total }} results
-          <ResultTable :entries="entries" />
+          <ResultTable
+            :ordering="ordering"
+            :entries="entries"
+            @update:ordering="updateOrdering"
+          />
           <Pagination
             class="mt-3"
             :value="pagination"
