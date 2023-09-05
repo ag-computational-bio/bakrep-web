@@ -1,25 +1,24 @@
 <script setup lang="ts">
-import { computed, onMounted, ref, type Ref } from "vue";
-import usePageState, { State } from "@/PageState";
+import DownloadLinks from "@/components/DownloadLinks.vue";
 import Loading from "@/components/Loading.vue";
 import Pane from "@/components/Pane.vue";
-import DownloadLinks from "@/components/DownloadLinks.vue";
+import usePageState, { State } from "@/PageState";
+import { computed, onMounted, ref, type Ref } from "vue";
 
 import { useApi } from "@/BakrepApi";
-import type { Dataset } from "@/model/Dataset";
-import { useRoute } from "vue-router";
-import DatasetSummary from "./DatasetSummary.vue";
-import GtdbtkTaxonomy from "./GtdbtkTaxonomy.vue";
-import DisplayAssembly from "./DisplayAssembly.vue";
 import type { BaktaResult } from "@/model/BaktaResults";
-import type { GtdbtkResult } from "@/model/GtdbtkResult";
 import type { CheckmResult } from "@/model/CheckmResults";
-import FeatureTable from "./FeatureTable.vue";
+import type { Dataset } from "@/model/Dataset";
+import type { GtdbtkResult } from "@/model/GtdbtkResult";
+import type { MlstResult } from "@/model/MlstResults";
+import { useRoute } from "vue-router";
 import BaktaAnnotationTable from "./bakta/BaktaAnnotationTable.vue";
 import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
 import BaktaStats from "./bakta/BaktaStats.vue";
-import CenteredLargeSpinner from "@/components/CenteredLargeSpinner.vue";
-import type { MlstResult } from "@/model/MlstResults";
+import DatasetSummary from "./DatasetSummary.vue";
+import DisplayAssembly from "./DisplayAssembly.vue";
+import FeatureTable from "./FeatureTable.vue";
+import GtdbtkTaxonomy from "./GtdbtkTaxonomy.vue";
 const route = useRoute();
 const id = computed(() => route.params.id as string);
 const api = useApi();
@@ -31,18 +30,21 @@ const checkmResult: Ref<CheckmResult | undefined> = ref();
 const mlstResult: Ref<MlstResult | undefined> = ref();
 
 function loadData() {
-  return api.getDataset(id.value).then((x) => {
-    dataset.value = x;
-    return Promise.all([
-      api.fetchBaktaResult(x).then((r) => (baktaResult.value = r)),
-      api.fetchGtdbtkResult(x).then((r) => (gtdbtkResult.value = r)),
-      api.fetchCheckmResult(x).then((r) => (checkmResult.value = r)),
-      api.fetchMlstResult(x).then((r) => (mlstResult.value = r)),
-    ]).then(() => {
-      active_tab.value = "summary";
-      state.value.setState(State.Main);
-    });
-  });
+  return api
+    .getDataset(id.value)
+    .then((x) => {
+      dataset.value = x;
+      return Promise.all([
+        api.fetchBaktaResult(x).then((r) => (baktaResult.value = r)),
+        api.fetchGtdbtkResult(x).then((r) => (gtdbtkResult.value = r)),
+        api.fetchCheckmResult(x).then((r) => (checkmResult.value = r)),
+        api.fetchMlstResult(x).then((r) => (mlstResult.value = r)),
+      ]).then(() => {
+        active_tab.value = "summary";
+        state.value.setState(State.Main);
+      });
+    })
+    .catch((err) => state.value.setError(err));
 }
 
 onMounted(loadData);

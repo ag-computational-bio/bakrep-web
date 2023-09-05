@@ -4,6 +4,9 @@
       <CenteredLargeSpinner />
     </slot>
   </template>
+  <template v-else-if="state.error">
+    <div class="alert alert-danger">Error: {{ state.message }}</div>
+  </template>
   <template v-else>
     <slot name="content" />
     <slot />

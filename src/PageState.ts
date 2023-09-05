@@ -11,6 +11,8 @@ export enum State {
 
 export interface PageState {
   state: State;
+  message: string | undefined;
+  setError(message: string): void;
   setState(state: State): void;
   loading: boolean;
   loaded: boolean;
@@ -21,14 +23,15 @@ export interface PageState {
 
 export default function usePageState(): Ref<PageState> {
   const state: Ref<State> = ref(State.Main);
+  const message: Ref<undefined | string> = ref();
   const loading = computed(
-    () => state.value === "loading" || state.value === "exporting"
+    () => state.value === "loading" || state.value === "exporting",
   );
   const loaded = computed(
     () =>
       state.value === "main" ||
       state.value === "saving" ||
-      state.value === "saved"
+      state.value === "saved",
   );
 
   const saved = computed(() => state.value === "saved");
@@ -37,7 +40,12 @@ export default function usePageState(): Ref<PageState> {
 
   const pageState = ref({
     state: state,
+    message: message,
     setState: (newState: State) => (state.value = newState),
+    setError: (newMessage: string) => {
+      message.value = newMessage;
+      state.value = State.Error;
+    },
     loading: loading,
     loaded: loaded,
     saved: saved,

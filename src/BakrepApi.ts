@@ -33,7 +33,10 @@ class BakrepApiImpl implements BakrepApi {
   }
 
   toJson(r: Response): Promise<any> {
-    if (!r.ok) throw r.text().then((t) => Promise.reject(t));
+    if (!r.ok)
+      return r
+        .text()
+        .then((t) => Promise.reject(`${r.status}: ${r.statusText}\n${t}`));
     return r.text().then(json5.parse);
   }
 

@@ -34,10 +34,13 @@ const ordering: Ref<SortOption[]> = ref([{ field: "id", ord: "asc" }]);
 const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
 function init() {
   pageState.value.setState(State.Loading);
-  api.searchinfo().then((r) => {
-    searchinfo.value = r;
-    pageState.value.setState(State.Main);
-  });
+  api
+    .searchinfo()
+    .then((r) => {
+      searchinfo.value = r;
+      pageState.value.setState(State.Main);
+    })
+    .catch((err) => pageState.value.setError(err));
 }
 
 function searchinfo2querybuilderrules(f: SearchInfoField): Rule {
@@ -103,7 +106,8 @@ function search(offset = 0) {
       searchState.value.setState(State.Main);
       pagination.value.offset = r.offset;
       pagination.value.total = r.total;
-    });
+    })
+    .catch((err) => pageState.value.setError(err));
 }
 
 const positionInResults: Ref<PositionInResult> = computed(() =>
