@@ -23,7 +23,8 @@ import type {
 import type { Rule, NestedRule } from "@/components/querybuilder/Rule";
 import QueryBuilder from "@/components/querybuilder/QueryBuilder.vue";
 import type { LeafRule } from "@/components/querybuilder/Rule";
-const state = usePageState();
+const pageState = usePageState();
+const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
 
 const api = useApi();
@@ -32,8 +33,11 @@ const query: Ref<CompoundQuery> = ref({ op: "and", value: [] });
 const ordering: Ref<SortOption[]> = ref([{ field: "id", ord: "asc" }]);
 const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
 function init() {
-  api.searchinfo().then((r) => (searchinfo.value = r));
-  search();
+  pageState.value.setState(State.Loading);
+  api.searchinfo().then((r) => {
+    searchinfo.value = r;
+    pageState.value.setState(State.Main);
+  });
 }
 
 function searchinfo2querybuilderrules(f: SearchInfoField): Rule {
@@ -85,7 +89,7 @@ const fieldNames: Record<string, string> = {
 };
 
 function search(offset = 0) {
-  state.value.setState(State.Loading);
+  searchState.value.setState(State.Loading);
 
   api
     .search({
@@ -96,7 +100,7 @@ function search(offset = 0) {
     })
     .then((r) => {
       entries.value = r.results;
-      state.value.setState(State.Main);
+      searchState.value.setState(State.Main);
       pagination.value.offset = r.offset;
       pagination.value.total = r.total;
     });
@@ -123,28 +127,25 @@ onMounted(init);
 
 <template>
   <main class="container pt-5">
-    <div class="row">
-      <div class="col">
-        <QueryBuilder v-model:query="query" :rules="rules" />
+    <Loading :state="pageState">
+      <div class="row">
+        <div class="col">
+          <QueryBuilder v-model:query="query" :rules="rules" />
 
-        <div class="d-flex mt-2 justify-content-end">
-          <button
-            @click="search(0)"
-            class="btn btn-secondary"
-            type="button"
-            id="button-search"
-          >
-            Search
-          </button>
+          <div class="d-flex mt-2 justify-content-end">
+            <button
+              @click="search(0)"
+              class="btn btn-secondary"
+              type="button"
+              id="button-search"
+            >
+              Search
+            </button>
+          </div>
         </div>
       </div>
-    </div>
 
-    <Loading :state="state">
-      <template v-slot:loading>
-        <CenteredLargeSpinner />
-      </template>
-      <template v-slot:content>
+      <Loading :state="searchState">
         <div class="row py-3 my-5">
           Showing search results {{ positionInResults.firstElement }}-{{
             positionInResults.lastElement
@@ -161,7 +162,7 @@ onMounted(init);
             @update:offset="search"
           />
         </div>
-      </template>
+      </Loading>
     </Loading>
   </main>
 </template>
