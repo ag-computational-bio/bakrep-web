@@ -4,13 +4,15 @@ export type NumberQuery = {
   op: "==" | "!=" | "<" | "<=" | ">" | ">=" | "[]";
   value: number;
 };
+export type Range = {
+  from: number;
+  to: number;
+};
+
 export type RangeQuery = {
   field: string;
   op: "[]";
-  value: {
-    from: number;
-    to: number;
-  };
+  value: Range;
 };
 export type StringQuery = {
   field: string;
@@ -39,6 +41,26 @@ export type Query =
   | StringQuery
   | NestedQuery
   | RangeQuery;
+
+export type LeafQuery = NumberQuery | RangeQuery | StringQuery;
+
+export function isLeafQuery(q: Query): q is LeafQuery {
+  return (
+    "value" in q && (isNumber(q.value) || isString(q.value) || isRange(q.value))
+  );
+}
+
+export function isString(d: unknown): d is string {
+  return typeof d === "string" || d instanceof String;
+}
+
+export function isNumber(d: unknown): d is number {
+  return typeof d === "number" || d instanceof Number;
+}
+
+export function isRange(d: unknown): d is Range {
+  return d != null && typeof d === "object" && "from" in d && "to" in d;
+}
 
 export type SortOption = {
   field: string;

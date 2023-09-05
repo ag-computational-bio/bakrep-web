@@ -11,30 +11,84 @@ import {
 import Pagination from "@/components/pagination/Pagination.vue";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
 import usePageState, { State } from "@/PageState";
-import { computed, onMounted, ref, type Ref } from "vue";
+import { computed, onMounted, ref, unref, type Ref } from "vue";
 import ResultTable from "./ResultTable.vue";
+import type {
+  CompoundQuery,
+  SearchInfo,
+  SearchInfoField,
+} from "@/model/Search";
+import type { Rule, NestedRule } from "@/components/querybuilder/Rule";
+import QueryBuilder from "@/components/querybuilder/QueryBuilder.vue";
+import type { LeafRule } from "@/components/querybuilder/Rule";
 const state = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
 
 const api = useApi();
 const pagination: Ref<PaginationData> = ref(empty());
 const searchText = ref("");
-function search(offset = 0) {
-  let query;
-  if (!searchText.value) query = {};
-  else
-    query = {
-      field: "gtdbtk.classification.species",
-      op: "~",
-      value: searchText.value,
-    };
 
+const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
+function init() {
+  api.searchinfo().then((r) => (searchinfo.value = r));
+  search();
+}
+
+function searchinfo2querybuilderrules(f: SearchInfoField): Rule {
+  if (f.type === "nested") {
+    const nestedRule: NestedRule = {
+      field: f.field,
+      label: f.field in fieldNames ? fieldNames[f.field] : f.field,
+      type: "nested",
+      rules: f.fields.map(searchinfo2querybuilderrules),
+    };
+    return nestedRule;
+  } else {
+    const leafRule: LeafRule = {
+      field: f.field,
+      label: f.field in fieldNames ? fieldNames[f.field] : f.field,
+      type: f.type as "number" | "text",
+      ops: f.ops.map((o) => ({ label: o, description: o })),
+    };
+    return leafRule;
+  }
+}
+
+const rules: Ref<Rule[]> = computed(() => {
+  let out: Rule[] = [];
+  out = searchinfo.value.fields.map(searchinfo2querybuilderrules);
+  return out;
+});
+
+const fieldNames: Record<string, string> = {
+  id: "Dataset id",
+  "bakta.stats.size": "Assembly size",
+  "bakta.stats.no_sequences": "Number of contigs",
+  "bakta.stats.gc": "GC content",
+  "bakta.stats.n_ratio": "N ratio",
+  "bakta.stats.n50": "N50",
+  "bakta.stats.coding_ratio": "Coding ratio",
+  "bakta.genome.strain": "Strain",
+  "gtdbtk.classification.domain": "Domain",
+  "gtdbtk.classification.phylum": "Phylum",
+  "gtdbtk.classification.class": "Class",
+  "gtdbtk.classification.order": "Order",
+  "gtdbtk.classification.family": "Family",
+  "gtdbtk.classification.genus": "Genus",
+  "gtdbtk.classification.species": "Species",
+  "mlst.sequence_type": "MLST Sequence type",
+  "checkm2.quality.completeness": "Completeness",
+  "checkm2.quality.contamination": "Contamination",
+  "bakta.features": "Annotated features",
+};
+
+function search(offset = 0) {
   state.value.setState(State.Loading);
 
   api
     .search({
-      query: query,
-      sort: [{ field: "bakta.stats.no_sequences", ord: "asc" }],
+      query: unref(query),
+      sort: [{ field: "gtdbtk.classification.species.keyword", ord: "asc" }],
       offset: offset,
       limit: 10,
     })
@@ -54,12 +108,18 @@ function handleKey(evt: KeyboardEvent) {
 const positionInResults: Ref<PositionInResult> = computed(() =>
   toPosition(pagination.value),
 );
-onMounted(search);
+
+const query: Ref<CompoundQuery> = ref({ op: "and", value: [] });
+
+onMounted(init);
 </script>
 
 <template>
   <main class="container pt-5">
     <div class="row">
+      <div class="col">
+        <QueryBuilder v-model:query="query" :rules="rules" />
+      </div>
       <div class="p-3 rounded bg-body-tertiary">
         <div class="input-group">
           <input
