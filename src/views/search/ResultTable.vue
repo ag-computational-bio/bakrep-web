@@ -54,6 +54,9 @@ function passOrdering(sortkey: string, newdirection: SortDirection | null) {
   emit("update:ordering", sortkey, newdirection);
 }
 
+const showFeatures = computed(() =>
+  props.entries.some((x) => x.bakta && x.bakta.features !== undefined),
+);
 </script>
 
 <template>
@@ -125,6 +128,7 @@ function passOrdering(sortkey: string, newdirection: SortDirection | null) {
               @update:ordering="passOrdering"
             />
           </th>
+          <th v-if="showFeatures">Features</th>
         </tr>
       </thead>
       <tbody>
@@ -152,6 +156,13 @@ function passOrdering(sortkey: string, newdirection: SortDirection | null) {
             <td class="text-nowrap">{{ sequenceType(entry) }}</td>
             <td>{{ completeness(entry) }} %</td>
             <td>{{ contamination(entry) }} %</td>
+            <td v-if="showFeatures">
+              <ul class="nostyle" v-if="entry.bakta && entry.bakta.features">
+                <li v-for="f of entry.bakta.features">
+                  {{ f.gene }} - {{ f.product }}
+                </li>
+              </ul>
+            </td>
           </tr>
         </template>
       </tbody>
