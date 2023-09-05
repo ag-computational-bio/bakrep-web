@@ -96,7 +96,7 @@ function search(offset = 0) {
       query: unref(query),
       sort: ordering.value,
       offset: offset,
-      limit: 10,
+      limit: pagination.value.limit,
     })
     .then((r) => {
       entries.value = r.results;
