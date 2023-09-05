@@ -119,21 +119,11 @@ onMounted(init);
     <div class="row">
       <div class="col">
         <QueryBuilder v-model:query="query" :rules="rules" />
-      </div>
-      <div class="p-3 rounded bg-body-tertiary">
-        <div class="input-group">
-          <input
-            type="text"
-            v-model="searchText"
-            placeholder="search bakrep for..."
-            class="form-control"
-            aria-describedby="button-search"
-            aria-label="Search Button"
-            @keydown="handleKey"
-          />
+
+        <div class="d-flex mt-2 justify-content-end">
           <button
             @click="search(0)"
-            class="btn btn-outline-secondary"
+            class="btn btn-secondary"
             type="button"
             id="button-search"
           >
