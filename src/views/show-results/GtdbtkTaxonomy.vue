@@ -1,19 +1,27 @@
 <template>
   <div>
     <div>
-      <span class="fw-bold">Phylogeny:</span>
-      <div v-for="(entry, index) in entries" :key="index" :title="entry.level">
-        <a
-          :style="{ 'margin-left': index * 5 + 'px' }"
-          :href="entry.url"
-          target="_blank"
-        >
-          {{ entry.label }}
-        </a>
-      </div>
-    </div>
-    <div>
       <table class="table statstable">
+        <tr>
+          <th scope="row" class="align-top">Phylogeny:</th>
+          <td>
+            <div>
+              <div
+                v-for="(entry, index) in entries"
+                :key="index"
+                :title="entry.level"
+              >
+                <a
+                  :style="{ 'margin-left': index + 'rem' }"
+                  :href="entry.url"
+                  target="_blank"
+                >
+                  {{ entry.label }}
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
         <template v-if="gtdb">
           <tr>
             <th scope="row">Reference genome:</th>
