@@ -68,7 +68,6 @@ const tabs: Tab[] = [
 
 const active_tab: Ref<string> = ref("summary");
 
-
 const state = usePageState();
 state.value.setState(State.Loading);
 </script>
@@ -80,50 +79,63 @@ state.value.setState(State.Loading);
     </div>
 
     <Loading :state="state">
-      <template v-slot:loading>
-        <CenteredLargeSpinner />
-      </template>
-      <template v-slot:content>
-        <Pane :items="tabs" :activeItem="active_tab" @update:value="(newValue) => (active_tab = newValue)">
-          <template v-if="active_tab === 'genome-viewer'">
-            <BaktaGenomeViewer :data="baktaResult" />
-          </template>
-          <template v-if="active_tab === 'annotation-stats'">
-            <BaktaStats :data="baktaResult" />
-          </template>
-          <template v-if="active_tab === 'annotation-table'">
-            <BaktaAnnotationTable :data="baktaResult" />
-          </template>
-          <template v-if="active_tab == 'summary'">
-            <div class="col-4">
-              <DatasetSummary :annotation="baktaResult" :id="id" :checkm="checkmResult" />
-            </div>
-          </template>
-          <template v-if="active_tab == 'download'">
-            <DownloadLinks :dataset="dataset" />
-          </template>
-          <template v-if="active_tab == 'annotation'">
-            <!-- <div class="h5" @click="toggle.annotation = !toggle.annotation"><i class="bi"
+      <Pane
+        :items="tabs"
+        :activeItem="active_tab"
+        @update:value="(newValue) => (active_tab = newValue)"
+      >
+        <template v-if="active_tab === 'genome-viewer'">
+          <BaktaGenomeViewer :data="baktaResult" />
+        </template>
+        <template v-if="active_tab === 'annotation-stats'">
+          <BaktaStats :data="baktaResult" />
+        </template>
+        <template v-if="active_tab === 'annotation-table'">
+          <BaktaAnnotationTable :data="baktaResult" />
+        </template>
+        <template v-if="active_tab == 'summary'">
+          <div class="col-4">
+            <DatasetSummary
+              :annotation="baktaResult"
+              :id="id"
+              :checkm="checkmResult"
+            />
+          </div>
+        </template>
+        <template v-if="active_tab == 'download'">
+          <DownloadLinks :dataset="dataset" />
+        </template>
+        <template v-if="active_tab == 'annotation'">
+          <!-- <div class="h5" @click="toggle.annotation = !toggle.annotation"><i class="bi"
                 :class="toggle.annotation ? 'bi-caret-down' : 'bi-caret-right'"></i>Annotation</div> -->
-            <div v-if="toggle.annotation">
-              <DatasetSummary :annotation="baktaResult" :id="id" :checkm="checkmResult" />
-              <button class="my-4 btn btn-primary" @click="featureTable = !featureTable">
-                <template v-if="featureTable"> Hide Table </template>
-                <template v-else> Show Table </template>
-              </button>
-              <FeatureTable v-if="featureTable" :features="baktaResult?.features" />
-            </div>
-          </template>
-          <template v-if="active_tab == 'taxonomy'">
-            <!-- <div class="h5" @click="toggle.taxonomy = !toggle.taxonomy"><i class="bi"
+          <div v-if="toggle.annotation">
+            <DatasetSummary
+              :annotation="baktaResult"
+              :id="id"
+              :checkm="checkmResult"
+            />
+            <button
+              class="my-4 btn btn-primary"
+              @click="featureTable = !featureTable"
+            >
+              <template v-if="featureTable"> Hide Table </template>
+              <template v-else> Show Table </template>
+            </button>
+            <FeatureTable
+              v-if="featureTable"
+              :features="baktaResult?.features"
+            />
+          </div>
+        </template>
+        <template v-if="active_tab == 'taxonomy'">
+          <!-- <div class="h5" @click="toggle.taxonomy = !toggle.taxonomy"><i class="bi"
                 :class="toggle.taxonomy ? 'bi-caret-down' : 'bi-caret-right'"></i>Taxonomy</div> -->
-            <GtdbtkTaxonomy :gtdb="gtdbtkResult" :mlst="mlstResult" />
-          </template>
-          <template v-if="active_tab == 'assembly'">
-            <DisplayAssembly :checkm="checkmResult" :bakta="baktaResult" />
-          </template>
-        </Pane>
-      </template>
+          <GtdbtkTaxonomy :gtdb="gtdbtkResult" :mlst="mlstResult" />
+        </template>
+        <template v-if="active_tab == 'assembly'">
+          <DisplayAssembly :checkm="checkmResult" :bakta="baktaResult" />
+        </template>
+      </Pane>
     </Loading>
   </main>
 </template>
