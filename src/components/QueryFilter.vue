@@ -1,64 +1,39 @@
 <template>
-  <div class="rounded bg-body-secondary p-4 mb-4">
-    <div class="input-group mb-3">
-      <span class="input-label input-group-text">Size:</span>
-      <input class="form-control" type="text" v-model="sizeMin" />
-      <span class="input-group-text">Min</span>
-      <input class="form-control" type="text" v-model="sizeMax" />
-      <span class="input-group-text">Max</span>
-    </div>
-
-    <div class="input-group mb-3">
-      <span class="input-label input-group-text">Contig Count:</span>
-      <input class="form-control" type="text" v-model="contigMin" />
-      <span class="input-group-text">Min</span>
-      <input class="form-control" type="text" v-model="contigMax" />
-      <span class="input-group-text">Max</span>
-    </div>
-
-    <div class="input-group mb-3">
-      <span class="input-label input-group-text">GC Ratio:</span>
-      <input class="form-control" type="text" v-model="gcMin" />
-      <span class="input-group-text">Min</span>
-      <input class="form-control" type="text" v-model="gcMax" />
-      <span class="input-group-text">Max</span>
-    </div>
-
-    <div class="input-group mb-3">
-      <div class="input-label input-group-text">Quality:</div>
-      <input class="form-control" type="text" v-model="qualityMin" />
-      <div class="input-group-text">Min</div>
-      <input class="form-control" type="text" v-model="qualityMax" />
-      <div class="input-group-text">Max</div>
-    </div>
-
-    <div class="input-group mb-3">
-      <div class="input-label input-group-text">Contamination:</div>
-      <input class="form-control" type="text" v-model="contaminationMin" />
-      <div class="input-group-text">Min</div>
-      <input class="form-control" type="text" v-model="contaminationMax" />
-      <div class="input-group-text">Max</div>
-    </div>
+  <div class="input-group mb-3">
+    <span class="input-label input-group-text">{{ label }}:</span>
+    <input
+      class="form-control"
+      type="text"
+      v-model.lazy.number="min"
+      @change="$emit('update:min', min)"
+    />
+    <span class="input-group-text">Min</span>
+    <input
+      class="form-control"
+      type="text"
+      v-model.lazy.number="max"
+      @change="$emit('update:max', max)"
+    />
+    <span class="input-group-text">Max</span>
   </div>
 </template>
 
 <script setup lang="ts">
-import { ref } from 'vue';
+import { ref, type PropType } from "vue";
+import type { filterTouple } from "@/views/BrowseView.vue";
 
-const sizeMin = ref();
-const sizeMax = ref();
+const props = defineProps({
+  label: { type: String, required: true },
+  modelValue: { type: Object as PropType<filterTouple>, required: true },
+});
 
-const gcMin = ref();
-const gcMax = ref();
+const emits = defineEmits<{
+  (e: "update:min", min: number): void;
+  (e: "update:max", max: number): void;
+}>();
 
-const qualityMin = ref();
-const qualityMax = ref();
-
-const contaminationMin = ref();
-const contaminationMax = ref();
-
-const contigMin = ref();
-const contigMax = ref();
+const min = ref(props.modelValue.min);
+const max = ref(props.modelValue.max);
 </script>
 
 <style scoped>

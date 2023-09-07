@@ -43,7 +43,7 @@ let drag = false;
 
 <template>
   <div class="rounded bg-light shadow-sm">
-    <table class="mt-3 table table-hover">
+    <table class="mt-3 table table-hover table-light">
       <thead>
         <tr>
           <th scope="col">Id</th>
