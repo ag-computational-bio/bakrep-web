@@ -21,16 +21,16 @@ const pageState = usePageState();
 const api = useApi();
 const pagination: Ref<PaginationData> = ref(empty());
 
-export type FilterTouple = {
+export type FilterTuple = {
   from: number;
   to: number;
 };
 
-const sizeTouple = ref<FilterTouple>({ from: 0, to: 9999999 });
-const gcTouple = ref<FilterTouple>({ from: 0, to: 75 });
-const contigTouple = ref<FilterTouple>({ from: 0, to: 1000 });
-const qualityTouple = ref<FilterTouple>({ from: 0, to: 100 });
-const contaminationTouple = ref<FilterTouple>({ from: 0, to: 100 });
+const sizeTouple = ref<FilterTuple>({ from: 0, to: 9999999 });
+const gcTouple = ref<FilterTuple>({ from: 0, to: 75 });
+const contigTouple = ref<FilterTuple>({ from: 0, to: 1000 });
+const qualityTouple = ref<FilterTuple>({ from: 0, to: 100 });
+const contaminationTouple = ref<FilterTuple>({ from: 0, to: 100 });
 
 function filter(offset = 0) {
   let query;
@@ -110,15 +110,15 @@ onMounted(filter);
         <div class="col">
           <div class="rounded bg-body-secondary p-4 mb-4">
             <QueryFilter label="Size" v-model="sizeTouple"
-              @update:modelValue="(newValue: FilterTouple) => (sizeTouple = newValue)" />
+              @update:modelValue="(newValue: FilterTuple) => (sizeTouple = newValue)" />
             <QueryFilter label="GC Ratio" v-model="gcTouple"
-              @update:modelValue="(newValue: FilterTouple) => (gcTouple = newValue)" />
+              @update:modelValue="(newValue: FilterTuple) => (gcTouple = newValue)" />
             <QueryFilter label="Contig Count" v-model="contigTouple"
-              @update:modelValue="(newValue: FilterTouple) => (contigTouple = newValue)" />
+              @update:modelValue="(newValue: FilterTuple) => (contigTouple = newValue)" />
             <QueryFilter label="Quality" v-model="qualityTouple"
-              @update:modelValue="(newValue: FilterTouple) => (qualityTouple = newValue)" />
+              @update:modelValue="(newValue: FilterTuple) => (qualityTouple = newValue)" />
             <QueryFilter label="Contamination" v-model="contaminationTouple"
-              @update:modelValue="(newValue: FilterTouple) => (contaminationTouple = newValue)" />
+              @update:modelValue="(newValue: FilterTuple) => (contaminationTouple = newValue)" />
             <button class="btn btn-light w-100" @click="filter()">Apply Filter</button>
           </div>
         </div>
