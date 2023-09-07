@@ -20,15 +20,15 @@
 
 <script setup lang="ts">
 import { ref, type PropType } from "vue";
-import type { filterTouple } from "@/views/BrowseView.vue";
+import type { FilterTouple } from "@/views/BrowseView.vue";
 
 const props = defineProps({
   label: { type: String, required: true },
-  modelValue: { type: Object as PropType<filterTouple>, required: true },
+  modelValue: { type: Object as PropType<FilterTouple>, required: true },
 });
 
 const emits = defineEmits<{
-  (e: "update:modelValue", value: filterTouple): void;
+  (e: "update:modelValue", value: FilterTouple): void;
 }>();
 
 const min = ref(props.modelValue.from);
