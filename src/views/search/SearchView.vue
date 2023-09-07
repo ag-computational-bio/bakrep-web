@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import { useApi } from "@/BakrepApi";
-import CenteredLargeSpinner from "@/components/CenteredLargeSpinner.vue";
+import usePageState, { State } from "@/PageState";
 import Loading from "@/components/Loading.vue";
 import {
   empty,
@@ -9,10 +9,13 @@ import {
   type PositionInResult,
 } from "@/components/pagination/Pagination";
 import Pagination from "@/components/pagination/Pagination.vue";
+import QueryBuilder from "@/components/querybuilder/QueryBuilder.vue";
+import type {
+  LeafRule,
+  NestedRule,
+  Rule,
+} from "@/components/querybuilder/Rule";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
-import usePageState, { State } from "@/PageState";
-import { computed, onMounted, ref, unref, type Ref } from "vue";
-import ResultTable from "./ResultTable.vue";
 import type {
   CompoundQuery,
   SearchInfo,
@@ -20,9 +23,8 @@ import type {
   SortDirection,
   SortOption,
 } from "@/model/Search";
-import type { Rule, NestedRule } from "@/components/querybuilder/Rule";
-import QueryBuilder from "@/components/querybuilder/QueryBuilder.vue";
-import type { LeafRule } from "@/components/querybuilder/Rule";
+import { computed, onMounted, ref, unref, type Ref } from "vue";
+import ResultTable from "./ResultTable.vue";
 const pageState = usePageState();
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
@@ -134,7 +136,7 @@ onMounted(init);
     <Loading :state="pageState">
       <div class="row">
         <div class="col">
-          <QueryBuilder v-model:query="query" :rules="rules" />
+          <QueryBuilder v-model:query="query" :rules="rules" @submit="search" />
 
           <div class="d-flex mt-2 justify-content-end">
             <button

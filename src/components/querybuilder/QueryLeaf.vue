@@ -31,13 +31,14 @@
               class="form-control"
               type="text"
               :placeholder="options.labels.textInputPlaceholder"
+              @keydown.enter="$emit('submit')"
             />
           </div>
 
           <!-- Basic number input -->
           <template v-else-if="rule.type === 'number'">
-            <template v-if="isRange(query.value) && query.op === '[]'">
-              <RangeInput v-model:value="query.value" />
+            <template v-if="isRange(value) && query.op === '[]'">
+              <RangeInput v-model:value="value" @submit="$emit('submit')" />
             </template>
             <template v-else>
               <div class="col">
@@ -46,6 +47,7 @@
                   class="form-control"
                   type="number"
                   step="any"
+                  @keydown.enter="$emit('submit')"
                 />
               </div>
             </template>
@@ -78,14 +80,15 @@ import RangeInput from "./input/RangeInput.vue";
 const props = defineProps({
   index: { type: Number as PropType<number>, default: 0 },
   depth: { type: Number as PropType<number>, default: 0 },
-  query: { type: Object as PropType<LeafQuery>, default: {} },
-  options: { type: Object as PropType<QueryBuilderOptions>, default: 0 },
-  rules: { type: Array as PropType<Rule[]>, default: [] },
+  query: { type: Object as PropType<LeafQuery>, default: () => {} },
+  options: { type: Object as PropType<QueryBuilderOptions>, required: true },
+  rules: { type: Array as PropType<Rule[]>, default: () => [] },
 });
 
 const emit = defineEmits<{
   (e: "remove:query", i: number): void;
   (e: "update:query", i: number, q: Query): void;
+  (e: "submit"): void;
 }>();
 const rule: Ref<LeafRule | undefined> = computed(() => {
   return props.rules.find(

@@ -1,12 +1,14 @@
 <template>
   <div class="query-builder">
     <QueryGroup
+      :index="0"
       :depth="0"
       :query="query"
       :rules="rules"
       :options="options"
       @update:query="updateQuery"
       @remove:query="removeQuery"
+      @submit="emit('submit')"
     />
   </div>
 </template>
@@ -51,7 +53,10 @@ const props = defineProps({
   },
 });
 
-const emit = defineEmits<{ (e: "update:query", v: Query): void }>();
+const emit = defineEmits<{
+  (e: "update:query", v: Query): void;
+  (e: "submit"): void;
+}>();
 
 function updateQuery(idx: number, newQuery: Query) {
   emit("update:query", newQuery);

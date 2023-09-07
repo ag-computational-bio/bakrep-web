@@ -8,6 +8,7 @@
     :depth="depth + 1"
     @update:query="updateQuery"
     @remove:query="removeQuery"
+    @submit="$emit('submit')"
   />
 </template>
 <script setup lang="ts">
@@ -17,16 +18,17 @@ import QueryGroup from "./QueryGroup.vue";
 import type { NestedRule, QueryBuilderOptions, Rule } from "./Rule";
 
 const props = defineProps({
-  index: { type: Number as PropType<number>, default: 0 },
-  depth: { type: Number as PropType<number>, default: 0 },
-  query: { type: Object as PropType<NestedQuery>, default: {} },
-  options: { type: Object as PropType<QueryBuilderOptions>, default: 0 },
-  rules: { type: Array as PropType<Rule[]>, default: [] },
+  index: { type: Number as PropType<number>, required: true },
+  depth: { type: Number as PropType<number>, required: true },
+  query: { type: Object as PropType<NestedQuery>, required: true },
+  options: { type: Object as PropType<QueryBuilderOptions>, required: true },
+  rules: { type: Array as PropType<Rule[]>, default: () => [] },
 });
 
 const emit = defineEmits<{
   (e: "update:query", i: number, v: Query): void;
   (e: "remove:query", i: number): void;
+  (e: "submit"): void;
 }>();
 
 const rule = computed(
@@ -36,7 +38,7 @@ const nestedRules = computed(() => rule.value.rules);
 function updateQuery(idx: number, query: Query) {
   emit("update:query", props.index, { ...props.query, value: query });
 }
-function removeQuery(idx: number) {
+function removeQuery() {
   emit("remove:query", props.index);
 }
 </script>

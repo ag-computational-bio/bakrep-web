@@ -14,7 +14,7 @@
           <div class="col-auto">
             <select
               id="query-builder-match-type"
-              v-model="query.op"
+              v-model="op"
               class="form-select"
             >
               <option value="or">{{ options.labels.matchTypes.or }}</option>
@@ -77,29 +77,36 @@
         :options="options"
         :rules="rules"
         @update:children="updateChildren"
+        @submit="emit('submit')"
       />
     </div>
   </div>
 </template>
 <script setup lang="ts">
 import type { CompoundQuery, Query } from "@/model/Search";
-import { ref, type PropType } from "vue";
+import { ref, type PropType, computed } from "vue";
 import type { QueryBuilderOptions, Rule } from "./Rule";
 import QueryGroupChildren from "./QueryGroupChildren.vue";
 
 const props = defineProps({
-  index: { type: Number as PropType<number>, default: 0 },
-  depth: { type: Number as PropType<number>, default: 0 },
-  query: { type: Object as PropType<CompoundQuery>, default: {} },
-  options: { type: Object as PropType<QueryBuilderOptions>, default: 0 },
-  rules: { type: Array as PropType<Rule[]>, default: [] },
+  index: { type: Number as PropType<number>, required: true },
+  depth: { type: Number as PropType<number>, required: true },
+  query: { type: Object as PropType<CompoundQuery>, required: true },
+  options: { type: Object as PropType<QueryBuilderOptions>, required: true },
+  rules: { type: Array as PropType<Rule[]>, default: () => [] },
   title: { type: String, default: "" },
 });
 
 const emit = defineEmits<{
   (e: "update:query", i: number, v: CompoundQuery): void;
   (e: "remove:query", i: number): void;
+  (e: "submit"): void;
 }>();
+
+const op = computed({
+  get: () => props.query.op,
+  set: (v) => emit("update:query", props.index, { ...props.query, op: v }),
+});
 
 const selectedRule = ref(0);
 

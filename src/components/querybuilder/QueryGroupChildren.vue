@@ -9,6 +9,7 @@
       :depth="depth + 1"
       @update:query="updateQuery"
       @remove:query="removeQuery"
+      @submit="emit('submit')"
     />
     <QueryNested
       v-if="'op' in child && child.op == 'nested'"
@@ -19,6 +20,7 @@
       :depth="depth + 1"
       @update:query="updateQuery"
       @remove:query="removeQuery"
+      @submit="emit('submit')"
     />
     <QueryLeaf
       v-if="isLeafQuery(child)"
@@ -29,6 +31,7 @@
       :depth="depth + 1"
       @update:query="updateQuery"
       @remove:query="removeQuery"
+      @submit="emit('submit')"
     />
   </template>
 </template>
@@ -37,17 +40,19 @@ import { isLeafQuery, type Query } from "@/model/Search";
 import type { PropType } from "vue";
 import QueryGroup from "./QueryGroup.vue";
 import QueryLeaf from "./QueryLeaf.vue";
-import type { NestedRule, QueryBuilderOptions, Rule } from "./Rule";
-import QueryBuilder from "./QueryBuilder.vue";
 import QueryNested from "./QueryNested.vue";
+import type { QueryBuilderOptions, Rule } from "./Rule";
 
 const props = defineProps({
   children: { type: Array as PropType<Query[]>, default: () => [] },
-  depth: { type: Number as PropType<number>, default: 0 },
-  options: { type: Object as PropType<QueryBuilderOptions>, default: 0 },
-  rules: { type: Array as PropType<Rule[]>, default: [] },
+  depth: { type: Number as PropType<number>, required: true },
+  options: { type: Object as PropType<QueryBuilderOptions>, required: true },
+  rules: { type: Array as PropType<Rule[]>, default: () => [] },
 });
-const emit = defineEmits<{ (e: "update:children", v: Query[]): void }>();
+const emit = defineEmits<{
+  (e: "update:children", v: Query[]): void;
+  (e: "submit"): void;
+}>();
 
 function updateQuery(index: number, query: Query) {
   const newChildren = [...props.children];
