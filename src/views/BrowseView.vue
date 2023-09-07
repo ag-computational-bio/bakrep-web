@@ -15,8 +15,6 @@ import ResultTable from "@/views/search/ResultTable.vue";
 import { computed, onMounted, ref, type Ref } from "vue";
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
-const pageState = usePageState();
-
 const api = useApi();
 const pagination: Ref<PaginationData> = ref(empty());
 
@@ -26,7 +24,7 @@ export type FilterTuple = {
 };
 
 const sizeTuple = ref<FilterTuple>({ from: 0, to: 9999999 });
-const gcTuple = ref<FilterTuple>({ from: 0, to: 75 });
+const gcTuple = ref<FilterTuple>({ from: 0, to: 100 });
 const contigTuple = ref<FilterTuple>({ from: 0, to: 1000 });
 const qualityTuple = ref<FilterTuple>({ from: 0, to: 100 });
 const contaminationTuple = ref<FilterTuple>({ from: 0, to: 100 });
@@ -90,7 +88,7 @@ function filter(offset = 0) {
       pagination.value.offset = r.offset;
       pagination.value.total = r.total;
     })
-    .catch((err) => pageState.value.setError(err));
+    .catch((err) => searchState.value.setError(err));
 }
 const positionInResults: Ref<PositionInResult> = computed(() =>
   toPosition(pagination.value),
@@ -104,7 +102,6 @@ onMounted(filter);
     <div class="row">
       <h2>Browse BakRep Genomes</h2>
     </div>
-    <loading :state="pageState">
       <div class="row">
         <div class="col">
           <div class="rounded bg-body-secondary p-4 mb-4">
@@ -133,7 +130,6 @@ onMounted(filter);
           />
         </div>
       </Loading>
-    </loading>
   </main>
 </template>
 <style></style>
