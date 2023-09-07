@@ -1,13 +1,13 @@
 import { z } from "zod";
 
 const ClassfificationSchema = z.object({
-  domain: z.string(),
-  phylum: z.string(),
-  class: z.string(),
-  order: z.string(),
-  family: z.string(),
-  genus: z.string(),
-  species: z.string(),
+  domain: z.optional(z.string()),
+  phylum: z.optional(z.string()),
+  class: z.optional(z.string()),
+  order: z.optional(z.string()),
+  family: z.optional(z.string()),
+  genus: z.optional(z.string()),
+  species: z.optional(z.string()),
 });
 
 const GtdbtkResultSchema = z.object({

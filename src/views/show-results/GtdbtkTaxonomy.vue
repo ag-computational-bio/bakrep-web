@@ -1,19 +1,27 @@
 <template>
   <div>
     <div>
-      <span class="fw-bold">Phylogeny:</span>
-      <div v-for="(entry, index) in entries" :key="index" :title="entry.level">
-        <a
-          :style="{ 'margin-left': index * 5 + 'px' }"
-          :href="entry.url"
-          target="_blank"
-        >
-          {{ entry.label }}
-        </a>
-      </div>
-    </div>
-    <div>
       <table class="table statstable">
+        <tr>
+          <th scope="row" class="align-top">Phylogeny:</th>
+          <td>
+            <div>
+              <div
+                v-for="(entry, index) in entries"
+                :key="index"
+                :title="entry.level"
+              >
+                <a
+                  :style="{ 'margin-left': index + 'rem' }"
+                  :href="entry.url"
+                  target="_blank"
+                >
+                  {{ entry.label }}
+                </a>
+              </div>
+            </div>
+          </td>
+        </tr>
         <template v-if="gtdb">
           <tr>
             <th scope="row">Reference genome:</th>
@@ -39,8 +47,14 @@
             <td>{{ mlst[0].scheme }}</td>
           </tr>
           <tr>
-            <th scope="row">Alleles:</th>
-            <td>{{ mlst[0].allels }}</td>
+            <th scope="row" class="align-top">Alleles:</th>
+            <td>
+              <ul v-if="mlst[0].alleles">
+                <li v-for="e of Object.entries(mlst[0].alleles)">
+                  {{ e[0] }}: {{ e[1] }}
+                </li>
+              </ul>
+            </td>
           </tr>
         </template>
         <template v-else>
@@ -97,13 +111,13 @@ const entries = computed(() => {
   if (props.gtdb) {
     const c = props.gtdb.classification;
     return [
-      toEntry("domain", c.domain),
-      toEntry("phylum", c.phylum),
-      toEntry("class", c.class),
-      toEntry("order", c.order),
-      toEntry("family", c.family),
-      toEntry("genus", c.genus),
-      toEntry("species", c.species),
+      toEntry("domain", c.domain ? c.domain : ""),
+      toEntry("phylum", c.phylum ? c.phylum : ""),
+      toEntry("class", c.class ? c.class : ""),
+      toEntry("order", c.order ? c.order : ""),
+      toEntry("family", c.family ? c.family : ""),
+      toEntry("genus", c.genus ? c.genus : ""),
+      toEntry("species", c.species ? c.species : ""),
     ];
   }
   return [];
