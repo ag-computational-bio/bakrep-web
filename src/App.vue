@@ -1,9 +1,8 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router";
-import Navbar from "./components/Navbar.vue";
+import { onMounted, ref } from "vue";
+import { RouterView } from "vue-router";
 import Footer from "./components/Footer.vue";
-import { ref } from "vue";
-import { onMounted } from "vue";
+import Navbar from "./components/Navbar.vue";
 
 const theme = ref(
   window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light",
@@ -20,16 +19,9 @@ onMounted(() => {
 <template>
   <Navbar />
 
-  <div id="content" class="">
+  <div id="content">
     <RouterView />
   </div>
 
-  <Footer class="" />
+  <Footer />
 </template>
-
-<style>
-#content {
-  margin-top: calc(80px + 1rem);
-  min-height: calc(100vh - 200px - 80px - 1rem);
-}
-</style>

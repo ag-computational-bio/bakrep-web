@@ -1,3 +1,20 @@
+body {
+  --header-height: 80px;
+  --footer-height: 80px;
+}
+#content {
+  margin-top: calc(var(--header-height) + 1rem);
+  min-height: calc(100vh - var(--footer-height) - var(--header-height) - 2rem);
+}
+footer {
+  margin-bottom: 1rem;
+}
+.logo {
+  height: var(--footer-height);
+  margin-left: 2rem;
+  margin-right: 2rem;
+}
+
 .statstable > tr > th,
 .statstable > tbody > tr > th {
   font-weight: bold;
