@@ -136,20 +136,17 @@ const showFeatures = computed(() =>
       </thead>
       <tbody>
         <template v-for="entry in entries" :key="entry.id">
-          <tr
-            @mousedown="drag = false"
-            @mousemove="drag = true"
-            @mouseup="
-              if (!drag) {
-                $router.push({
+          <tr>
+            <td scope="row">
+              <router-link
+                :to="{
                   name: 'result',
                   params: { id: entry.id, title: entry.id },
-                });
-              }
-            "
-            class="pointer"
-          >
-            <td scope="row">{{ entry.id }}</td>
+                }"
+              >
+                {{ entry.id }}
+              </router-link>
+            </td>
             <td>{{ gc(entry) }}</td>
             <td>{{ contigs(entry) }}</td>
             <td>
