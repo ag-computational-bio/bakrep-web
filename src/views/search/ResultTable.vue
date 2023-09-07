@@ -29,7 +29,10 @@ function contigs(entry: BakrepSearchResultEntry): string {
 }
 function genomeSize(entry: BakrepSearchResultEntry): string {
   if (!entry.bakta) return "?";
-  return Math.round(entry.bakta.stats.size / 1000).toLocaleString("en") + " KB";
+  return (
+    (Math.round(entry.bakta.stats.size / 10000) / 100).toLocaleString("en") +
+    " Mbp"
+  );
 }
 function species(entry: BakrepSearchResultEntry): string {
   if (!entry.gtdbtk || !entry.gtdbtk.classification.species) return "?";
@@ -158,7 +161,7 @@ const showFeatures = computed(() =>
             <td>{{ contamination(entry) }} %</td>
             <td v-if="showFeatures">
               <ul class="nostyle" v-if="entry.bakta && entry.bakta.features">
-                <li v-for="f of entry.bakta.features">
+                <li v-for="(f, idx) of entry.bakta.features" :key="idx">
                   {{ f.gene }} - {{ f.product }}
                 </li>
               </ul>
