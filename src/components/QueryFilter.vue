@@ -4,15 +4,15 @@
     <input
       class="form-control"
       type="text"
-      v-model.number="min"
-      @change="$emit('update:modelValue', {from: min, to: max})"
+      v-model.number="$props.modelValue.from"
+      @change="$emit('update:modelValue', $props.modelValue)"
     />
     <span class="input-group-text">Min</span>
     <input
       class="form-control"
       type="text"
-      v-model.number="max"
-      @change="$emit('update:modelValue', {from: min, to: max})"
+      v-model.number="$props.modelValue.to"
+      @change="$emit('update:modelValue', $props.modelValue)"
     />
     <span class="input-group-text">Max</span>
   </div>
@@ -30,9 +30,6 @@ const props = defineProps({
 const emits = defineEmits<{
   (e: "update:modelValue", value: FilterTuple): void;
 }>();
-
-const min = ref(props.modelValue.from);
-const max = ref(props.modelValue.to);
 </script>
 
 <style scoped>

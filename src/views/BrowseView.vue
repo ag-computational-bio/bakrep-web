@@ -26,11 +26,11 @@ export type FilterTuple = {
   to: number;
 };
 
-const sizeTouple = ref<FilterTuple>({ from: 0, to: 9999999 });
-const gcTouple = ref<FilterTuple>({ from: 0, to: 75 });
-const contigTouple = ref<FilterTuple>({ from: 0, to: 1000 });
-const qualityTouple = ref<FilterTuple>({ from: 0, to: 100 });
-const contaminationTouple = ref<FilterTuple>({ from: 0, to: 100 });
+const sizeTuple = ref<FilterTuple>({ from: 0, to: 9999999 });
+const gcTuple = ref<FilterTuple>({ from: 0, to: 75 });
+const contigTuple = ref<FilterTuple>({ from: 0, to: 1000 });
+const qualityTuple = ref<FilterTuple>({ from: 0, to: 100 });
+const contaminationTuple = ref<FilterTuple>({ from: 0, to: 100 });
 
 function filter(offset = 0) {
   let query;
@@ -42,20 +42,20 @@ function filter(offset = 0) {
       {
         field: "bakta.stats.size",
         op: "[]",
-        value: sizeTouple.value,
+        value: sizeTuple.value,
       },
 
       {
         field: "bakta.stats.gc",
         op: "[]",
-        value: { from: gcTouple.value.from / 100, to: gcTouple.value.to / 100 },
+        value: { from: gcTuple.value.from / 100, to: gcTuple.value.to / 100 },
       },
       // Contig Count Filter
 
       {
         field: "bakta.stats.no_sequences",
         op: "[]",
-        value: contigTouple.value,
+        value: contigTuple.value,
       },
 
       // Quality Filter
@@ -63,7 +63,7 @@ function filter(offset = 0) {
       {
         field: "checkm2.quality.completeness",
         op: "[]",
-        value: qualityTouple.value,
+        value: qualityTuple.value,
       },
 
       // Contamination Filter
@@ -71,7 +71,7 @@ function filter(offset = 0) {
       {
         field: "checkm2.quality.contamination",
         op: "[]",
-        value: contaminationTouple.value,
+        value: contaminationTuple.value,
       },
     ],
   };
@@ -109,16 +109,16 @@ onMounted(filter);
       <div class="row">
         <div class="col">
           <div class="rounded bg-body-secondary p-4 mb-4">
-            <QueryFilter label="Size" v-model="sizeTouple"
-              @update:modelValue="(newValue: FilterTuple) => (sizeTouple = newValue)" />
-            <QueryFilter label="GC Ratio" v-model="gcTouple"
-              @update:modelValue="(newValue: FilterTuple) => (gcTouple = newValue)" />
-            <QueryFilter label="Contig Count" v-model="contigTouple"
-              @update:modelValue="(newValue: FilterTuple) => (contigTouple = newValue)" />
-            <QueryFilter label="Quality" v-model="qualityTouple"
-              @update:modelValue="(newValue: FilterTuple) => (qualityTouple = newValue)" />
-            <QueryFilter label="Contamination" v-model="contaminationTouple"
-              @update:modelValue="(newValue: FilterTuple) => (contaminationTouple = newValue)" />
+            <QueryFilter label="Size" v-model="sizeTuple"
+              @update:modelValue="(newValue: FilterTuple) => (sizeTuple = newValue)" />
+            <QueryFilter label="GC Ratio" v-model="gcTuple"
+              @update:modelValue="(newValue: FilterTuple) => (gcTuple = newValue)" />
+            <QueryFilter label="Contig Count" v-model="contigTuple"
+              @update:modelValue="(newValue: FilterTuple) => (contigTuple = newValue)" />
+            <QueryFilter label="Quality" v-model="qualityTuple"
+              @update:modelValue="(newValue: FilterTuple) => (qualityTuple = newValue)" />
+            <QueryFilter label="Contamination" v-model="contaminationTuple"
+              @update:modelValue="(newValue: FilterTuple) => (contaminationTuple = newValue)" />
             <button class="btn btn-light w-100" @click="filter()">Apply Filter</button>
           </div>
         </div>
