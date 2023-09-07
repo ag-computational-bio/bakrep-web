@@ -64,7 +64,7 @@ const showFeatures = computed(() =>
 
 <template>
   <div class="rounded bg-light shadow-sm">
-    <table class="mt-3 table table-hover table-light">
+    <table class="mt-3 table table-hover">
       <thead>
         <tr>
           <th scope="col">

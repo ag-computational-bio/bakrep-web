@@ -14,8 +14,9 @@ import {
 import Pagination from "@/components/pagination/Pagination.vue";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
 import usePageState, { State } from "@/PageState";
-const state = usePageState();
+const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
+const pageState = usePageState();
 
 const api = useApi();
 const pagination: Ref<PaginationData> = ref(empty());
@@ -44,11 +45,10 @@ function filter(offset = 0) {
         value: sizeTouple.value,
       },
 
-
       {
         field: "bakta.stats.gc",
         op: "[]",
-        value: gcTouple.value,
+        value: { from: gcTouple.value.from / 100, to: gcTouple.value.to / 100 },
       },
       // Contig Count Filter
 
@@ -76,7 +76,7 @@ function filter(offset = 0) {
     ],
   };
 
-  state.value.setState(State.Loading);
+  searchState.value.setState(State.Loading);
 
   api
     .search({
@@ -87,10 +87,11 @@ function filter(offset = 0) {
     })
     .then((r) => {
       entries.value = r.results;
-      state.value.setState(State.Main);
+      searchState.value.setState(State.Main);
       pagination.value.offset = r.offset;
       pagination.value.total = r.total;
-    });
+    })
+    .catch((err) => pageState.value.setError(err));
 }
 const positionInResults: Ref<PositionInResult> = computed(() =>
   toPosition(pagination.value),
@@ -104,32 +105,25 @@ onMounted(filter);
     <div class="row">
       <h2>Browse BakRep Genomes</h2>
     </div>
-
-    <div class="row">
-      <div class="col">
-        <div class="rounded bg-body-secondary p-4 mb-4">
-          <QueryFilter label="Size" v-model="sizeTouple" @update:min="(newValue: number) => (sizeTouple.from = newValue)"
-            @update:max="(newValue: number) => (sizeTouple.to = newValue)" />
-          <QueryFilter label="GC Ratio" v-model="gcTouple" @update:min="(newValue: number) => (gcTouple.from = newValue)"
-            @update:max="(newValue: number) => (gcTouple.to = newValue)" />
-          <QueryFilter label="Contig Count" v-model="contigTouple"
-            @update:min="(newValue: number) => (contigTouple.from = newValue)"
-            @update:max="(newValue: number) => (contigTouple.to = newValue)" />
-          <QueryFilter label="Quality" v-model="qualityTouple"
-            @update:min="(newValue: number) => (qualityTouple.from = newValue)"
-            @update:max="(newValue: number) => (qualityTouple.to = newValue)" />
-          <QueryFilter label="Contamination" v-model="contaminationTouple"
-            @update:min="(newValue: number) => (contaminationTouple.from = newValue)"
-            @update:max="(newValue: number) => (contaminationTouple.to = newValue)" />
-          <button class="btn btn-light w-100" @click="filter()">Apply Filter</button>
+    <loading :state="pageState">
+      <div class="row">
+        <div class="col">
+          <div class="rounded bg-body-secondary p-4 mb-4">
+            <QueryFilter label="Size" v-model="sizeTouple"
+              @update:modelValue="(newValue: filterTouple) => (sizeTouple = newValue)" />
+            <QueryFilter label="GC Ratio" v-model="gcTouple"
+              @update:modelValue="(newValue: filterTouple) => (gcTouple = newValue)" />
+            <QueryFilter label="Contig Count" v-model="contigTouple"
+              @update:modelValue="(newValue: filterTouple) => (contigTouple = newValue)" />
+            <QueryFilter label="Quality" v-model="qualityTouple"
+              @update:modelValue="(newValue: filterTouple) => (qualityTouple = newValue)" />
+            <QueryFilter label="Contamination" v-model="contaminationTouple"
+              @update:modelValue="(newValue: filterTouple) => (contaminationTouple = newValue)" />
+            <button class="btn btn-light w-100" @click="filter()">Apply Filter</button>
+          </div>
         </div>
       </div>
-    </div>
-    <Loading :state="state">
-      <template v-slot:loading>
-        <CenteredLargeSpinner />
-      </template>
-      <template v-slot:content>
+      <Loading :state="searchState">
         <div class="row py-3 my-5">
           Showing results {{ positionInResults.firstElement }}-{{
             positionInResults.lastElement
@@ -138,8 +132,8 @@ onMounted(filter);
           <ResultTable :entries="entries" />
           <Pagination class="mt-3" :value="pagination" @update:offset="filter" />
         </div>
-      </template>
-    </Loading>
+      </Loading>
+    </loading>
   </main>
 </template>
 
