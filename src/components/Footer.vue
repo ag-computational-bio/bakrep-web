@@ -11,6 +11,14 @@
         <a href="https://www.denbi.de/">
           <img src="@/assets/images/De.NBI_Logo.svg" class="logo" />
         </a>
+        <a href="https://www.denbi.de/">
+          <img src="@/assets/images/JLU_Giessen-Logo.svg" class="logo" />
+        </a>
+        <div class="d-flex align-items-start border-start">
+          <a href="https://www.uni-giessen.de/impressum" class="ms-2 nav-link">
+            Imprint
+          </a>
+        </div>
       </div>
     </footer>
   </div>
