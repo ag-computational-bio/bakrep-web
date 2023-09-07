@@ -4,14 +4,14 @@
     <input
       class="form-control"
       type="text"
-      v-model.lazy.number="min"
+      v-model.number="min"
       @change="$emit('update:min', min)"
     />
     <span class="input-group-text">Min</span>
     <input
       class="form-control"
       type="text"
-      v-model.lazy.number="max"
+      v-model.number="max"
       @change="$emit('update:max', max)"
     />
     <span class="input-group-text">Max</span>
