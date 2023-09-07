@@ -1,10 +1,8 @@
 <script setup lang="ts">
-import { onMounted, ref, type Ref, computed } from "vue";
-import ResultTable from "@/views/search/ResultTable.vue";
-import QueryFilter from "@/components/QueryFilter.vue";
 import { useApi } from "@/BakrepApi";
-import CenteredLargeSpinner from "@/components/CenteredLargeSpinner.vue";
+import usePageState, { State } from "@/PageState";
 import Loading from "@/components/Loading.vue";
+import QueryFilter from "@/components/QueryFilter.vue";
 import {
   empty,
   toPosition,
@@ -13,7 +11,8 @@ import {
 } from "@/components/pagination/Pagination";
 import Pagination from "@/components/pagination/Pagination.vue";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
-import usePageState, { State } from "@/PageState";
+import ResultTable from "@/views/search/ResultTable.vue";
+import { computed, onMounted, ref, type Ref } from "vue";
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
 const pageState = usePageState();
@@ -109,17 +108,14 @@ onMounted(filter);
       <div class="row">
         <div class="col">
           <div class="rounded bg-body-secondary p-4 mb-4">
-            <QueryFilter label="Size" v-model="sizeTuple"
-              @update:modelValue="(newValue: FilterTuple) => (sizeTuple = newValue)" />
-            <QueryFilter label="GC Ratio" v-model="gcTuple"
-              @update:modelValue="(newValue: FilterTuple) => (gcTuple = newValue)" />
-            <QueryFilter label="Contig Count" v-model="contigTuple"
-              @update:modelValue="(newValue: FilterTuple) => (contigTuple = newValue)" />
-            <QueryFilter label="Quality" v-model="qualityTuple"
-              @update:modelValue="(newValue: FilterTuple) => (qualityTuple = newValue)" />
-            <QueryFilter label="Contamination" v-model="contaminationTuple"
-              @update:modelValue="(newValue: FilterTuple) => (contaminationTuple = newValue)" />
-            <button class="btn btn-light w-100" @click="filter()">Apply Filter</button>
+            <QueryFilter label="Size" v-model="sizeTuple" />
+            <QueryFilter label="GC Ratio" v-model="gcTuple" />
+            <QueryFilter label="Contig Count" v-model="contigTuple" />
+            <QueryFilter label="Quality" v-model="qualityTuple" />
+            <QueryFilter label="Contamination" v-model="contaminationTuple" />
+            <button class="btn btn-light w-100" @click="filter()">
+              Apply Filter
+            </button>
           </div>
         </div>
       </div>
@@ -130,7 +126,11 @@ onMounted(filter);
           }}
           of {{ pagination.total }} results
           <ResultTable :entries="entries" />
-          <Pagination class="mt-3" :value="pagination" @update:offset="filter" />
+          <Pagination
+            class="mt-3"
+            :value="pagination"
+            @update:offset="filter"
+          />
         </div>
       </Loading>
     </loading>
