@@ -21,15 +21,15 @@ const api = useApi();
 const pagination: Ref<PaginationData> = ref(empty());
 
 export type filterTouple = {
-  min: number;
-  max: number;
+  from: number;
+  to: number;
 };
 
-const sizeTouple = ref<filterTouple>({ min: 0, max: 9999999 });
-const gcTouple = ref<filterTouple>({ min: 0, max: 75 });
-const contigTouple = ref<filterTouple>({ min: 0, max: 1000 });
-const qualityTouple = ref<filterTouple>({ min: 0, max: 100 });
-const contaminationTouple = ref<filterTouple>({ min: 0, max: 100 });
+const sizeTouple = ref<filterTouple>({ from: 0, to: 9999999 });
+const gcTouple = ref<filterTouple>({ from: 0, to: 75 });
+const contigTouple = ref<filterTouple>({ from: 0, to: 1000 });
+const qualityTouple = ref<filterTouple>({ from: 0, to: 100 });
+const contaminationTouple = ref<filterTouple>({ from: 0, to: 100 });
 
 function filter(offset = 0) {
   let query;
@@ -40,65 +40,38 @@ function filter(offset = 0) {
 
       {
         field: "bakta.stats.size",
-        op: ">=",
-        value: sizeTouple.value.min,
-      },
-      {
-        field: "bakta.stats.size",
-        op: "<=",
-        value: sizeTouple.value.max,
+        op: "[]",
+        value: sizeTouple.value,
       },
 
-      // GC Ratio Filter
 
       {
         field: "bakta.stats.gc",
-        op: ">=",
-        value: gcTouple.value.min / 100,
+        op: "[]",
+        value: gcTouple.value,
       },
-      {
-        field: "bakta.stats.gc",
-        op: "<=",
-        value: gcTouple.value.max / 100,
-      },
-
       // Contig Count Filter
 
       {
         field: "bakta.stats.no_sequences",
-        op: ">=",
-        value: contigTouple.value.min,
-      },
-      {
-        field: "bakta.stats.no_sequences",
-        op: "<=",
-        value: contigTouple.value.max,
+        op: "[]",
+        value: contigTouple.value,
       },
 
       // Quality Filter
 
       {
         field: "checkm2.quality.completeness",
-        op: ">=",
-        value: qualityTouple.value.min,
-      },
-      {
-        field: "checkm2.quality.completeness",
-        op: "<=",
-        value: qualityTouple.value.max,
+        op: "[]",
+        value: qualityTouple.value,
       },
 
       // Contamination Filter
 
       {
         field: "checkm2.quality.contamination",
-        op: ">=",
-        value: contaminationTouple.value.min,
-      },
-      {
-        field: "checkm2.quality.contamination",
-        op: "<=",
-        value: contaminationTouple.value.max,
+        op: "[]",
+        value: contaminationTouple.value,
       },
     ],
   };
@@ -135,19 +108,19 @@ onMounted(filter);
     <div class="row">
       <div class="col">
         <div class="rounded bg-body-secondary p-4 mb-4">
-          <QueryFilter label="Size" v-model="sizeTouple" @update:min="(newValue: number) => (sizeTouple.min = newValue)"
-            @update:max="(newValue: number) => (sizeTouple.max = newValue)" />
-          <QueryFilter label="GC Ratio" v-model="gcTouple" @update:min="(newValue: number) => (gcTouple.min = newValue)"
-            @update:max="(newValue: number) => (gcTouple.max = newValue)" />
+          <QueryFilter label="Size" v-model="sizeTouple" @update:min="(newValue: number) => (sizeTouple.from = newValue)"
+            @update:max="(newValue: number) => (sizeTouple.to = newValue)" />
+          <QueryFilter label="GC Ratio" v-model="gcTouple" @update:min="(newValue: number) => (gcTouple.from = newValue)"
+            @update:max="(newValue: number) => (gcTouple.to = newValue)" />
           <QueryFilter label="Contig Count" v-model="contigTouple"
-            @update:min="(newValue: number) => (contigTouple.min = newValue)"
-            @update:max="(newValue: number) => (contigTouple.max = newValue)" />
+            @update:min="(newValue: number) => (contigTouple.from = newValue)"
+            @update:max="(newValue: number) => (contigTouple.to = newValue)" />
           <QueryFilter label="Quality" v-model="qualityTouple"
-            @update:min="(newValue: number) => (qualityTouple.min = newValue)"
-            @update:max="(newValue: number) => (qualityTouple.max = newValue)" />
+            @update:min="(newValue: number) => (qualityTouple.from = newValue)"
+            @update:max="(newValue: number) => (qualityTouple.to = newValue)" />
           <QueryFilter label="Contamination" v-model="contaminationTouple"
-            @update:min="(newValue: number) => (contaminationTouple.min = newValue)"
-            @update:max="(newValue: number) => (contaminationTouple.max = newValue)" />
+            @update:min="(newValue: number) => (contaminationTouple.from = newValue)"
+            @update:max="(newValue: number) => (contaminationTouple.to = newValue)" />
           <button class="btn btn-light w-100" @click="filter()">Apply Filter</button>
         </div>
       </div>

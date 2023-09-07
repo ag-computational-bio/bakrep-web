@@ -32,8 +32,8 @@ const emits = defineEmits<{
   (e: "update:max", max: number): void;
 }>();
 
-const min = ref(props.modelValue.min);
-const max = ref(props.modelValue.max);
+const min = ref(props.modelValue.from);
+const max = ref(props.modelValue.to);
 </script>
 
 <style scoped>
