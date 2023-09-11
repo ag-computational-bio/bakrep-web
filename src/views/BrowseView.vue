@@ -11,6 +11,7 @@ import {
 } from "@/components/pagination/Pagination";
 import Pagination from "@/components/pagination/Pagination.vue";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
+import type { SortOption, SortDirection } from "@/model/Search";
 import ResultTable from "@/views/search/ResultTable.vue";
 import { computed, onMounted, ref, type Ref } from "vue";
 const searchState = usePageState();
@@ -78,7 +79,7 @@ function filter(offset = 0) {
   api
     .search({
       query: query,
-      sort: [{ field: "bakta.stats.no_sequences", ord: "asc" }],
+      sort: ordering.value,
       offset: offset,
       limit: 10,
     })
@@ -90,9 +91,25 @@ function filter(offset = 0) {
     })
     .catch((err) => searchState.value.setError(err));
 }
+
+
+const ordering: Ref<SortOption[]> = ref([{ field: "id", ord: "asc" }]);
+
 const positionInResults: Ref<PositionInResult> = computed(() =>
   toPosition(pagination.value),
 );
+
+function updateOrdering(sortkey: string, direction: SortDirection | null) {
+  const idx = ordering.value.findIndex((s) => s.field === sortkey);
+  if (direction == null) {
+    if (idx > -1) ordering.value.splice(idx, 1);
+  } else {
+    if (idx > -1) ordering.value[idx].ord = direction;
+    else
+      ordering.value = [{ field: sortkey, ord: direction }, ...ordering.value];
+  }
+  filter();
+}
 
 onMounted(filter);
 </script>
@@ -122,7 +139,11 @@ onMounted(filter);
             positionInResults.lastElement
           }}
           of {{ pagination.total }} results
-          <ResultTable :entries="entries" />
+          <ResultTable 
+            :ordering="ordering"
+            :entries="entries"
+            @update:ordering="updateOrdering"
+          />
           <Pagination
             class="mt-3"
             :value="pagination"
