@@ -24,13 +24,19 @@ const emits = defineEmits<{
 const from = computed({
   get: () => props.modelValue.from,
   set: (x) => {
-    emits("update:modelValue", { ...props.modelValue, from: x });
+    x = Number(x);
+    if(!isNaN(x)) {
+      emits("update:modelValue", { ...props.modelValue, from: x });
+    }
   },
 });
 const to = computed({
   get: () => props.modelValue.to,
   set: (x) => {
-    emits("update:modelValue", { ...props.modelValue, to: x });
+    x = Number(x);
+    if(!isNaN(x)) {
+      emits("update:modelValue", { ...props.modelValue, to: x });
+    }
   },
 });
 </script>
