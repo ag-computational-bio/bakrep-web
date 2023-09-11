@@ -1,9 +1,9 @@
 <template>
   <div class="input-group mb-3">
     <span class="input-label input-group-text">{{ label }}:</span>
-    <input class="form-control" type="text" v-model.number="from" />
+    <input class="form-control" type="number" v-model="from" />
     <span class="input-group-text">Min</span>
-    <input class="form-control" type="text" v-model.number="to" />
+    <input class="form-control" type="number" v-model="to" />
     <span class="input-group-text">Max</span>
   </div>
 </template>
