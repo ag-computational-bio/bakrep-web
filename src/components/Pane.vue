@@ -13,12 +13,18 @@ const emits = defineEmits(["update:value"]);
 
 <template>
   <!-- Tabbed Navigation -->
-  <div class="shadow-sm p-4">
+  <div>
     <ul class="nav nav-pills py-3">
-      <Panetab @click="$emit('update:value', item.id)" :tab="item" :active="activeItem == item.id" v-for="item in items" :key="item.id" />
+      <Panetab
+        @click="$emit('update:value', item.id)"
+        :tab="item"
+        :active="activeItem == item.id"
+        v-for="item in items"
+        :key="item.id"
+      />
     </ul>
-    <div class="tab-content">
-      <slot></slot>
-    </div>
+  </div>
+  <div class="tab-content mx-3">
+    <slot></slot>
   </div>
 </template>
