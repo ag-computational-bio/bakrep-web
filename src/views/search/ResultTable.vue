@@ -51,8 +51,6 @@ function contamination(entry: BakrepSearchResultEntry): string {
   return entry.checkm2.quality.contamination + "";
 }
 
-let drag = false;
-
 function passOrdering(sortkey: string, newdirection: SortDirection | null) {
   emit("update:ordering", sortkey, newdirection);
 }
@@ -63,111 +61,109 @@ const showFeatures = computed(() =>
 </script>
 
 <template>
-  <div class="rounded bg-light shadow-sm">
-    <table class="mt-3 table table-hover">
-      <thead>
+  <table class="mt-3 table table-hover">
+    <thead>
+      <tr>
+        <th scope="col">
+          Id
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="id"
+            @update:ordering="passOrdering"
+          />
+        </th>
+        <th scope="col">
+          GC
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="bakta.stats.gc"
+            @update:ordering="passOrdering"
+          />
+        </th>
+        <th scope="col">
+          Contigs
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="bakta.stats.no_sequences"
+            @update:ordering="passOrdering"
+          />
+        </th>
+        <th scope="col">
+          Genome Size
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="bakta.stats.size"
+            @update:ordering="passOrdering"
+          />
+        </th>
+        <th scope="col">
+          Species
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="gtdbtk.classification.species.keyword"
+            @update:ordering="passOrdering"
+          />
+        </th>
+        <th scope="col">
+          ST Type
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="mlst.sequence_type.keyword"
+            @update:ordering="passOrdering"
+          />
+        </th>
+        <th scope="col">
+          Completeness
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="checkm2.quality.completeness"
+            @update:ordering="passOrdering"
+          />
+        </th>
+        <th scope="col">
+          Contamination
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="checkm2.quality.contamination"
+            @update:ordering="passOrdering"
+          />
+        </th>
+        <th v-if="showFeatures">Features</th>
+      </tr>
+    </thead>
+    <tbody>
+      <template v-for="entry in entries" :key="entry.id">
         <tr>
-          <th scope="col">
-            Id
-            <SortSymbol
-              :ordering="ordering"
-              sortkey="id"
-              @update:ordering="passOrdering"
-            />
-          </th>
-          <th scope="col">
-            GC
-            <SortSymbol
-              :ordering="ordering"
-              sortkey="bakta.stats.gc"
-              @update:ordering="passOrdering"
-            />
-          </th>
-          <th scope="col">
-            Contigs
-            <SortSymbol
-              :ordering="ordering"
-              sortkey="bakta.stats.no_sequences"
-              @update:ordering="passOrdering"
-            />
-          </th>
-          <th scope="col">
-            Genome Size
-            <SortSymbol
-              :ordering="ordering"
-              sortkey="bakta.stats.size"
-              @update:ordering="passOrdering"
-            />
-          </th>
-          <th scope="col">
-            Species
-            <SortSymbol
-              :ordering="ordering"
-              sortkey="gtdbtk.classification.species.keyword"
-              @update:ordering="passOrdering"
-            />
-          </th>
-          <th scope="col">
-            ST Type
-            <SortSymbol
-              :ordering="ordering"
-              sortkey="mlst.sequence_type.keyword"
-              @update:ordering="passOrdering"
-            />
-          </th>
-          <th scope="col">
-            Completeness
-            <SortSymbol
-              :ordering="ordering"
-              sortkey="checkm2.quality.completeness"
-              @update:ordering="passOrdering"
-            />
-          </th>
-          <th scope="col">
-            Contamination
-            <SortSymbol
-              :ordering="ordering"
-              sortkey="checkm2.quality.contamination"
-              @update:ordering="passOrdering"
-            />
-          </th>
-          <th v-if="showFeatures">Features</th>
+          <td scope="row">
+            <router-link
+              :to="{
+                name: 'result',
+                params: { id: entry.id, title: entry.id },
+              }"
+            >
+              {{ entry.id }}
+            </router-link>
+          </td>
+          <td>{{ gc(entry) }}</td>
+          <td>{{ contigs(entry) }}</td>
+          <td>
+            {{ genomeSize(entry) }}
+          </td>
+          <td>{{ species(entry) }}</td>
+          <td class="text-nowrap">{{ sequenceType(entry) }}</td>
+          <td>{{ completeness(entry) }} %</td>
+          <td>{{ contamination(entry) }} %</td>
+          <td v-if="showFeatures">
+            <ul class="nostyle" v-if="entry.bakta && entry.bakta.features">
+              <li v-for="(f, idx) of entry.bakta.features" :key="idx">
+                {{ f.gene }} - {{ f.product }}
+              </li>
+            </ul>
+          </td>
         </tr>
-      </thead>
-      <tbody>
-        <template v-for="entry in entries" :key="entry.id">
-          <tr>
-            <td scope="row">
-              <router-link
-                :to="{
-                  name: 'result',
-                  params: { id: entry.id, title: entry.id },
-                }"
-              >
-                {{ entry.id }}
-              </router-link>
-            </td>
-            <td>{{ gc(entry) }}</td>
-            <td>{{ contigs(entry) }}</td>
-            <td>
-              {{ genomeSize(entry) }}
-            </td>
-            <td>{{ species(entry) }}</td>
-            <td class="text-nowrap">{{ sequenceType(entry) }}</td>
-            <td>{{ completeness(entry) }} %</td>
-            <td>{{ contamination(entry) }} %</td>
-            <td v-if="showFeatures">
-              <ul class="nostyle" v-if="entry.bakta && entry.bakta.features">
-                <li v-for="(f, idx) of entry.bakta.features" :key="idx">
-                  {{ f.gene }} - {{ f.product }}
-                </li>
-              </ul>
-            </td>
-          </tr>
-        </template>
-      </tbody>
-    </table>
-  </div>
+      </template>
+    </tbody>
+  </table>
 </template>
 
 <style>
