@@ -19,7 +19,7 @@ onMounted(() => {
 <template>
   <Navbar />
 
-  <div id="content">
+  <div id="content" class="pb-5">
     <RouterView />
   </div>
 
