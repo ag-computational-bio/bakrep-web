@@ -134,25 +134,20 @@ onMounted(init);
 <template>
   <main class="container pt-5">
     <Loading :state="pageState">
-      <div class="row">
-        <div class="col">
-          <QueryBuilder v-model:query="query" :rules="rules" @submit="search" />
+      <QueryBuilder v-model:query="query" :rules="rules" @submit="search" />
 
-          <div class="d-flex mt-2 justify-content-end">
-            <button
-              @click="search(0)"
-              class="btn btn-secondary"
-              type="button"
-              id="button-search"
-            >
-              Search
-            </button>
-          </div>
-        </div>
+      <div class="d-flex mt-2 mb-5 justify-content-end">
+        <button
+          @click="search(0)"
+          class="btn btn-secondary"
+          type="button"
+          id="button-search"
+        >
+          Search
+        </button>
       </div>
-
       <Loading :state="searchState">
-        <div class="row py-3 my-5">
+        <div class="row px-3">
           Showing search results {{ positionInResults.firstElement }}-{{
             positionInResults.lastElement
           }}

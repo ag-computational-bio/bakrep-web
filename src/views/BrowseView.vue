@@ -92,7 +92,6 @@ function filter(offset = 0) {
     .catch((err) => searchState.value.setError(err));
 }
 
-
 const ordering: Ref<SortOption[]> = ref([{ field: "id", ord: "asc" }]);
 
 const positionInResults: Ref<PositionInResult> = computed(() =>
@@ -119,38 +118,34 @@ onMounted(filter);
     <div class="row">
       <h2>Browse BakRep Genomes</h2>
     </div>
-      <div class="row">
-        <div class="col">
-          <div class="rounded bg-body-secondary p-4 mb-4">
-            <QueryFilter label="GC" v-model="gcTuple" />
-            <QueryFilter label="Contigs" v-model="contigTuple" />
-            <QueryFilter label="Genome Size" v-model="sizeTuple" />
-            <QueryFilter label="Completeness" v-model="qualityTuple" />
-            <QueryFilter label="Contamination" v-model="contaminationTuple" />
-            <button class="btn btn-light w-100" @click="filter()">
-              Apply Filter
-            </button>
-          </div>
+    <div class="row">
+      <div class="col">
+        <div class="rounded bg-body-secondary p-4 mb-4">
+          <QueryFilter label="GC" v-model="gcTuple" />
+          <QueryFilter label="Contigs" v-model="contigTuple" />
+          <QueryFilter label="Genome Size" v-model="sizeTuple" />
+          <QueryFilter label="Completeness" v-model="qualityTuple" />
+          <QueryFilter label="Contamination" v-model="contaminationTuple" />
+          <button class="btn btn-light w-100" @click="filter()">
+            Apply Filter
+          </button>
         </div>
       </div>
-      <Loading :state="searchState">
-        <div class="row py-3 my-5">
-          Showing results {{ positionInResults.firstElement }}-{{
-            positionInResults.lastElement
-          }}
-          of {{ pagination.total }} results
-          <ResultTable 
-            :ordering="ordering"
-            :entries="entries"
-            @update:ordering="updateOrdering"
-          />
-          <Pagination
-            class="mt-3"
-            :value="pagination"
-            @update:offset="filter"
-          />
-        </div>
-      </Loading>
+    </div>
+    <Loading :state="searchState">
+      <div class="row px-3">
+        Showing results {{ positionInResults.firstElement }}-{{
+          positionInResults.lastElement
+        }}
+        of {{ pagination.total }} results
+        <ResultTable
+          :ordering="ordering"
+          :entries="entries"
+          @update:ordering="updateOrdering"
+        />
+        <Pagination class="mt-3" :value="pagination" @update:offset="filter" />
+      </div>
+    </Loading>
   </main>
 </template>
 <style></style>
