@@ -61,7 +61,7 @@ const showFeatures = computed(() =>
 </script>
 
 <template>
-  <table class="mt-3 table table-hover">
+  <table class="mt-3 table table-hover table-striped">
     <thead>
       <tr>
         <th scope="col">
