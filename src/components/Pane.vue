@@ -8,6 +8,10 @@ defineProps({
   items: { type: Array as PropType<Array<Tab>>, required: true },
 });
 
+function activateTab(item: Tab) {
+  emits('update:value', item.id)
+}
+
 const emits = defineEmits(["update:value"]);
 </script>
 
@@ -15,13 +19,7 @@ const emits = defineEmits(["update:value"]);
   <!-- Tabbed Navigation -->
   <div>
     <ul class="nav nav-pills py-3">
-      <Panetab
-        @click="$emit('update:value', item.id)"
-        :tab="item"
-        :active="activeItem == item.id"
-        v-for="item in items"
-        :key="item.id"
-      />
+      <Panetab @click="activateTab(item)" :tab="item" :active="activeItem == item.id" v-for="item in items" :key="item.id" />
     </ul>
   </div>
   <div class="tab-content mx-3">
