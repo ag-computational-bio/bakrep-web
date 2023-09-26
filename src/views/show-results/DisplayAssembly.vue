@@ -43,14 +43,6 @@
       </tr>
     </template>
   </table>
-  <div v-if="bakta">
-    <h3>Contig Lengths:</h3>
-    <ContigBar
-      :sequences="bakta.sequences"
-      :length="bakta.stats.size"
-      :n50="bakta.stats.n50"
-    />
-  </div>
 </template>
 
 <script setup lang="ts">
