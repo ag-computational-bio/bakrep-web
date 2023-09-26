@@ -3,7 +3,7 @@
     <template v-if="annotation">
       <tr>
         <th scope="row">ID:</th>
-        <td>{{ id }}</td>
+        <td><a class="fw-bold p-0" style="color: gray" :href="'https://www.ebi.ac.uk/biosamples/samples/' + id" target="_blank">{{ id }}</a></td>
       </tr>
       <tr>
         <th scope="row">Species:</th>
