@@ -2,7 +2,6 @@
 import type { Tab } from "@/views/show-results/ResultView.vue";
 import Panetab from "./PaneTab.vue";
 import type { PropType } from "vue";
-import router from "@/router";
 
 defineProps({
   activeItem: { type: String },
@@ -11,7 +10,6 @@ defineProps({
 
 function activateTab(item: Tab) {
   emits('update:value', item.id)
-  router.push({ name: 'result', params: {tab: item.id}, replace: true})
 }
 
 const emits = defineEmits(["update:value"]);

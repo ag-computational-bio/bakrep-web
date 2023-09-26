@@ -11,6 +11,7 @@ import type { CheckmResult } from "@/model/CheckmResults";
 import type { Dataset } from "@/model/Dataset";
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
 import type { MlstResult } from "@/model/MlstResults";
+import router from "@/router";
 import { useRoute } from "vue-router";
 import BaktaAnnotationTable from "./bakta/BaktaAnnotationTable.vue";
 import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
@@ -69,6 +70,11 @@ const tabs: Tab[] = [
 
 const active_tab: Ref<string> = ref(route.params.tab as string);
 
+function updateTab(newTab: string) {
+  active_tab.value = newTab
+  router.push({ name: 'result', params: {tab: newTab}, replace: true})
+}
+
 const state = usePageState();
 state.value.setState(State.Loading);
 </script>
@@ -83,7 +89,7 @@ state.value.setState(State.Loading);
       <Pane
         :items="tabs"
         :activeItem="active_tab"
-        @update:value="(newValue) => (active_tab = newValue)"
+        @update:value="(newValue) => updateTab(newValue)"
       >
         <template v-if="active_tab === 'genome-viewer'">
           <BaktaGenomeViewer :data="baktaResult" />
