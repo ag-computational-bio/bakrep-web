@@ -25,7 +25,7 @@
         <template v-if="gtdb">
           <tr>
             <th scope="row">Reference genome:</th>
-            <td>{{ gtdb.fastani_reference }}</td>
+            <td><a class="fw-bold p-0" style="color: gray" :href="'https://www.ncbi.nlm.nih.gov/datasets/genome/' + gtdb.fastani_reference" target="_blank" >{{ gtdb.fastani_reference }}</a></td>
           </tr>
           <tr>
             <th scope="row">Classification method:</th>
