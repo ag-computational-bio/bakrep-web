@@ -29,7 +29,7 @@ const router = createRouter({
       component: () => import("../views/ImprintView.vue"),
     },
     {
-      path: "/result/:id/",
+      path: "/result/:id/:tab",
       name: "result",
       component: () => import("../views/show-results/ResultView.vue"),
       props: true,

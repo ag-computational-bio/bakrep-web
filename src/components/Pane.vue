@@ -2,11 +2,17 @@
 import type { Tab } from "@/views/show-results/ResultView.vue";
 import Panetab from "./PaneTab.vue";
 import type { PropType } from "vue";
+import router from "@/router";
 
 defineProps({
   activeItem: { type: String },
   items: { type: Array as PropType<Array<Tab>>, required: true },
 });
+
+function activateTab(item: Tab) {
+  emits('update:value', item.id)
+  router.push({ name: 'result', params: {tab: item.id}, replace: true})
+}
 
 const emits = defineEmits(["update:value"]);
 </script>
@@ -15,7 +21,7 @@ const emits = defineEmits(["update:value"]);
   <!-- Tabbed Navigation -->
   <div class="shadow-sm p-4">
     <ul class="nav nav-pills py-3">
-      <Panetab @click="$emit('update:value', item.id)" :tab="item" :active="activeItem == item.id" v-for="item in items" :key="item.id" />
+      <Panetab @click="activateTab(item)" :tab="item" :active="activeItem == item.id" v-for="item in items" :key="item.id" />
     </ul>
     <div class="tab-content">
       <slot></slot>

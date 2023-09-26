@@ -40,7 +40,6 @@ function loadData() {
         api.fetchCheckmResult(x).then((r) => (checkmResult.value = r)),
         api.fetchMlstResult(x).then((r) => (mlstResult.value = r)),
       ]).then(() => {
-        active_tab.value = "summary";
         state.value.setState(State.Main);
       });
     })
@@ -68,7 +67,7 @@ const tabs: Tab[] = [
   { id: "download", name: "Download" },
 ];
 
-const active_tab: Ref<string> = ref("summary");
+const active_tab: Ref<string> = ref(route.params.tab as string);
 
 const state = usePageState();
 state.value.setState(State.Loading);
