@@ -19,6 +19,8 @@ import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
 import BaktaStats from "./bakta/BaktaStats.vue";
 import DisplayAssembly from "./DisplayAssembly.vue";
 import GtdbtkTaxonomy from "./GtdbtkTaxonomy.vue";
+import PhylogenyTree from "@/components/PhylogenyTree.vue";
+
 const route = useRoute();
 const id = computed(() => route.params.id as string);
 const api = useApi();
@@ -60,8 +62,8 @@ const tabs: Tab[] = [
 const active_tab: Ref<string> = ref(route.params.tab as string);
 
 function updateTab(newTab: string) {
-  active_tab.value = newTab
-  router.push({ name: 'result', params: {tab: newTab}, replace: true})
+  active_tab.value = newTab;
+  router.push({ name: "result", params: { tab: newTab }, replace: true });
 }
 
 const state = usePageState();
@@ -87,37 +89,64 @@ state.value.setState(State.Loading);
           <BaktaAnnotationTable :data="baktaResult" />
         </template>
         <template v-if="active_tab == 'summary' && baktaResult">
-          <div class="row">
-            <div class="col-4">
-              <table class="table statstable">
-                <tr>
-                  <th>Species:</th>
-                  <td>{{ baktaResult.genome.genus }} {{ baktaResult.genome.species }}</td>
-                </tr>
-              </table>
-            </div>
-            <div class="col-4">
-              <table class="table statstable">
-                <tr>
-                  <th>Strain:</th>
-                  <td>{{ baktaResult.genome.strain }}</td>
-                </tr>
-              </table>
-            </div>
-          </div>
-          <div class="row">
-            <!-- <DatasetSummary :annotation="baktaResult" :id="id" :checkm="checkmResult" /> -->
-            <div class="col-4">
-              <DisplayAssembly :checkm="checkmResult" :bakta="baktaResult" />
-            </div>
-            <div class="col-8">
-              <GtdbtkTaxonomy :gtdb="gtdbtkResult" :mlst="mlstResult" />
+          <div class="row pb-3">
+            <div class="row">
+              <h5>Dataset Summary {{ id }}</h5>
+              <div class="col-6 h-100">
+                <table class="table statstable">
+                  <tr>
+                    <th>Species:</th>
+                    <td>
+                      {{ baktaResult.genome.genus }}
+                      {{ baktaResult.genome.species }}
+                    </td>
+                  </tr>
+                </table>
+              </div>
+              <div class="col-6">
+                <table class="table statstable">
+                  <tr>
+                    <th>Strain:</th>
+                    <td>{{ baktaResult.genome.strain }}</td>
+                  </tr>
+                </table>
+              </div>
             </div>
           </div>
           <div class="row">
-            <div class="col-12">
+            <div class="col-sm-12 col-lg-4 col-md-5 p-0">
+              <div class="card h-100">
+                <div class="card-header">Assembly</div>
+                <div class="card-body">
+                  <DisplayAssembly
+                    :checkm="checkmResult"
+                    :bakta="baktaResult"
+                  />
+                </div>
+              </div>
+            </div>
+            <div class="col-sm-12 col-lg-8 col-md-7 p-0 ps-3">
+              <div class="card h-100">
+                <div class="card-header">Phylogeny</div>
+                <div class="card-body">
+                  <PhylogenyTree :gtdb="gtdbtkResult" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row my-3">
+            <div class="col-12 p-0">
+              <div class="card h-100">
+                <div class="card-header">Taxonomy</div>
+                <div class="card-body">
+                  <GtdbtkTaxonomy :gtdb="gtdbtkResult" :mlst="mlstResult" />
+                </div>
+              </div>
+            </div>
+          </div>
+          <div class="row">
+            <div class="col-12 p-0">
               <h5>Contigs:</h5>
-
               <ContigBar
                 :sequences="baktaResult.sequences"
                 :length="baktaResult.stats.size"
@@ -126,7 +155,13 @@ state.value.setState(State.Loading);
             </div>
           </div>
           <div class="row pt-5">
-            <BaktaStats :data="baktaResult" />
+            <div class="col-12 card p-0">
+              <div class="card-header">Annotation</div>
+              <div class="card-body">
+                <h5 class="card-title">Number of features</h5>
+                <BaktaStats :data="baktaResult" />
+              </div>
+            </div>
           </div>
         </template>
         <template v-if="active_tab == 'download'">

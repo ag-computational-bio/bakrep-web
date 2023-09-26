@@ -1,7 +1,6 @@
 <template>
   <div class="row mb-5">
     <div class="col-md-10">
-      <h5>Number of features</h5>
       <div class="row">
         <div class="col-md-4">
           <display-tuple
