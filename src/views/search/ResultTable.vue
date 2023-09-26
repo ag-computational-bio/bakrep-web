@@ -66,36 +66,67 @@ const showFeatures = computed(() =>
       <tr>
         <th scope="col">
           Id
-          <SortSymbol :ordering="ordering" sortkey="id" @update:ordering="passOrdering" />
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="id"
+            @update:ordering="passOrdering"
+          />
         </th>
         <th scope="col">
           GC
-          <SortSymbol :ordering="ordering" sortkey="bakta.stats.gc" @update:ordering="passOrdering" />
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="bakta.stats.gc"
+            @update:ordering="passOrdering"
+          />
         </th>
         <th scope="col">
           Contigs
-          <SortSymbol :ordering="ordering" sortkey="bakta.stats.no_sequences" @update:ordering="passOrdering" />
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="bakta.stats.no_sequences"
+            @update:ordering="passOrdering"
+          />
         </th>
         <th scope="col">
           Genome Size
-          <SortSymbol :ordering="ordering" sortkey="bakta.stats.size" @update:ordering="passOrdering" />
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="bakta.stats.size"
+            @update:ordering="passOrdering"
+          />
         </th>
         <th scope="col">
           Species
-          <SortSymbol :ordering="ordering" sortkey="gtdbtk.classification.species.keyword"
-            @update:ordering="passOrdering" />
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="gtdbtk.classification.species.keyword"
+            @update:ordering="passOrdering"
+          />
         </th>
         <th scope="col">
           ST Type
-          <SortSymbol :ordering="ordering" sortkey="mlst.sequence_type.keyword" @update:ordering="passOrdering" />
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="mlst.sequence_type.keyword"
+            @update:ordering="passOrdering"
+          />
         </th>
         <th scope="col">
           Completeness
-          <SortSymbol :ordering="ordering" sortkey="checkm2.quality.completeness" @update:ordering="passOrdering" />
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="checkm2.quality.completeness"
+            @update:ordering="passOrdering"
+          />
         </th>
         <th scope="col">
           Contamination
-          <SortSymbol :ordering="ordering" sortkey="checkm2.quality.contamination" @update:ordering="passOrdering" />
+          <SortSymbol
+            :ordering="ordering"
+            sortkey="checkm2.quality.contamination"
+            @update:ordering="passOrdering"
+          />
         </th>
         <th v-if="showFeatures">Features</th>
       </tr>
@@ -104,10 +135,12 @@ const showFeatures = computed(() =>
       <template v-for="entry in entries" :key="entry.id">
         <tr>
           <td scope="row">
-            <router-link :to="{
-              name: 'result',
-              params: { id: entry.id, title: entry.id },
-            }">
+            <router-link
+              :to="{
+                name: 'result',
+                params: { id: entry.id, title: entry.id },
+              }"
+            >
               {{ entry.id }}
             </router-link>
           </td>
