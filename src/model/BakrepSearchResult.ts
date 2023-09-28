@@ -33,7 +33,10 @@ const BakrepSearchEntrySchema = z.object({
 });
 
 const BakrepSearchResultSchema = z.object({
-  offset: z.number(),
+  offset: z.optional(z.number()),
+  search_after: z.array(
+    z.union([z.string(), z.number(), z.boolean(), z.null()]),
+  ),
   total: z.number(),
   results: z.array(BakrepSearchEntrySchema),
 });

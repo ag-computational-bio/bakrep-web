@@ -7,8 +7,12 @@ import { CheckmResultSchema, type CheckmResult } from "./model/CheckmResults";
 import { DatasetSchema, type Dataset } from "./model/Dataset";
 import { GtdbtkResultSchema, type GtdbtkResult } from "./model/GtdbtkResult";
 import { MlstResultSchema, type MlstResult } from "./model/MlstResults";
-import type { SearchInfo, SearchRequest } from "./model/Search";
+import type { SearchAfter, SearchInfo, SearchRequest } from "./model/Search";
 import json5 from "json5";
+import {
+  tsvSearchResultFromText,
+  type TsvSearchResult,
+} from "./model/TsvSearchResult";
 
 let baseurl: string = "http://localhost:8080";
 function initApi(url: string) {
@@ -23,6 +27,7 @@ interface BakrepApi {
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult>;
   fetchMlstResult(dataset: Dataset): Promise<MlstResult>;
   search(request: SearchRequest): Promise<BakrepSearchResult>;
+  searchTsv(request: SearchRequest): Promise<TsvSearchResult>;
   searchinfo(): Promise<SearchInfo>;
 }
 
@@ -128,6 +133,29 @@ class BakrepApiImpl implements BakrepApi {
     })
       .then(this.toJson)
       .then((j) => BakrepSearchResultSchema.parse(j));
+  }
+  searchTsv(
+    request: SearchRequest,
+    includeHeader = true,
+  ): Promise<TsvSearchResult> {
+    let path = baseurl + "/search";
+    if (!includeHeader) path += "?header=false";
+    return fetch(path, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "text/tab-separated-values",
+      },
+      body: JSON.stringify(request),
+    })
+      .then((r) => {
+        if (!r.ok)
+          return r
+            .text()
+            .then((t) => Promise.reject(`${r.status}: ${r.statusText}\n${t}`));
+        return r.text();
+      })
+      .then(tsvSearchResultFromText);
   }
 }
 
