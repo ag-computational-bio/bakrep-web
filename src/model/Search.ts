@@ -69,15 +69,27 @@ export type SortOption = {
   ord: SortDirection;
 };
 
-export type SearchRequest = {
+export type SearchRequest = OffsetSearchRequest | SearchAfterSearchRequest;
+
+export type OffsetSearchRequest = {
   offset: number;
   limit: number;
   query: Query;
   sort: SortOption[];
 };
 
+export type SearchAfterSearchRequest = {
+  search_after: SearchAfter;
+  limit: number;
+  query: Query;
+  sort: SortOption[];
+};
+
+export type SearchAfter = (string | number | boolean | null)[];
+
 export type SearchResult<T> = {
-  offset: number;
+  offset?: number;
+  search_after: SearchAfter;
   total: number;
   results: T[];
 };

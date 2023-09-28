@@ -86,7 +86,7 @@ function filter(offset = 0) {
     .then((r) => {
       entries.value = r.results;
       searchState.value.setState(State.Main);
-      pagination.value.offset = r.offset;
+      if (r.offset) pagination.value.offset = r.offset;
       pagination.value.total = r.total;
     })
     .catch((err) => searchState.value.setError(err));
