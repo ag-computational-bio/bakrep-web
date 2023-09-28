@@ -100,7 +100,7 @@ const showFeatures = computed(() =>
           Species
           <SortSymbol
             :ordering="ordering"
-            sortkey="gtdbtk.classification.species.keyword"
+            sortkey="gtdbtk.classification.species"
             @update:ordering="passOrdering"
           />
         </th>
@@ -108,7 +108,7 @@ const showFeatures = computed(() =>
           ST Type
           <SortSymbol
             :ordering="ordering"
-            sortkey="mlst.sequence_type.keyword"
+            sortkey="mlst.sequence_type"
             @update:ordering="passOrdering"
           />
         </th>
