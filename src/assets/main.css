@@ -35,3 +35,11 @@ ul.nostyle {
   list-style-type: none;
   padding-left: 0rem;
 }
+.progress-info label {
+  font-size: 12px;
+  vertical-align: bottom;
+}
+
+.fs-tiny {
+  font-size: 14px;
+}

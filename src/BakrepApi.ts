@@ -1,3 +1,4 @@
+import json5 from "json5";
 import {
   BakrepSearchResultSchema,
   type BakrepSearchResult,
@@ -7,8 +8,7 @@ import { CheckmResultSchema, type CheckmResult } from "./model/CheckmResults";
 import { DatasetSchema, type Dataset } from "./model/Dataset";
 import { GtdbtkResultSchema, type GtdbtkResult } from "./model/GtdbtkResult";
 import { MlstResultSchema, type MlstResult } from "./model/MlstResults";
-import type { SearchAfter, SearchInfo, SearchRequest } from "./model/Search";
-import json5 from "json5";
+import type { SearchInfo, SearchRequest } from "./model/Search";
 import {
   tsvSearchResultFromText,
   type TsvSearchResult,
@@ -27,7 +27,11 @@ interface BakrepApi {
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult>;
   fetchMlstResult(dataset: Dataset): Promise<MlstResult>;
   search(request: SearchRequest): Promise<BakrepSearchResult>;
-  searchTsv(request: SearchRequest): Promise<TsvSearchResult>;
+  searchTsv(
+    request: SearchRequest,
+    includeHeader?: boolean,
+    abort?: AbortController | undefined,
+  ): Promise<TsvSearchResult>;
   searchinfo(): Promise<SearchInfo>;
 }
 
@@ -137,17 +141,20 @@ class BakrepApiImpl implements BakrepApi {
   searchTsv(
     request: SearchRequest,
     includeHeader = true,
+    abort: AbortController | undefined = undefined,
   ): Promise<TsvSearchResult> {
     let path = baseurl + "/search";
     if (!includeHeader) path += "?header=false";
-    return fetch(path, {
+    const options: RequestInit = {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
         Accept: "text/tab-separated-values",
       },
       body: JSON.stringify(request),
-    })
+    };
+    if (abort) options.signal = abort.signal;
+    return fetch(path, options)
       .then((r) => {
         if (!r.ok)
           return r
