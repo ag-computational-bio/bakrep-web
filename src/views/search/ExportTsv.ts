@@ -16,20 +16,23 @@ export function downloadFullTsv(
   api: BakrepApi,
   req: ExportRequest,
   handler: ExportHandler,
-): CancelExportFunction {
+): AbortController {
+  const abort = new AbortController();
   let total = 0;
   let count = 0;
-  let canceled = false;
   const chunks: string[] = [];
   function sendQuery(searchAfter: SearchAfter = [], retry = 0) {
-    if (canceled) return; // stop next iteration when canceled
     api
-      .searchTsv({
-        search_after: searchAfter,
-        limit: 2000,
-        query: req.query,
-        sort: req.sort,
-      })
+      .searchTsv(
+        {
+          search_after: searchAfter,
+          limit: 2000,
+          query: req.query,
+          sort: req.sort,
+        },
+        true,
+        abort,
+      )
       .then((resp) => {
         if (resp.total !== total) total = resp.total;
         if (chunks.length === 0) chunks.push(resp.header);
@@ -61,7 +64,7 @@ export function downloadFullTsv(
   }
 
   sendQuery();
-  return () => (canceled = true);
+  return abort;
 }
 
 function countMatches(s: string, substring: string): number {
@@ -89,5 +92,3 @@ export type ProgressEvent = {
   total: number;
   count: number;
 };
-
-export type CancelExportFunction = () => void;

@@ -33,11 +33,7 @@ import {
   type Ref,
 } from "vue";
 import ExportProgress from "./ExportProgress.vue";
-import {
-  downloadFullTsv,
-  type CancelExportFunction,
-  type ProgressEvent,
-} from "./ExportTsv";
+import { downloadFullTsv, type ProgressEvent } from "./ExportTsv";
 import ResultTable from "./ResultTable.vue";
 const pageState = usePageState();
 const searchState = usePageState();
@@ -142,7 +138,7 @@ function updateOrdering(sortkey: string, direction: SortDirection | null) {
   search();
 }
 
-let cancelExport: CancelExportFunction | undefined = undefined;
+let cancelExport: AbortController | undefined = undefined;
 const progress = ref<ProgressEvent>();
 const exportError = ref<string>();
 const exportInProgress = ref(false);
@@ -167,6 +163,7 @@ function exportTsv() {
         });
         saveAs(blob, "bakrep-export.tsv");
         exportInProgress.value = false;
+        cancelExport = undefined;
       },
       onProgress: (p) => (progress.value = p),
     },
@@ -180,7 +177,7 @@ function resetTsvExport() {
 
 onMounted(init);
 onBeforeUnmount(() => {
-  if (cancelExport) cancelExport();
+  if (cancelExport) cancelExport.abort();
 });
 </script>
 
