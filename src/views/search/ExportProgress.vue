@@ -3,8 +3,8 @@
     <div>
       <div v-if="state === 'loading'">
         <div
-          style="width: 0.9rem; height: 0.9rem; border-width: 0.2rem"
-          class="spinner-border text-secondary"
+          style="width: 12px; height: 12px; border-width: 0.2rem"
+          class="spinner-border text-secondary me-1"
         >
           <span class="visually-hidden">Loading...</span>
         </div>
