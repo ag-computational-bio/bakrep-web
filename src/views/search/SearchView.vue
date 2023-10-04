@@ -23,9 +23,22 @@ import type {
   SortDirection,
   SortOption,
 } from "@/model/Search";
-import { computed, onMounted, ref, unref, type Ref } from "vue";
+import { saveAs } from "file-saver";
+import {
+  computed,
+  onBeforeUnmount,
+  onMounted,
+  ref,
+  unref,
+  type Ref,
+} from "vue";
+import ExportProgress from "./ExportProgress.vue";
+import {
+  downloadFullTsv,
+  type CancelExportFunction,
+  type ProgressEvent,
+} from "./ExportTsv";
 import ResultTable from "./ResultTable.vue";
-import ExportComponent from "./ExportComponent.vue";
 const pageState = usePageState();
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
@@ -96,7 +109,7 @@ const fieldNames: Record<string, string> = {
 
 function search(offset = 0) {
   searchState.value.setState(State.Loading);
-
+  resetTsvExport();
   api
     .search({
       query: unref(query),
@@ -129,36 +142,105 @@ function updateOrdering(sortkey: string, direction: SortDirection | null) {
   search();
 }
 
+let cancelExport: CancelExportFunction | undefined = undefined;
+const progress = ref<ProgressEvent>();
+const exportError = ref<string>();
+const exportInProgress = ref(false);
+function exportTsv() {
+  exportError.value = undefined;
+  exportInProgress.value = true;
+  progress.value = { total: pagination.value.total, count: 0, progress: 0 };
+  cancelExport = downloadFullTsv(
+    api,
+    {
+      query: query.value,
+      sort: [{ field: "id", ord: "asc" }],
+    },
+    {
+      onError: (e) => {
+        exportError.value = e as string;
+        exportInProgress.value = false;
+      },
+      onFinished: (d) => {
+        const blob = new Blob([d], {
+          type: "text/tab-separated-values;charset=utf-8",
+        });
+        saveAs(blob, "bakrep-export.tsv");
+        exportInProgress.value = false;
+      },
+      onProgress: (p) => (progress.value = p),
+    },
+  );
+}
+function resetTsvExport() {
+  progress.value = undefined;
+  exportError.value = undefined;
+  exportInProgress.value = false;
+}
+
 onMounted(init);
+onBeforeUnmount(() => {
+  if (cancelExport) cancelExport();
+});
 </script>
 
 <template>
   <main class="container pt-5">
     <Loading :state="pageState">
-      <QueryBuilder v-model:query="query" :rules="rules" @submit="search" />
-
-      <div class="d-flex mt-2 mb-5 justify-content-end">
-        <button
-          @click="search(0)"
-          class="btn btn-secondary"
-          type="button"
-          id="button-search"
-        >
-          Search
-        </button>
+      <div class="row">
+        <div class="col-12">
+          <QueryBuilder v-model:query="query" :rules="rules" @submit="search" />
+        </div>
       </div>
-      <ExportComponent />
+
+      <div class="row">
+        <div class="col-12">
+          <div class="d-flex mt-2 mb-5 justify-content-end">
+            <button
+              @click="search(0)"
+              class="btn btn-secondary"
+              type="button"
+              id="button-search"
+              :disabled="exportInProgress"
+            >
+              Search
+            </button>
+          </div>
+        </div>
+      </div>
       <Loading :state="searchState">
-        <div class="row px-3">
-          Showing search results {{ positionInResults.firstElement }}-{{
-            positionInResults.lastElement
-          }}
-          of {{ pagination.total }} results
-          <ResultTable
-            :ordering="ordering"
-            :entries="entries"
-            @update:ordering="updateOrdering"
-          />
+        <div class="row">
+          <div class="col-12 d-flex justify-content-between align-items-end">
+            <div class="fs-tiny">
+              Showing search results {{ positionInResults.firstElement }}-{{
+                positionInResults.lastElement
+              }}
+              of {{ pagination.total }} results
+            </div>
+            <div v-if="pagination.total > 0">
+              <button
+                class="btn btn-sm btn-link link-secondary"
+                @click="exportTsv"
+                :disabled="exportInProgress"
+              >
+                Export as tsv
+              </button>
+            </div>
+          </div>
+          <div class="col-12">
+            <ExportProgress
+              v-if="progress"
+              :progress="progress"
+              :error="exportError"
+            />
+          </div>
+          <div class="col-12">
+            <ResultTable
+              :ordering="ordering"
+              :entries="entries"
+              @update:ordering="updateOrdering"
+            />
+          </div>
           <Pagination
             class="mt-3"
             :value="pagination"
