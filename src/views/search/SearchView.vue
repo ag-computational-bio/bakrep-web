@@ -239,6 +239,7 @@ onBeforeUnmount(() => {
             />
           </div>
           <Pagination
+            v-if="pagination.total > 0"
             class="mt-3"
             :value="pagination"
             @update:offset="search"
