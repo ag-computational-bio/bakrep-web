@@ -1,8 +1,8 @@
+<!-- eslint-disable prettier/prettier -->
 <script setup lang="ts">
 import DownloadLinks from "@/components/DownloadLinks.vue";
 import Loading from "@/components/Loading.vue";
 import Pane from "@/components/Pane.vue";
-import ContigBar from "@/components/ContigBar.vue";
 import usePageState, { State } from "@/PageState";
 import { computed, onMounted, ref, type Ref } from "vue";
 
@@ -16,10 +16,7 @@ import router from "@/router";
 import { useRoute } from "vue-router";
 import BaktaAnnotationTable from "./bakta/BaktaAnnotationTable.vue";
 import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
-import BaktaStats from "./bakta/BaktaStats.vue";
-import DisplayAssembly from "./DisplayAssembly.vue";
-import GtdbtkTaxonomy from "./GtdbtkTaxonomy.vue";
-import PhylogenyTree from "@/components/PhylogenyTree.vue";
+import SummaryPane from "@/views/SummaryPane.vue";
 
 const route = useRoute();
 const id = computed(() => route.params.id as string);
@@ -88,81 +85,22 @@ state.value.setState(State.Loading);
         <template v-if="active_tab === 'annotation-table'">
           <BaktaAnnotationTable :data="baktaResult" />
         </template>
-        <template v-if="active_tab == 'summary' && baktaResult">
-          <div class="row pb-3">
-            <div class="row">
-              <h5>Dataset Summary {{ id }}</h5>
-              <div class="col-6 h-100">
-                <table class="table statstable">
-                  <tr>
-                    <th>Species:</th>
-                    <td>
-                      {{ baktaResult.genome.genus }}
-                      {{ baktaResult.genome.species }}
-                    </td>
-                  </tr>
-                </table>
-              </div>
-              <div class="col-6">
-                <table class="table statstable">
-                  <tr>
-                    <th>Strain:</th>
-                    <td>{{ baktaResult.genome.strain }}</td>
-                  </tr>
-                </table>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-sm-12 col-lg-4 col-md-5 p-0">
-              <div class="card h-100">
-                <div class="card-header">Assembly</div>
-                <div class="card-body">
-                  <DisplayAssembly
-                    :checkm="checkmResult"
-                    :bakta="baktaResult"
-                  />
-                </div>
-              </div>
-            </div>
-            <div class="col-sm-12 col-lg-8 col-md-7 p-0 ps-3">
-              <div class="card h-100">
-                <div class="card-header">Phylogeny</div>
-                <div class="card-body">
-                  <PhylogenyTree :gtdb="gtdbtkResult" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row my-3">
-            <div class="col-12 p-0">
-              <div class="card h-100">
-                <div class="card-header">Taxonomy</div>
-                <div class="card-body">
-                  <GtdbtkTaxonomy :gtdb="gtdbtkResult" :mlst="mlstResult" />
-                </div>
-              </div>
-            </div>
-          </div>
-          <div class="row">
-            <div class="col-12 p-0">
-              <h5>Contigs:</h5>
-              <ContigBar
-                :sequences="baktaResult.sequences"
-                :length="baktaResult.stats.size"
-                :n50="baktaResult.stats.n50"
-              />
-            </div>
-          </div>
-          <div class="row pt-5">
-            <div class="col-12 card p-0">
-              <div class="card-header">Annotation</div>
-              <div class="card-body">
-                <h5 class="card-title">Number of features</h5>
-                <BaktaStats :data="baktaResult" />
-              </div>
-            </div>
-          </div>
+        <template
+          v-if="
+            active_tab == 'summary' &&
+            baktaResult &&
+            gtdbtkResult &&
+            checkmResult &&
+            mlstResult
+          "
+        >
+          <SummaryPane
+            :id="id"
+            :bakta="baktaResult"
+            :gtdbtk="gtdbtkResult"
+            :checkm="checkmResult"
+            :mlst="mlstResult"
+          />
         </template>
         <template v-if="active_tab == 'download'">
           <DownloadLinks :dataset="dataset" />
