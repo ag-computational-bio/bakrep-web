@@ -1,25 +1,15 @@
 <template>
-  <table class="table statstable">
-    <tr>
-      <td>
-        <div>
-          <div
-            v-for="(entry, index) in entries"
-            :key="index"
-            :title="entry.level"
-          >
-            <a
-              :style="{ 'margin-left': index + 'rem' }"
-              :href="entry.url"
-              target="_blank"
-            >
-              {{ entry.label }}
-            </a>
-          </div>
-        </div>
-      </td>
-    </tr>
-  </table>
+  <div>
+    <div v-for="(entry, index) in entries" :key="index" :title="entry.level">
+      <a
+        :style="{ 'margin-left': index + 'rem' }"
+        :href="entry.url"
+        target="_blank"
+      >
+        {{ entry.label }}
+      </a>
+    </div>
+  </div>
 </template>
 
 <script setup lang="ts">
