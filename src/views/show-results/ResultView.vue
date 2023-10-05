@@ -16,7 +16,7 @@ import router from "@/router";
 import { useRoute } from "vue-router";
 import BaktaAnnotationTable from "./bakta/BaktaAnnotationTable.vue";
 import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
-import SummaryPane from "@/views/SummaryPane.vue";
+import SummaryPane from "@/views/show-results/SummaryPane.vue";
 
 const route = useRoute();
 const id = computed(() => route.params.id as string);
