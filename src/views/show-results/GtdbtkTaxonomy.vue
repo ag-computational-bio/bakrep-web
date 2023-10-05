@@ -45,7 +45,7 @@
         </template>
       </table>
     </div>
-    <div class="col-lg-6 col-12">
+    <div class="col-lg-6 col-12" v-if="mlst">
       <table class="table statstable">
         <tr>
           <th scope="row" class="align-top">Alleles:</th>
