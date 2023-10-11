@@ -13,8 +13,8 @@ const props = defineProps({
   break: { type: Number, default: 4 },
 });
 
-const labelClass = computed(() => "col-md-" + props.break);
-const valueClass = computed(() => "col-md-" + (12 - props.break));
+const labelClass = computed(() => "col-" + props.break);
+const valueClass = computed(() => "col-" + (12 - props.break));
 </script>
 
 <style scoped>

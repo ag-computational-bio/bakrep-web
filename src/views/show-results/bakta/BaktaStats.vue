@@ -1,6 +1,15 @@
 <template>
   <div class="row mb-5">
     <div class="col-md-10">
+      <div class="row mb-2">
+        <div class="col-4">
+          <display-tuple
+            :break="6"
+            label="Total:"
+            :value="data?.features.length"
+          />
+        </div>
+      </div>
       <div class="row">
         <div class="col-md-4">
           <display-tuple
