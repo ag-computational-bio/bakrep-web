@@ -1,14 +1,12 @@
 <template>
-  <div>
-    <div v-for="(entry, index) in entries" :key="index" :title="entry.level">
-      <a
-        :style="{ 'margin-left': index + 'rem' }"
-        :href="entry.url"
-        target="_blank"
-      >
-        {{ entry.label }}
-      </a>
-    </div>
+  <div v-for="(entry, index) in entries" :key="index" :title="entry.level">
+    <a
+      :style="{ 'margin-left': index + 'rem' }"
+      :href="entry.url"
+      target="_blank"
+    >
+      {{ entry.label }}
+    </a>
   </div>
 </template>
 
