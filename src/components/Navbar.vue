@@ -4,6 +4,7 @@ const items = ref([
   { href: { name: "home" }, text: "Home" },
   { href: { name: "browse" }, text: "Browse" },
   { href: { name: "search" }, text: "Search" },
+  { href: { name: "composition" }, text: "Species composition" },
   { href: { name: "about" }, text: "About" },
 ]);
 </script>
@@ -27,7 +28,7 @@ const items = ref([
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <template v-for="{ href, text } in items">
+          <template v-for="{ href, text } in items" :key="href">
             <li>
               <router-link class="nav-link" :to="href">{{ text }}</router-link>
             </li>

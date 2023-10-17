@@ -6,6 +6,11 @@ body {
   margin-top: calc(var(--header-height) + 1rem);
   min-height: calc(100vh - var(--footer-height) - var(--header-height) - 2rem);
 }
+
+.full-height {
+  min-height: calc(100vh - var(--footer-height) - var(--header-height) - 2rem);
+}
+
 footer {
   margin-bottom: 1rem;
 }
