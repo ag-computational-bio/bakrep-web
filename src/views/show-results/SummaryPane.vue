@@ -66,10 +66,12 @@ const props = defineProps({
     </div>
   </div>
   <div class="row gx-2 gy-2 pt-4">
-    <div class="col-12 card">
-      <div class="card-header">Annotation</div>
-      <div class="card-body">
-        <BaktaStats :data="bakta" />
+    <div class="col-12">
+      <div class="card">
+        <div class="card-header">Annotation</div>
+        <div class="card-body">
+          <BaktaStats :data="bakta" />
+        </div>
       </div>
     </div>
   </div>
