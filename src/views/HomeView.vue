@@ -5,15 +5,18 @@ import RepositoryStatistics from "@/components/RepositoryStatistics.vue";
 <template>
   <main class="container pt-5">
     <div class="row">
-      <div
-        class="col-sm-12 col-md-4 ml-4 py-2 px-2 bg-secondary rounded text-light text-center"
-      >
-        <h4>Repository Statistics</h4>
-        <RepositoryStatistics
-          :datasets="661383"
-          :genera="2467"
-          :species="8208"
-        />
+      <div class="col-2 bg-secondary card text-light">
+        <div class="card-body">
+          <h5 class="card-title">Repository Statistics:</h5>
+          <div class="card-text">
+            <RepositoryStatistics
+              class=""
+              :datasets="661383"
+              :genera="2467"
+              :species="8208"
+            />
+          </div>
+        </div>
       </div>
       <div class="col-8 px-4">
         <h2>BakRep</h2>
