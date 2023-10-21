@@ -1,5 +1,109 @@
 <script setup lang="ts">
+import GenusStatistics from "@/components/GenusStatistics.vue";
 import RepositoryStatistics from "@/components/RepositoryStatistics.vue";
+
+const genusData = [
+  {
+    key: "Salmonella enterica",
+    count: 178581,
+  },
+  {
+    key: "Escherichia coli",
+    count: 89135,
+  },
+  {
+    key: "Streptococcus pneumoniae",
+    count: 51433,
+  },
+  {
+    key: "Mycobacterium tuberculosis",
+    count: 49007,
+  },
+  {
+    key: "Staphylococcus aureus",
+    count: 47997,
+  },
+  {
+    key: "Campylobacter_D jejuni",
+    count: 28335,
+  },
+  {
+    key: "Neisseria meningitidis",
+    count: 17153,
+  },
+  {
+    key: "Streptococcus pyogenes",
+    count: 16821,
+  },
+  {
+    key: "Klebsiella pneumoniae",
+    count: 13637,
+  },
+  {
+    key: "Clostridioides difficile",
+    count: 13579,
+  },
+  {
+    key: "Listeria monocytogenes",
+    count: 12245,
+  },
+  {
+    key: "Listeria monocytogenes_B",
+    count: 12244,
+  },
+  {
+    key: "Streptococcus agalactiae",
+    count: 10359,
+  },
+  {
+    key: "Neisseria gonorrhoeae",
+    count: 8904,
+  },
+  {
+    key: "Campylobacter_D coli",
+    count: 8849,
+  },
+  {
+    key: "Enterococcus_B faecium",
+    count: 8284,
+  },
+  {
+    key: "Pseudomonas aeruginosa",
+    count: 6286,
+  },
+  {
+    key: "Vibrio cholerae",
+    count: 5562,
+  },
+  {
+    key: "Acinetobacter baumannii",
+    count: 5124,
+  },
+  {
+    key: "Mycobacterium abscessus",
+    count: 2689,
+  },
+  {
+    key: "Legionella pneumophila",
+    count: 2110,
+  },
+  {
+    key: "Enterobacter hormaechei_A",
+    count: 1917,
+  },
+  {
+    key: "Enterococcus faecalis",
+    count: 1906,
+  },
+  {
+    key: "Burkholderia mallei",
+    count: 1826,
+  },
+  {
+    key: "",
+    count: 1786,
+  },
+];
 </script>
 
 <template>
@@ -35,6 +139,9 @@ import RepositoryStatistics from "@/components/RepositoryStatistics.vue";
         provide researchers with a flexible search engine to query the
         repository.
       </div>
+    </div>
+    <div class="row">
+      <GenusStatistics :inputData="genusData" />
     </div>
     <div class="row py-4">
       <div
