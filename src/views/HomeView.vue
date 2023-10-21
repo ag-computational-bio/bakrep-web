@@ -11,9 +11,7 @@ import RepositoryStatistics from "@/components/RepositoryStatistics.vue";
           <div class="card-text">
             <RepositoryStatistics
               class=""
-              :datasets="661383"
-              :genera="2467"
-              :species="8208"
+              :entries="{ datasets: 661383, genera: 2467, species: 8208 }"
             />
           </div>
         </div>
