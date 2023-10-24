@@ -105,7 +105,7 @@ function extractEntries(
 }
 
 const sample_entries = computed(() =>
-  extractEntries(sample_entries_definition, props.metadata.sample),
+  extractEntries(sample_entries_definition, props.metadata?.sample),
 );
 
 const project_entries_definition = [
@@ -125,7 +125,7 @@ const sequencing_entries_definition = [
   entry("/depth", "Depth"),
 ];
 const sequencing_entries = computed(() =>
-  extractEntries(sequencing_entries_definition, props.metadata.sequencing),
+  extractEntries(sequencing_entries_definition, props.metadata?.sequencing),
 );
 const study_entries_definition = [
   entry("/accession", "Accession"),
@@ -134,6 +134,6 @@ const study_entries_definition = [
   entry("/title", "Title"),
 ];
 const study_entries = computed(() =>
-  extractEntries(study_entries_definition, props.metadata.study),
+  extractEntries(study_entries_definition, props.metadata?.study),
 );
 </script>
