@@ -22,6 +22,10 @@ function initApi(url: string) {
 interface BakrepApi {
   getDataset(id: string): Promise<Dataset>;
   fetchUrlContentAsJson(url: string): Promise<any>;
+  fetchBaktaResult(dataset: Dataset): Promise<BaktaResult | undefined>;
+  fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult | undefined>;
+  fetchCheckmResult(dataset: Dataset): Promise<CheckmResult | undefined>;
+  fetchMlstResult(dataset: Dataset): Promise<MlstResult | undefined>;
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult>;
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult>;
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult>;
@@ -57,45 +61,37 @@ class BakrepApiImpl implements BakrepApi {
   fetchUrlContentAsJson(url: string): Promise<any> {
     return fetch(url).then(this.toJson);
   }
-  fetchBaktaResult(dataset: Dataset): Promise<BaktaResult> {
+  fetchBaktaResult(dataset: Dataset): Promise<BaktaResult | undefined> {
     const bakta = dataset.results.filter(
       (x) => x.attributes.tool === "bakta" && x.attributes.filetype === "json",
     );
-    if (bakta.length == 0) {
-      return Promise.reject(
-        `Unsupported: Dataset does not contain bakta result: ${dataset}`,
-      );
-    }
+    if (bakta.length == 0) return Promise.resolve(undefined);
+
     if (bakta.length > 1)
       return Promise.reject(
         `Unsupported: Dataset constains multiple bakta results: ${dataset}`,
       );
     return fetch(bakta[0].url).then(this.toJson).then(BaktaResultSchema.parse);
   }
-  fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult> {
+  fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult | undefined> {
     const gtdb = dataset.results.filter(
       (x) => x.attributes.tool === "gtdbtk" && x.attributes.filetype === "json",
     );
-    if (gtdb.length == 0) {
-      return Promise.reject(
-        `Unsupported: Dataset does not contain gtdbtk result: ${dataset}`,
-      );
-    }
+    if (gtdb.length == 0) return Promise.resolve(undefined);
+
     if (gtdb.length > 1)
       return Promise.reject(
         `Unsupported: Dataset constains multiple gtdbtk results: ${dataset}`,
       );
     return fetch(gtdb[0].url).then(this.toJson).then(GtdbtkResultSchema.parse);
   }
-  fetchCheckmResult(dataset: Dataset): Promise<CheckmResult> {
+  fetchCheckmResult(dataset: Dataset): Promise<CheckmResult | undefined> {
     const checkm = dataset.results.filter(
       (x) =>
         x.attributes.tool === "checkm2" && x.attributes.filetype === "json",
     );
     if (checkm.length == 0) {
-      return Promise.reject(
-        `Unsupported: Dataset does not contain checkm result: ${dataset}`,
-      );
+      return Promise.resolve(undefined);
     }
     if (checkm.length > 1) {
       return Promise.reject(
@@ -106,15 +102,12 @@ class BakrepApiImpl implements BakrepApi {
       .then(this.toJson)
       .then(CheckmResultSchema.parse);
   }
-  fetchMlstResult(dataset: Dataset): Promise<MlstResult> {
+  fetchMlstResult(dataset: Dataset): Promise<MlstResult | undefined> {
     const mlst = dataset.results.filter(
       (x) => x.attributes.tool === "mlst" && x.attributes.filetype === "json",
     );
-    if (mlst.length == 0) {
-      return Promise.reject(
-        `Unsupported: Dataset does not contain mlst result: ${dataset}`,
-      );
-    }
+    if (mlst.length == 0) return Promise.resolve(undefined);
+
     if (mlst.length > 1) {
       return Promise.reject(
         `Unsupported: Dataset constains multiple mlst results: ${dataset}`,
