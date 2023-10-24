@@ -17,6 +17,8 @@ import { useRoute } from "vue-router";
 import BaktaAnnotationTable from "./bakta/BaktaAnnotationTable.vue";
 import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
 import SummaryPane from "@/views/show-results/SummaryPane.vue";
+import type { Metadata } from "@/model/Metadata";
+import MetadataCard from "./metadata/MetadataCard.vue";
 
 const route = useRoute();
 const id = computed(() => route.params.id as string);
@@ -27,6 +29,7 @@ const baktaResult: Ref<BaktaResult | undefined> = ref();
 const gtdbtkResult: Ref<GtdbtkResult | undefined> = ref();
 const checkmResult: Ref<CheckmResult | undefined> = ref();
 const mlstResult: Ref<MlstResult | undefined> = ref();
+const metadata: Ref<Metadata | undefined> = ref();
 
 function loadData() {
   return api
@@ -38,6 +41,7 @@ function loadData() {
         api.fetchGtdbtkResult(x).then((r) => (gtdbtkResult.value = r)),
         api.fetchCheckmResult(x).then((r) => (checkmResult.value = r)),
         api.fetchMlstResult(x).then((r) => (mlstResult.value = r)),
+        api.fetchMetadata(x).then((r) => (metadata.value = r)),
       ]).then(() => {
         state.value.setState(State.Main);
       });
@@ -53,6 +57,7 @@ const tabs: Tab[] = [
   { id: "summary", name: "Summary" },
   { id: "annotation-table", name: "Features" },
   { id: "genome-viewer", name: "Genome Viewer" },
+  { id: "metadata", name: "Metadata" },
   { id: "download", name: "Download" },
 ];
 
@@ -72,7 +77,6 @@ state.value.setState(State.Loading);
     <div class="row">
       <h2>Dataset: {{ id }}</h2>
     </div>
-
     <Loading :state="state">
       <Pane
         :items="tabs"
@@ -101,6 +105,9 @@ state.value.setState(State.Loading);
             :checkm="checkmResult"
             :mlst="mlstResult"
           />
+        </template>
+        <template v-if="active_tab == 'metadata'">
+          <MetadataCard :metadata="metadata" />
         </template>
         <template v-if="active_tab == 'download'">
           <DownloadLinks :dataset="dataset" />

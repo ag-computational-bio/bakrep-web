@@ -13,6 +13,7 @@ import {
   tsvSearchResultFromText,
   type TsvSearchResult,
 } from "./model/TsvSearchResult";
+import { MetadataSchema, type Metadata } from "./model/Metadata";
 
 let baseurl: string = "http://localhost:8080";
 function initApi(url: string) {
@@ -26,10 +27,7 @@ interface BakrepApi {
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult | undefined>;
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult | undefined>;
   fetchMlstResult(dataset: Dataset): Promise<MlstResult | undefined>;
-  fetchBaktaResult(dataset: Dataset): Promise<BaktaResult>;
-  fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult>;
-  fetchCheckmResult(dataset: Dataset): Promise<CheckmResult>;
-  fetchMlstResult(dataset: Dataset): Promise<MlstResult>;
+  fetchMetadata(dataset: Dataset): Promise<Metadata | undefined>;
   search(request: SearchRequest): Promise<BakrepSearchResult>;
   searchTsv(
     request: SearchRequest,
@@ -114,6 +112,20 @@ class BakrepApiImpl implements BakrepApi {
       );
     }
     return fetch(mlst[0].url).then(this.toJson).then(MlstResultSchema.parse);
+  }
+  fetchMetadata(dataset: Dataset): Promise<Metadata | undefined> {
+    const metadata = dataset.results.filter(
+      (x) =>
+        x.attributes.type === "metadata" && x.attributes.filetype === "json",
+    );
+    if (metadata.length == 0) return Promise.resolve(undefined);
+
+    if (metadata.length > 1) {
+      return Promise.reject(
+        `Unsupported: Dataset constains multiple metadata files: ${dataset}`,
+      );
+    }
+    return fetch(metadata[0].url).then(this.toJson).then(MetadataSchema.parse);
   }
   searchinfo(): Promise<SearchInfo> {
     return fetch(baseurl + "/search/_info")
