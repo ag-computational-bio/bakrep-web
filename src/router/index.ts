@@ -39,6 +39,11 @@ const router = createRouter({
       name: "browse",
       component: () => import("../views/BrowseView.vue"),
     },
+    {
+      path: "/composition",
+      name: "composition",
+      component: () => import("../views/DatasetCompositionView.vue"),
+    },
   ],
 });
 

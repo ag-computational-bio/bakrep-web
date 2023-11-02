@@ -1,3 +1,4 @@
+<!-- eslint-disable prettier/prettier -->
 <script setup lang="ts">
 import DownloadLinks from "@/components/DownloadLinks.vue";
 import Loading from "@/components/Loading.vue";
@@ -6,7 +7,7 @@ import usePageState, { State } from "@/PageState";
 import { computed, onMounted, ref, type Ref } from "vue";
 
 import { useApi } from "@/BakrepApi";
-import type { BaktaResult } from "@/model/BaktaResults";
+import { type BaktaResult } from "@/model/BaktaResults";
 import type { CheckmResult } from "@/model/CheckmResults";
 import type { Dataset } from "@/model/Dataset";
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
@@ -15,11 +16,10 @@ import router from "@/router";
 import { useRoute } from "vue-router";
 import BaktaAnnotationTable from "./bakta/BaktaAnnotationTable.vue";
 import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
-import BaktaStats from "./bakta/BaktaStats.vue";
-import DatasetSummary from "./DatasetSummary.vue";
-import DisplayAssembly from "./DisplayAssembly.vue";
-import FeatureTable from "./FeatureTable.vue";
-import GtdbtkTaxonomy from "./GtdbtkTaxonomy.vue";
+import SummaryPane from "@/views/show-results/SummaryPane.vue";
+import type { Metadata } from "@/model/Metadata";
+import MetadataCard from "./metadata/MetadataCard.vue";
+
 const route = useRoute();
 const id = computed(() => route.params.id as string);
 const api = useApi();
@@ -29,6 +29,7 @@ const baktaResult: Ref<BaktaResult | undefined> = ref();
 const gtdbtkResult: Ref<GtdbtkResult | undefined> = ref();
 const checkmResult: Ref<CheckmResult | undefined> = ref();
 const mlstResult: Ref<MlstResult | undefined> = ref();
+const metadata: Ref<Metadata | undefined> = ref();
 
 function loadData() {
   return api
@@ -40,6 +41,7 @@ function loadData() {
         api.fetchGtdbtkResult(x).then((r) => (gtdbtkResult.value = r)),
         api.fetchCheckmResult(x).then((r) => (checkmResult.value = r)),
         api.fetchMlstResult(x).then((r) => (mlstResult.value = r)),
+        api.fetchMetadata(x).then((r) => (metadata.value = r)),
       ]).then(() => {
         state.value.setState(State.Main);
       });
@@ -49,30 +51,21 @@ function loadData() {
 
 onMounted(loadData);
 
-const featureTable = ref(false);
-const toggle = ref({
-  annotation: true,
-  taxonomy: true,
-  checkm: true,
-});
-
 export type Tab = { id: string; name: string };
 
 const tabs: Tab[] = [
   { id: "summary", name: "Summary" },
-  { id: "assembly", name: "Assembly" },
-  { id: "taxonomy", name: "Taxonomy" },
-  { id: "annotation-stats", name: "Annotation" },
   { id: "annotation-table", name: "Features" },
   { id: "genome-viewer", name: "Genome Viewer" },
+  { id: "metadata", name: "Metadata" },
   { id: "download", name: "Download" },
 ];
 
 const active_tab: Ref<string> = ref(route.params.tab as string);
 
 function updateTab(newTab: string) {
-  active_tab.value = newTab
-  router.push({ name: 'result', params: {tab: newTab}, replace: true})
+  active_tab.value = newTab;
+  router.push({ name: "result", params: { tab: newTab }, replace: true });
 }
 
 const state = usePageState();
@@ -84,7 +77,6 @@ state.value.setState(State.Loading);
     <div class="row">
       <h2>Dataset: {{ id }}</h2>
     </div>
-
     <Loading :state="state">
       <Pane
         :items="tabs"
@@ -94,53 +86,31 @@ state.value.setState(State.Loading);
         <template v-if="active_tab === 'genome-viewer'">
           <BaktaGenomeViewer :data="baktaResult" />
         </template>
-        <template v-if="active_tab === 'annotation-stats'">
-          <BaktaStats :data="baktaResult" />
-        </template>
         <template v-if="active_tab === 'annotation-table'">
           <BaktaAnnotationTable :data="baktaResult" />
         </template>
-        <template v-if="active_tab == 'summary'">
-          <div class="col-4">
-            <DatasetSummary
-              :annotation="baktaResult"
-              :id="id"
-              :checkm="checkmResult"
-            />
-          </div>
+        <template
+          v-if="
+            active_tab == 'summary' &&
+            baktaResult &&
+            gtdbtkResult &&
+            checkmResult &&
+            mlstResult
+          "
+        >
+          <SummaryPane
+            :id="id"
+            :bakta="baktaResult"
+            :gtdbtk="gtdbtkResult"
+            :checkm="checkmResult"
+            :mlst="mlstResult"
+          />
+        </template>
+        <template v-if="active_tab == 'metadata'">
+          <MetadataCard :metadata="metadata" />
         </template>
         <template v-if="active_tab == 'download'">
           <DownloadLinks :dataset="dataset" />
-        </template>
-        <template v-if="active_tab == 'annotation'">
-          <!-- <div class="h5" @click="toggle.annotation = !toggle.annotation"><i class="bi"
-                :class="toggle.annotation ? 'bi-caret-down' : 'bi-caret-right'"></i>Annotation</div> -->
-          <div v-if="toggle.annotation">
-            <DatasetSummary
-              :annotation="baktaResult"
-              :id="id"
-              :checkm="checkmResult"
-            />
-            <button
-              class="my-4 btn btn-primary"
-              @click="featureTable = !featureTable"
-            >
-              <template v-if="featureTable"> Hide Table </template>
-              <template v-else> Show Table </template>
-            </button>
-            <FeatureTable
-              v-if="featureTable"
-              :features="baktaResult?.features"
-            />
-          </div>
-        </template>
-        <template v-if="active_tab == 'taxonomy'">
-          <!-- <div class="h5" @click="toggle.taxonomy = !toggle.taxonomy"><i class="bi"
-                :class="toggle.taxonomy ? 'bi-caret-down' : 'bi-caret-right'"></i>Taxonomy</div> -->
-          <GtdbtkTaxonomy :gtdb="gtdbtkResult" :mlst="mlstResult" />
-        </template>
-        <template v-if="active_tab == 'assembly'">
-          <DisplayAssembly :checkm="checkmResult" :bakta="baktaResult" />
         </template>
       </Pane>
     </Loading>

@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 const AttributesSchema = z.object({
-  type: z.string(),
-  filetype: z.string(),
-  tool: z.string(),
+  type: z.optional(z.string()),
+  filetype: z.optional(z.string()),
+  tool: z.optional(z.string()),
 });
 const ResultSchema = z.object({
   md5: z.string(),

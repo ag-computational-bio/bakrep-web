@@ -9,7 +9,7 @@ defineProps({
 });
 
 function activateTab(item: Tab) {
-  emits('update:value', item.id)
+  emits("update:value", item.id);
 }
 
 const emits = defineEmits(["update:value"]);
@@ -17,9 +17,15 @@ const emits = defineEmits(["update:value"]);
 
 <template>
   <!-- Tabbed Navigation -->
-  <div>
+  <div class="mx-3">
     <ul class="nav nav-pills py-3">
-      <Panetab @click="activateTab(item)" :tab="item" :active="activeItem == item.id" v-for="item in items" :key="item.id" />
+      <Panetab
+        @click="activateTab(item)"
+        :tab="item"
+        :active="activeItem == item.id"
+        v-for="item in items"
+        :key="item.id"
+      />
     </ul>
   </div>
   <div class="tab-content mx-3">
