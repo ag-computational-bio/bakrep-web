@@ -44,6 +44,11 @@ const router = createRouter({
       name: "composition",
       component: () => import("../views/DatasetCompositionView.vue"),
     },
+    {
+      path: "/statistics",
+      name: "statistics",
+      component: () => import("../views/StatisticsView.vue"),
+    },
   ],
 });
 

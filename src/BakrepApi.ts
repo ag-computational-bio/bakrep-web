@@ -23,6 +23,7 @@ function initApi(url: string) {
 interface BakrepApi {
   getDataset(id: string): Promise<Dataset>;
   fetchUrlContentAsJson(url: string): Promise<any>;
+  fetchLocalUrlContentAsJson(url: string): Promise<any>;
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult | undefined>;
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult | undefined>;
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult | undefined>;
@@ -59,6 +60,10 @@ class BakrepApiImpl implements BakrepApi {
   fetchUrlContentAsJson(url: string): Promise<any> {
     return fetch(url).then(this.toJson);
   }
+  fetchLocalUrlContentAsJson(url: string): Promise<any> {
+    return fetch(baseurl + url).then(this.toJson);
+  }
+
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult | undefined> {
     const bakta = dataset.results.filter(
       (x) => x.attributes.tool === "bakta" && x.attributes.filetype === "json",
