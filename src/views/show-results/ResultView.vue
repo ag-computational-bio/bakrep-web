@@ -60,11 +60,12 @@ const tabs: Tab[] = [
   { id: "download", name: "Download" },
 ];
 
-const active_tab: Ref<string> = ref(route.params.tab as string);
+const active_tab: Ref<string> = computed(() =>
+  route.params.tab ? (route.params.tab as string) : "summary",
+);
 
 function updateTab(newTab: string) {
-  active_tab.value = newTab;
-  router.push({ name: "result", params: { tab: newTab }, replace: true });
+  router.push({ name: "result-tab", params: { tab: newTab } });
 }
 
 const state = usePageState();
@@ -80,14 +81,13 @@ state.value.setState(State.Loading);
       <div class="mx-3">
         <ul class="nav nav-pills py-3">
           <li class="nav-item" v-for="item in tabs" :key="item.id">
-            <a
+            <button
               class="nav-link"
               :class="{ active: active_tab === item.id }"
-              href="#"
               @click="updateTab(item.id)"
             >
               {{ item.name }}
-            </a>
+            </button>
           </li>
         </ul>
       </div>
