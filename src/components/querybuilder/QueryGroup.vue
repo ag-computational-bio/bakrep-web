@@ -49,7 +49,7 @@
                   <option
                     v-for="(rule, jdx) in group.rules"
                     :key="jdx"
-                    :value="jdx"
+                    :value="rule.field"
                   >
                     {{ rule.label }}
                   </option>
@@ -58,7 +58,7 @@
                   <option
                     v-for="(rule, jdx) in group.rules"
                     :key="jdx"
-                    :value="jdx"
+                    :value="rule.field"
                   >
                     {{ rule.label }}
                   </option>
@@ -101,7 +101,7 @@
 </template>
 <script setup lang="ts">
 import type { CompoundQuery, Query } from "@/model/Search";
-import { ref, type PropType, computed } from "vue";
+import { ref, type PropType, computed, onMounted } from "vue";
 import type { QueryBuilderOptions, Rule } from "./Rule";
 import QueryGroupChildren from "./QueryGroupChildren.vue";
 import { sortByString } from "@/util/sort";
@@ -126,7 +126,10 @@ const op = computed({
   set: (v) => emit("update:query", props.index, { ...props.query, op: v }),
 });
 
-const selectedRule = ref(0);
+const selectedRule = ref<string>("");
+onMounted(() => {
+  if (props.rules.length > 0) selectedRule.value = props.rules[0].field;
+});
 
 type Group = {
   name?: string;
@@ -158,40 +161,40 @@ function addGroup() {
 }
 function addRule() {
   if (selectedRule.value !== undefined) {
-    const rule = props.rules[selectedRule.value];
-
-    if (rule.type === "nested") {
-      const newQuery = {
-        ...props.query,
-        value: [
-          ...props.query.value,
-          {
-            field: rule.field,
-            op: "nested",
-            value: {
-              op: "and",
-              value: [],
+    const rule = props.rules.find((x) => x.field == selectedRule.value);
+    if (rule)
+      if (rule.type === "nested") {
+        const newQuery = {
+          ...props.query,
+          value: [
+            ...props.query.value,
+            {
+              field: rule.field,
+              op: "nested",
+              value: {
+                op: "and",
+                value: [],
+              },
             },
-          },
-        ],
-      };
+          ],
+        };
 
-      emit("update:query", props.index, newQuery);
-    } else if ("ops" in rule) {
-      const newQuery = {
-        ...props.query,
-        value: [
-          ...props.query.value,
-          {
-            field: rule.field,
-            op: rule.ops[0].label,
-            value: props.options.defaultValue(rule, rule.ops[0]),
-          },
-        ],
-      };
+        emit("update:query", props.index, newQuery);
+      } else if ("ops" in rule) {
+        const newQuery = {
+          ...props.query,
+          value: [
+            ...props.query.value,
+            {
+              field: rule.field,
+              op: rule.ops[0].label,
+              value: props.options.defaultValue(rule, rule.ops[0]),
+            },
+          ],
+        };
 
-      emit("update:query", props.index, newQuery);
-    }
+        emit("update:query", props.index, newQuery);
+      }
   }
 }
 
