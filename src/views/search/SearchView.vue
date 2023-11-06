@@ -56,18 +56,24 @@ function init() {
 }
 
 function searchinfo2querybuilderrules(f: SearchInfoField): Rule {
+  const config = fieldNames[f.field];
+  const field = config ? config.label : f.field;
+  const group = config ? config.group : "";
+
   if (f.type === "nested") {
     const nestedRule: NestedRule = {
+      group: group,
       field: f.field,
-      label: f.field in fieldNames ? fieldNames[f.field] : f.field,
+      label: field,
       type: "nested",
       rules: f.fields.map(searchinfo2querybuilderrules),
     };
     return nestedRule;
   } else {
     const leafRule: LeafRule = {
+      group: group,
       field: f.field,
-      label: f.field in fieldNames ? fieldNames[f.field] : f.field,
+      label: field,
       type: f.type as "number" | "text",
       ops: f.ops.map((o) => ({ label: o, description: o })),
     };
@@ -81,26 +87,72 @@ const rules: Ref<Rule[]> = computed(() => {
   return out;
 });
 
-const fieldNames: Record<string, string> = {
-  id: "Dataset id",
-  "bakta.stats.size": "Assembly size",
-  "bakta.stats.no_sequences": "Number of contigs",
-  "bakta.stats.gc": "GC content",
-  "bakta.stats.n_ratio": "N ratio",
-  "bakta.stats.n50": "N50",
-  "bakta.stats.coding_ratio": "Coding ratio",
-  "bakta.genome.strain": "Strain",
-  "gtdbtk.classification.domain": "Domain",
-  "gtdbtk.classification.phylum": "Phylum",
-  "gtdbtk.classification.class": "Class",
-  "gtdbtk.classification.order": "Order",
-  "gtdbtk.classification.family": "Family",
-  "gtdbtk.classification.genus": "Genus",
-  "gtdbtk.classification.species": "Species",
-  "mlst.sequence_type": "MLST Sequence type",
-  "checkm2.quality.completeness": "Completeness",
-  "checkm2.quality.contamination": "Contamination",
-  "bakta.features": "Annotated features",
+type FieldConfiguration = {
+  label: string;
+  group?: string;
+};
+
+function fc(
+  label: string,
+  group: string | undefined = undefined,
+): FieldConfiguration {
+  return {
+    label: label,
+    group: group,
+  };
+}
+
+const fieldNames: Record<string, FieldConfiguration> = {
+  id: fc("Dataset id"),
+  "bakta.stats.size": fc("Assembly size", "Bakta results"),
+  "bakta.stats.no_sequences": fc("Number of contigs", "Bakta results"),
+  "bakta.stats.gc": fc("GC content", "Bakta results"),
+  "bakta.stats.n_ratio": fc("N ratio", "Bakta results"),
+  "bakta.stats.n50": fc("N50", "Bakta results"),
+  "bakta.stats.coding_ratio": fc("Coding ratio", "Bakta results"),
+  "bakta.genome.strain": fc("Strain", "Bakta results"),
+  "gtdbtk.classification.domain": fc("Domain", "Gtdbtk results"),
+  "gtdbtk.classification.phylum": fc("Phylum", "Gtdbtk results"),
+  "gtdbtk.classification.class": fc("Class", "Gtdbtk results"),
+  "gtdbtk.classification.order": fc("Order", "Gtdbtk results"),
+  "gtdbtk.classification.family": fc("Family", "Gtdbtk results"),
+  "gtdbtk.classification.genus": fc("Genus", "Gtdbtk results"),
+  "gtdbtk.classification.species": fc("Species", "Gtdbtk results"),
+  "mlst.sequence_type": fc("MLST Sequence type", "Mlst results"),
+  "checkm2.quality.completeness": fc("Completeness", "Checkm2 results"),
+  "checkm2.quality.contamination": fc("Contamination", "Checkm2 results"),
+  "bakta.features": fc("Annotated features", "Bakta results"),
+  "metadata.accession": fc("Accession", "Source metadata"),
+  "metadata.collected_by": fc("Collected by", "Source metadata"),
+  "metadata.collection_date": fc("Collection date", "Source metadata"),
+  "metadata.country": fc("Country", "Source metadata"),
+  "metadata.host": fc("Host", "Source metadata"),
+  "metadata.host_sex": fc("Host sex", "Source metadata"),
+  "metadata.host_status": fc("Host status", "Source metadata"),
+  "metadata.host_tax_id": fc("Host taxid", "Source metadata"),
+  "metadata.instrument_model": fc("Instrument model", "Source metadata"),
+  "metadata.instrument_platform": fc("Instrument platform", "Source metadata"),
+  "metadata.isolate": fc("Isolate", "Source metadata"),
+  "metadata.isolation_source": fc("Isolation source", "Source metadata"),
+  "metadata.location": fc("Location", "Source metadata"),
+  "metadata.project_name": fc("Project name", "Source metadata"),
+  "metadata.sample_alias": fc("Sample alias", "Source metadata"),
+  "metadata.secondary_sample_accession": fc(
+    "Secondary sample accession",
+    "Source metadata",
+  ),
+  "metadata.secondary_study_accession": fc(
+    "Secondary study accession",
+    "Source metadata",
+  ),
+  "metadata.serotype": fc("Serotype", "Source metadata"),
+  "metadata.serovar": fc("Serovar", "Source metadata"),
+  "metadata.strain": fc("Strain", "Source metadata"),
+  "metadata.study_accession": fc("Study accession", "Source metadata"),
+  "metadata.submission_accession": fc(
+    "Submission accession",
+    "Source metadata",
+  ),
 };
 
 function search(offset = 0) {

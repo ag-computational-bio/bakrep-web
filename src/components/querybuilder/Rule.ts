@@ -1,6 +1,7 @@
 import type { Range } from "@/model/Search";
 
 export type LeafRule = {
+  group?: string;
   field: string;
   label: string;
   type: "text" | "number";
@@ -8,6 +9,7 @@ export type LeafRule = {
 };
 
 export type NestedRule = {
+  group?: string;
   field: string;
   label: string;
   type: "nested";
