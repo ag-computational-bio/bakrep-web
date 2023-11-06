@@ -18,18 +18,18 @@ const props = defineProps({
 
 var data: Data[] = [];
 data.push({
-  y: props.inputData.map((item) => item.key),
-  x: props.inputData.map((item) => item.count),
+  x: props.inputData.map((item) => item.key),
+  y: props.inputData.map((item) => item.count),
   type: "bar",
-  orientation: "h",
+  orientation: "v",
   name: "count",
 } as Data);
 
 const layout = {
   yaxis: {
-    dtick: 1,
-    automargin: true,
-  }
+    type: "log",
+    autorange: true,
+  },
 } as Layout;
 
 onMounted(() => {

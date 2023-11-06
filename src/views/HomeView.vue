@@ -1,8 +1,4 @@
-<script setup lang="ts">
-import GenusStatistics from "@/components/GenusStatistics.vue";
-import RepositoryStatistics from "@/components/RepositoryStatistics.vue";
-
-</script>
+<script setup lang="ts"></script>
 
 <template>
   <main class="container pt-5">

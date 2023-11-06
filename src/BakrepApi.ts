@@ -22,13 +22,14 @@ function initApi(url: string) {
 
 interface BakrepApi {
   getDataset(id: string): Promise<Dataset>;
-  fetchUrlContentAsJson(url: string): Promise<any>;
-  fetchLocalUrlContentAsJson(url: string): Promise<any>;
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult | undefined>;
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult | undefined>;
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult | undefined>;
   fetchMlstResult(dataset: Dataset): Promise<MlstResult | undefined>;
   fetchMetadata(dataset: Dataset): Promise<Metadata | undefined>;
+  fetchGenusStatistics(): Promise<any>;
+  fetchSpeciesStatistics(): Promise<any>;
+  fetchSummary(): Promise<any>;
   search(request: SearchRequest): Promise<BakrepSearchResult>;
   searchTsv(
     request: SearchRequest,
@@ -56,12 +57,6 @@ class BakrepApiImpl implements BakrepApi {
     return fetch(baseurl + "/datasets/" + id)
       .then(this.toJson)
       .then((j) => DatasetSchema.parse(j));
-  }
-  fetchUrlContentAsJson(url: string): Promise<any> {
-    return fetch(url).then(this.toJson);
-  }
-  fetchLocalUrlContentAsJson(url: string): Promise<any> {
-    return fetch(baseurl + url).then(this.toJson);
   }
 
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult | undefined> {
@@ -131,6 +126,15 @@ class BakrepApiImpl implements BakrepApi {
       );
     }
     return fetch(metadata[0].url).then(this.toJson).then(MetadataSchema.parse);
+  }
+  fetchSummary() {
+    return fetch(baseurl + "/stats/summary").then(this.toJson);
+  }
+  fetchGenusStatistics() {
+    return fetch(baseurl + "/stats/genus").then(this.toJson);
+  }
+  fetchSpeciesStatistics() {
+    return fetch(baseurl + "/stats/species").then(this.toJson);
   }
   searchinfo(): Promise<SearchInfo> {
     return fetch(baseurl + "/search/_info")
