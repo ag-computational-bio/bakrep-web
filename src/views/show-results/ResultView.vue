@@ -2,7 +2,6 @@
 <script setup lang="ts">
 import DownloadLinks from "@/components/DownloadLinks.vue";
 import Loading from "@/components/Loading.vue";
-import Pane from "@/components/Pane.vue";
 import usePageState, { State } from "@/PageState";
 import { computed, onMounted, ref, type Ref } from "vue";
 
@@ -11,13 +10,13 @@ import { type BaktaResult } from "@/model/BaktaResults";
 import type { CheckmResult } from "@/model/CheckmResults";
 import type { Dataset } from "@/model/Dataset";
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
+import type { Metadata } from "@/model/Metadata";
 import type { MlstResult } from "@/model/MlstResults";
 import router from "@/router";
+import SummaryPane from "@/views/show-results/SummaryPane.vue";
 import { useRoute } from "vue-router";
 import BaktaAnnotationTable from "./bakta/BaktaAnnotationTable.vue";
 import BaktaGenomeViewer from "./bakta/BaktaGenomeViewer.vue";
-import SummaryPane from "@/views/show-results/SummaryPane.vue";
-import type { Metadata } from "@/model/Metadata";
 import MetadataCard from "./metadata/MetadataCard.vue";
 
 const route = useRoute();
@@ -78,11 +77,21 @@ state.value.setState(State.Loading);
       <h2>Dataset: {{ id }}</h2>
     </div>
     <Loading :state="state">
-      <Pane
-        :items="tabs"
-        :activeItem="active_tab"
-        @update:value="(newValue) => updateTab(newValue)"
-      >
+      <div class="mx-3">
+        <ul class="nav nav-pills py-3">
+          <li class="nav-item" v-for="item in tabs" :key="item.id">
+            <a
+              class="nav-link"
+              :class="{ active: active_tab === item.id }"
+              href="#"
+              @click="updateTab(item.id)"
+            >
+              {{ item.name }}
+            </a>
+          </li>
+        </ul>
+      </div>
+      <div class="tab-content mx-3">
         <template v-if="active_tab === 'genome-viewer'">
           <BaktaGenomeViewer :data="baktaResult" />
         </template>
@@ -112,7 +121,7 @@ state.value.setState(State.Loading);
         <template v-if="active_tab == 'download'">
           <DownloadLinks :dataset="dataset" />
         </template>
-      </Pane>
+      </div>
     </Loading>
   </main>
 </template>
