@@ -40,10 +40,10 @@ const layout = {
 } as Layout;
 
 onMounted(() => {
-  Plotly.newPlot("genusChart", data, layout);
+  Plotly.newPlot("speciesChart", data, layout);
 });
 </script>
 
 <template>
-  <div id="genusChart"></div>
+  <div id="speciesChart"></div>
 </template>

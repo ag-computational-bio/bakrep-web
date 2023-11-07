@@ -3,6 +3,7 @@
 import { onMounted, ref } from "vue";
 import { useApi } from "@/BakrepApi";
 import GenusStatistics from "@/components/GenusStatistics.vue";
+import SpeciesStatistics from "@/components/SpeciesStatistics.vue";
 import RepositoryStatistics from "@/components/RepositoryStatistics.vue";
 import usePageState, { State } from "@/PageState";
 import Loading from "@/components/Loading.vue";
@@ -32,10 +33,16 @@ state.value.setState(State.Loading)
 <template>
   <Loading :state="state">
     <div>
+      <h3>Genus Composition:</h3>
       <GenusStatistics :inputData="genusData" />
     </div>
     <div>
-      <RepositoryStatistics class="" :entries="summaryData" />
+      <h3>Species Composition:</h3>
+      <SpeciesStatistics :inputData="speciesData" />
+    </div>
+    <div>
+      <h3>General Repository Data:</h3>
+      <RepositoryStatistics :entries="summaryData" />
     </div>
   </Loading>
 </template>
