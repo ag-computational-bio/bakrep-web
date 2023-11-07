@@ -104,6 +104,7 @@ state.value.setState(State.Loading);
             baktaResult &&
             gtdbtkResult &&
             checkmResult &&
+            metadata &&
             mlstResult
           "
         >
@@ -113,6 +114,7 @@ state.value.setState(State.Loading);
             :gtdbtk="gtdbtkResult"
             :checkm="checkmResult"
             :mlst="mlstResult"
+            :metadata="metadata"
           />
         </template>
         <template v-if="active_tab == 'metadata'">
