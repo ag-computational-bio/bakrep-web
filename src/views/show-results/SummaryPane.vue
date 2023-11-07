@@ -8,8 +8,10 @@ import type { PropType } from "vue";
 import BaktaStats from "@/views/show-results/bakta/BaktaStats.vue";
 import DisplayAssembly from "@/views/show-results/DisplayAssembly.vue";
 import GtdbtkTaxonomy from "@/views/show-results/GtdbtkTaxonomy.vue";
+import DisplayMetadata from "./DisplayMetadata.vue";
 import PhylogenyTree from "@/components/PhylogenyTree.vue";
 import ContigBar from "@/components/ContigBar.vue";
+import type { Metadata } from "@/model/Metadata";
 
 const props = defineProps({
   id: { type: String },
@@ -17,6 +19,7 @@ const props = defineProps({
   checkm: { type: Object as PropType<CheckmResult>, required: true },
   gtdbtk: { type: Object as PropType<GtdbtkResult>, required: true },
   mlst: { type: Object as PropType<MlstResult>, required: true },
+  metadata: { type: Object as PropType<Metadata>, required: true },
 });
 </script>
 
@@ -25,7 +28,9 @@ const props = defineProps({
     <div class="col-lg-4 col-md-12">
       <div class="card h-100">
         <div class="card-header">Metadata</div>
-        <div class="card-body">...</div>
+        <div class="card-body">
+          <DisplayMetadata :metadata="metadata" />
+        </div>
       </div>
     </div>
     <div class="col-lg-4 col-md-12">
