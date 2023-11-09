@@ -13,7 +13,10 @@ import {
   RepositoryStatisticsDataSchema,
   type RepositoryStatisticsData,
 } from "./model/RepositoryStatisticsData";
-import { StatisticDataSchema, type StatisticData } from "./model/StatisticData";
+import {
+  KeywordCountDataSchema,
+  type KeywordCountData,
+} from "./model/KeywordCountData";
 
 import {
   tsvSearchResultFromText,
@@ -33,8 +36,8 @@ interface BakrepApi {
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult | undefined>;
   fetchMlstResult(dataset: Dataset): Promise<MlstResult | undefined>;
   fetchMetadata(dataset: Dataset): Promise<Metadata | undefined>;
-  fetchGenusStatistics(): Promise<StatisticData>;
-  fetchSpeciesStatistics(): Promise<StatisticData>;
+  fetchGenusStatistics(): Promise<KeywordCountData>;
+  fetchSpeciesStatistics(): Promise<KeywordCountData>;
   fetchSummary(): Promise<RepositoryStatisticsData>;
   search(request: SearchRequest): Promise<BakrepSearchResult>;
   searchTsv(
@@ -138,13 +141,15 @@ class BakrepApiImpl implements BakrepApi {
       .then(this.toJson)
       .then(RepositoryStatisticsDataSchema.parse);
   }
-  fetchGenusStatistics(): Promise<StatisticData> {
+  fetchGenusStatistics(): Promise<KeywordCountData> {
     return fetch(baseurl + "/stats/genus")
       .then(this.toJson)
-      .then(StatisticDataSchema.parse);
+      .then(KeywordCountDataSchema.parse);
   }
-  fetchSpeciesStatistics(): Promise<StatisticData> {
-    return fetch(baseurl + "/stats/species").then(this.toJson);
+  fetchSpeciesStatistics(): Promise<KeywordCountData> {
+    return fetch(baseurl + "/stats/species")
+      .then(this.toJson)
+      .then(KeywordCountDataSchema.parse);
   }
   searchinfo(): Promise<SearchInfo> {
     return fetch(baseurl + "/search/_info")

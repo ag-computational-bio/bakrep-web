@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { type StatisticData } from "@/model/StatisticData";
+import { type KeywordCountData } from "@/model/KeywordCountData";
 import Plotly from "plotly.js-dist-min";
 import type { Data, Layout } from "plotly.js-dist-min";
 import {
@@ -12,18 +12,18 @@ import {
 import type { PropType } from "vue";
 
 const props = defineProps({
-  inputData: { type: Object as PropType<StatisticData>, required: true },
+  inputData: { type: Object as PropType<KeywordCountData>, required: true },
 });
 
 let data: Data[] = [];
 
-const reversedData: ComputedRef<StatisticData> = computed(() =>
+const reversedData: ComputedRef<KeywordCountData> = computed(() =>
   [...props.inputData].reverse(),
 );
 
 data.push({
-  y: reversedData.value.map((item) => item.keyword),
-  x: reversedData.value.map((item) => item.keywordCounts),
+  y: reversedData.value.map((item) => item.key),
+  x: reversedData.value.map((item) => item.count),
   type: "bar",
   orientation: "h",
   name: "count",
