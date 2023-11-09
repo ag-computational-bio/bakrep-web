@@ -33,11 +33,11 @@ state.value.setState(State.Loading)
 <template>
   <Loading :state="state">
     <div>
-      <h3>Genus Composition:</h3>
+      <h3 class="ps-5">Genus Composition:</h3>
       <GenusStatistics :inputData="genusData" />
     </div>
     <div>
-      <h3>Species Composition:</h3>
+      <h3 class="ps-5">Species Composition:</h3>
       <SpeciesStatistics :inputData="speciesData" />
     </div>
     <div>
