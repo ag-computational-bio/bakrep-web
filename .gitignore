@@ -30,3 +30,4 @@ coverage
 # Custom 
 
 .notes.md
+shell.nix
