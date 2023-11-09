@@ -28,7 +28,7 @@ data.push({
   type: "bar",
   orientation: "h",
   name: "count",
-} as Data);
+});
 
 const layout = {
   height: 800,
