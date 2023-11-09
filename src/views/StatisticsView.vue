@@ -32,6 +32,10 @@ state.value.setState(State.Loading)
 
 <template>
   <Loading :state="state">
+    <div class="ps-5">
+      <h3>General Repository Data:</h3>
+      <RepositoryStatistics :entries="summaryData" />
+    </div>
     <div>
       <h3 class="ps-5">Genus Composition:</h3>
       <GenusStatistics :inputData="genusData" />
@@ -39,10 +43,6 @@ state.value.setState(State.Loading)
     <div>
       <h3 class="ps-5">Species Composition:</h3>
       <SpeciesStatistics :inputData="speciesData" />
-    </div>
-    <div>
-      <h3>General Repository Data:</h3>
-      <RepositoryStatistics :entries="summaryData" />
     </div>
   </Loading>
 </template>

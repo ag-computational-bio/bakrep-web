@@ -1,5 +1,5 @@
 <template>
-  <table class="w-75">
+  <table class="w-50">
     <tr v-for="(key, index) in Object.keys(entries)" :key="index">
       <th scope="row">
         {{ key.charAt(0).toLocaleUpperCase() + key.slice(1) }}:
@@ -19,10 +19,10 @@ defineProps({
 
 <style scoped>
 th {
-  text-align: end;
+  text-align: start;
 }
 
 td {
-  text-align: end;
+  text-align: start;
 }
 </style>
