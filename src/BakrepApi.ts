@@ -10,13 +10,13 @@ import { GtdbtkResultSchema, type GtdbtkResult } from "./model/GtdbtkResult";
 import { MlstResultSchema, type MlstResult } from "./model/MlstResults";
 import type { SearchInfo, SearchRequest } from "./model/Search";
 import {
-  RepositoryStatisticsDataSchema,
-  type RepositoryStatisticsData,
-} from "./model/RepositoryStatisticsData";
+  RepositoryStatisticsSchema,
+  type RepositoryStatistics,
+} from "./model/statistics/RepositoryStatistics";
 import {
-  KeywordCountDataSchema,
-  type KeywordCountData,
-} from "./model/KeywordCountData";
+  KeywordCountsSchema,
+  type KeywordCounts,
+} from "./model/statistics/KeywordCounts";
 
 import {
   tsvSearchResultFromText,
@@ -36,9 +36,9 @@ interface BakrepApi {
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult | undefined>;
   fetchMlstResult(dataset: Dataset): Promise<MlstResult | undefined>;
   fetchMetadata(dataset: Dataset): Promise<Metadata | undefined>;
-  fetchGenusStatistics(): Promise<KeywordCountData>;
-  fetchSpeciesStatistics(): Promise<KeywordCountData>;
-  fetchSummary(): Promise<RepositoryStatisticsData>;
+  fetchGenusStatistics(): Promise<KeywordCounts>;
+  fetchSpeciesStatistics(): Promise<KeywordCounts>;
+  fetchSummary(): Promise<RepositoryStatistics>;
   search(request: SearchRequest): Promise<BakrepSearchResult>;
   searchTsv(
     request: SearchRequest,
@@ -136,20 +136,20 @@ class BakrepApiImpl implements BakrepApi {
     }
     return fetch(metadata[0].url).then(this.toJson).then(MetadataSchema.parse);
   }
-  fetchSummary(): Promise<RepositoryStatisticsData> {
+  fetchSummary(): Promise<RepositoryStatistics> {
     return fetch(baseurl + "/stats/summary")
       .then(this.toJson)
-      .then(RepositoryStatisticsDataSchema.parse);
+      .then(RepositoryStatisticsSchema.parse);
   }
-  fetchGenusStatistics(): Promise<KeywordCountData> {
+  fetchGenusStatistics(): Promise<KeywordCounts> {
     return fetch(baseurl + "/stats/genus")
       .then(this.toJson)
-      .then(KeywordCountDataSchema.parse);
+      .then(KeywordCountsSchema.parse);
   }
-  fetchSpeciesStatistics(): Promise<KeywordCountData> {
+  fetchSpeciesStatistics(): Promise<KeywordCounts> {
     return fetch(baseurl + "/stats/species")
       .then(this.toJson)
-      .then(KeywordCountDataSchema.parse);
+      .then(KeywordCountsSchema.parse);
   }
   searchinfo(): Promise<SearchInfo> {
     return fetch(baseurl + "/search/_info")

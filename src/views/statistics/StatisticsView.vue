@@ -2,8 +2,8 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useApi } from "@/BakrepApi";
-import PhylogenyCountsBarChart from "@/components/PhylogenyCountsBarchart.vue";
-import RepositoryStatistics from "@/components/RepositoryStatistics.vue";
+import PhylogenyCountsBarChart from "./PhylogenyCountsBarchart.vue";
+import RepositoryStatistics from "./RepositoryStatistics.vue";
 import usePageState, { State } from "@/PageState";
 import Loading from "@/components/Loading.vue";
 const api = useApi();
