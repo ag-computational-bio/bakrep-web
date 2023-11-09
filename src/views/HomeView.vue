@@ -2,7 +2,6 @@
 
 <template>
   <main class="container pt-5">
-
     <div class="row">
       <div class="col-md-12 col-lg-6">
         <h2>BakRep</h2>

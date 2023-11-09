@@ -10,6 +10,15 @@ import { GtdbtkResultSchema, type GtdbtkResult } from "./model/GtdbtkResult";
 import { MlstResultSchema, type MlstResult } from "./model/MlstResults";
 import type { SearchInfo, SearchRequest } from "./model/Search";
 import {
+  RepositoryStatisticsSchema,
+  type RepositoryStatistics,
+} from "./model/statistics/RepositoryStatistics";
+import {
+  KeywordCountsSchema,
+  type KeywordCounts,
+} from "./model/statistics/KeywordCounts";
+
+import {
   tsvSearchResultFromText,
   type TsvSearchResult,
 } from "./model/TsvSearchResult";
@@ -22,12 +31,14 @@ function initApi(url: string) {
 
 interface BakrepApi {
   getDataset(id: string): Promise<Dataset>;
-  fetchUrlContentAsJson(url: string): Promise<any>;
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult | undefined>;
   fetchGtdbtkResult(dataset: Dataset): Promise<GtdbtkResult | undefined>;
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult | undefined>;
   fetchMlstResult(dataset: Dataset): Promise<MlstResult | undefined>;
   fetchMetadata(dataset: Dataset): Promise<Metadata | undefined>;
+  fetchGenusStatistics(): Promise<KeywordCounts>;
+  fetchSpeciesStatistics(): Promise<KeywordCounts>;
+  fetchSummary(): Promise<RepositoryStatistics>;
   search(request: SearchRequest): Promise<BakrepSearchResult>;
   searchTsv(
     request: SearchRequest,
@@ -56,9 +67,7 @@ class BakrepApiImpl implements BakrepApi {
       .then(this.toJson)
       .then((j) => DatasetSchema.parse(j));
   }
-  fetchUrlContentAsJson(url: string): Promise<any> {
-    return fetch(url).then(this.toJson);
-  }
+
   fetchBaktaResult(dataset: Dataset): Promise<BaktaResult | undefined> {
     const bakta = dataset.results.filter(
       (x) => x.attributes.tool === "bakta" && x.attributes.filetype === "json",
@@ -126,6 +135,21 @@ class BakrepApiImpl implements BakrepApi {
       );
     }
     return fetch(metadata[0].url).then(this.toJson).then(MetadataSchema.parse);
+  }
+  fetchSummary(): Promise<RepositoryStatistics> {
+    return fetch(baseurl + "/stats/summary")
+      .then(this.toJson)
+      .then(RepositoryStatisticsSchema.parse);
+  }
+  fetchGenusStatistics(): Promise<KeywordCounts> {
+    return fetch(baseurl + "/stats/genus")
+      .then(this.toJson)
+      .then(KeywordCountsSchema.parse);
+  }
+  fetchSpeciesStatistics(): Promise<KeywordCounts> {
+    return fetch(baseurl + "/stats/species")
+      .then(this.toJson)
+      .then(KeywordCountsSchema.parse);
   }
   searchinfo(): Promise<SearchInfo> {
     return fetch(baseurl + "/search/_info")
