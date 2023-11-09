@@ -1,6 +1,5 @@
 <script setup lang="ts">
 import { type StatisticData } from "@/model/StatisticData";
-import { clone } from "chart.js/helpers";
 import Plotly from "plotly.js-dist-min";
 import type { Data, Layout } from "plotly.js-dist-min";
 import {
@@ -19,7 +18,7 @@ const props = defineProps({
 let data: Data[] = [];
 
 const reversedData: ComputedRef<StatisticData> = computed(() =>
-  clone(props.inputData).reverse(),
+  [...props.inputData].reverse(),
 );
 
 data.push({
@@ -30,7 +29,7 @@ data.push({
   name: "count",
 });
 
-const layout = {
+const layout: Partial<Layout> = {
   height: 800,
   yaxis: {
     automargin: true,
@@ -39,7 +38,7 @@ const layout = {
     type: "log",
     // autorange: true,
   },
-} as Layout;
+};
 
 const plot = ref();
 
