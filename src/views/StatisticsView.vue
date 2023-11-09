@@ -2,8 +2,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useApi } from "@/BakrepApi";
-import GenusStatistics from "@/components/GenusStatistics.vue";
-import SpeciesStatistics from "@/components/SpeciesStatistics.vue";
+import StatisticVisualization from "@/components/StatisticVisualization.vue";
 import RepositoryStatistics from "@/components/RepositoryStatistics.vue";
 import usePageState, { State } from "@/PageState";
 import Loading from "@/components/Loading.vue";
@@ -20,7 +19,8 @@ function loadData() {
     api.fetchGenusStatistics().then((r) => {genusData.value = r}),
   ]).then(() => {
     state.value.setState(State.Main);
-  });
+  })
+    .catch(() => state.value.setError("Necessary data couldn't be loaded. Please try again later."));;
 }
 
 onMounted(loadData);
@@ -38,11 +38,11 @@ state.value.setState(State.Loading)
     </div>
     <div>
       <h3 class="ps-5">Genus Composition:</h3>
-      <GenusStatistics :inputData="genusData" />
+      <StatisticVisualization :inputData="genusData" />
     </div>
     <div>
       <h3 class="ps-5">Species Composition:</h3>
-      <SpeciesStatistics :inputData="speciesData" />
+      <StatisticVisualization :inputData="speciesData" />
     </div>
   </Loading>
 </template>

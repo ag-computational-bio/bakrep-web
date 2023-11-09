@@ -9,6 +9,9 @@ import { DatasetSchema, type Dataset } from "./model/Dataset";
 import { GtdbtkResultSchema, type GtdbtkResult } from "./model/GtdbtkResult";
 import { MlstResultSchema, type MlstResult } from "./model/MlstResults";
 import type { SearchInfo, SearchRequest } from "./model/Search";
+import { RepositoryDataSchema, type RepositoryData } from "./model/RepositoryData";
+import { StatisticDataSchema, type StatisticData } from "./model/StatisticData";
+
 import {
   tsvSearchResultFromText,
   type TsvSearchResult,
@@ -27,9 +30,9 @@ interface BakrepApi {
   fetchCheckmResult(dataset: Dataset): Promise<CheckmResult | undefined>;
   fetchMlstResult(dataset: Dataset): Promise<MlstResult | undefined>;
   fetchMetadata(dataset: Dataset): Promise<Metadata | undefined>;
-  fetchGenusStatistics(): Promise<any>;
-  fetchSpeciesStatistics(): Promise<any>;
-  fetchSummary(): Promise<any>;
+  fetchGenusStatistics(): Promise<StatisticData>;
+  fetchSpeciesStatistics(): Promise<StatisticData>;
+  fetchSummary(): Promise<RepositoryData>;
   search(request: SearchRequest): Promise<BakrepSearchResult>;
   searchTsv(
     request: SearchRequest,
@@ -127,13 +130,17 @@ class BakrepApiImpl implements BakrepApi {
     }
     return fetch(metadata[0].url).then(this.toJson).then(MetadataSchema.parse);
   }
-  fetchSummary() {
-    return fetch(baseurl + "/stats/summary").then(this.toJson);
+  fetchSummary(): Promise<RepositoryData> {
+    return fetch(baseurl + "/stats/summary")
+      .then(this.toJson)
+      .then(RepositoryDataSchema.parse)
   }
-  fetchGenusStatistics() {
-    return fetch(baseurl + "/stats/genus").then(this.toJson);
+  fetchGenusStatistics(): Promise<StatisticData> {
+    return fetch(baseurl + "/stats/genus")
+    .then(this.toJson)
+    .then(StatisticDataSchema.parse);
   }
-  fetchSpeciesStatistics() {
+  fetchSpeciesStatistics(): Promise<StatisticData> {
     return fetch(baseurl + "/stats/species").then(this.toJson);
   }
   searchinfo(): Promise<SearchInfo> {
