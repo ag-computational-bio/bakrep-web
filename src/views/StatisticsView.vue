@@ -2,7 +2,7 @@
 <script setup lang="ts">
 import { onMounted, ref } from "vue";
 import { useApi } from "@/BakrepApi";
-import StatisticVisualization from "@/components/StatisticVisualization.vue";
+import PhylogenyCountsBarChart from "@/components/PhylogenyCountsBarchart.vue";
 import RepositoryStatistics from "@/components/RepositoryStatistics.vue";
 import usePageState, { State } from "@/PageState";
 import Loading from "@/components/Loading.vue";
@@ -14,20 +14,30 @@ const speciesData = ref();
 
 function loadData() {
   return Promise.all([
-    api.fetchSpeciesStatistics().then((r) => {speciesData.value = r}),
-    api.fetchSummary().then((r) => {summaryData.value = r}),
-    api.fetchGenusStatistics().then((r) => {genusData.value = r}),
-  ]).then(() => {
-    state.value.setState(State.Main);
-  })
-    .catch(() => state.value.setError("Necessary data couldn't be loaded. Please try again later."));;
+    api.fetchSpeciesStatistics().then((r) => {
+      speciesData.value = r;
+    }),
+    api.fetchSummary().then((r) => {
+      summaryData.value = r;
+    }),
+    api.fetchGenusStatistics().then((r) => {
+      genusData.value = r;
+    }),
+  ])
+    .then(() => {
+      state.value.setState(State.Main);
+    })
+    .catch(() =>
+      state.value.setError(
+        "Necessary data couldn't be loaded. Please try again later.",
+      ),
+    );
 }
 
 onMounted(loadData);
 
 const state = usePageState();
-state.value.setState(State.Loading)
-
+state.value.setState(State.Loading);
 </script>
 
 <template>
@@ -38,11 +48,11 @@ state.value.setState(State.Loading)
     </div>
     <div>
       <h3 class="ps-5">Genus Composition:</h3>
-      <StatisticVisualization :inputData="genusData" />
+      <PhylogenyCountsBarChart :inputData="genusData" />
     </div>
     <div>
       <h3 class="ps-5">Species Composition:</h3>
-      <StatisticVisualization :inputData="speciesData" />
+      <PhylogenyCountsBarChart :inputData="speciesData" />
     </div>
   </Loading>
 </template>

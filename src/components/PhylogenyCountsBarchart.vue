@@ -1,11 +1,16 @@
 <script setup lang="ts">
 import { type StatisticData } from "@/model/StatisticData";
+import { clone } from "chart.js/helpers";
 import Plotly from "plotly.js-dist-min";
 import type { Data, Layout } from "plotly.js-dist-min";
-import { computed, type ComputedRef, onMounted, ref, onBeforeUnmount } from "vue";
+import {
+  computed,
+  type ComputedRef,
+  onMounted,
+  ref,
+  onBeforeUnmount,
+} from "vue";
 import type { PropType } from "vue";
-import { z } from "zod";
-
 
 const props = defineProps({
   inputData: { type: Object as PropType<StatisticData>, required: true },
@@ -13,11 +18,13 @@ const props = defineProps({
 
 let data: Data[] = [];
 
-const reversedData: ComputedRef<StatisticData> = computed(() => props.inputData.reverse())
+const reversedData: ComputedRef<StatisticData> = computed(() =>
+  clone(props.inputData).reverse(),
+);
 
 data.push({
-  y: reversedData.value.map((item) => item.key),
-  x: reversedData.value.map((item) => item.count),
+  y: reversedData.value.map((item) => item.keyword),
+  x: reversedData.value.map((item) => item.keywordCounts),
   type: "bar",
   orientation: "h",
   name: "count",
@@ -34,16 +41,15 @@ const layout = {
   },
 } as Layout;
 
-const plot = ref()
-
+const plot = ref();
 
 onMounted(() => {
   Plotly.newPlot(plot.value, data, layout);
 });
 
 onBeforeUnmount(() => {
-  Plotly.purge(plot.value)
-})
+  Plotly.purge(plot.value);
+});
 </script>
 
 <template>
