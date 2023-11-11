@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import type { Metadata } from "@/model/Metadata";
 import type { PropType } from "vue";
+import EnvironmentMetadata from "@/components/EnvironmentMetadata.vue";
 
 const props = defineProps({
   id: { type: String },
@@ -11,21 +12,33 @@ const props = defineProps({
 <template>
   <table>
     <tbody>
-      <tr v-if="metadata.project_name">
-        <th class="text-end">Project Name:</th>
-        <td class="ps-5">{{ metadata.project_name }}</td>
-      </tr>
-      <tr v-if="metadata.sample?.collection_date">
+      <tr>
         <th class="text-end">Collection Date:</th>
-        <td class="ps-5">{{ metadata.sample.collection_date }}</td>
+        <td class="ps-5" v-if="metadata.sample?.collection_date">
+          {{ metadata.sample?.collection_date }}
+        </td>
+        <td class="ps-5" v-else>?</td>
       </tr>
-      <tr v-if="metadata.sample?.country">
+      <tr>
         <th class="text-end">Country:</th>
-        <td class="ps-5">{{ metadata.sample.country }}</td>
+        <td class="ps-5" v-if="metadata.sample?.country">
+          {{ metadata.sample?.country }}
+        </td>
+        <td class="ps-5" v-else>?</td>
       </tr>
-      <tr v-if="metadata.sequencing?.instrument_model">
-        <th class="text-end">Sequencing Instrument:</th>
-        <td class="ps-5">{{ metadata.sequencing?.instrument_model }}</td>
+      <tr>
+        <th class="text-end">Environment:</th>
+        <td class="ps-5" v-if="metadata.sample?.environment">
+          <EnvironmentMetadata :environment="metadata.sample.environment" />
+        </td>
+        <td class="ps-5" v-else>?</td>
+      </tr>
+      <tr>
+        <th class="text-end">Isolation Source:</th>
+        <td class="ps-5" v-if="metadata.sample?.isolation_source">
+          {{ metadata.sample?.isolation_source }}
+        </td>
+        <td class="ps-5" v-else>?</td>
       </tr>
     </tbody>
   </table>
