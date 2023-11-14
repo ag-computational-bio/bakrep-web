@@ -28,11 +28,10 @@ const props = defineProps({
       </tr>
       <tr>
         <th class="text-end">Environment:</th>
-        <td class="ps-5" v-if="metadata.sample?.environment">
-          <EnvironmentMetadata :environment="metadata.sample.environment" />
-        </td>
-        <td class="ps-5" v-else>?</td>
       </tr>
+      <template v-if="metadata.sample">
+        <EnvironmentMetadata :environment="metadata.sample.environment" />
+      </template>
       <tr>
         <th class="text-end">Isolation Source:</th>
         <td class="ps-5" v-if="metadata.sample?.isolation_source">
