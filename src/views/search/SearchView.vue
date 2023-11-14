@@ -35,15 +35,29 @@ import {
 import ExportProgress from "./ExportProgress.vue";
 import { downloadFullTsv, type ProgressEvent } from "./ExportTsv";
 import ResultTable from "./ResultTable.vue";
+import { useRoute } from "vue-router";
+import router from "@/router";
 const pageState = usePageState();
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
 
 const api = useApi();
+const route = useRoute();
+
 const pagination: Ref<PaginationData> = ref(empty());
 const query: Ref<CompoundQuery> = ref({ op: "and", value: [] });
 const ordering: Ref<SortOption[]> = ref([{ field: "id", ord: "asc" }]);
 const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
+let startingOffset: number = 0;
+
+if (route.params.query) {
+  const importedData = importQuery(route.params.query as string);
+  pagination.value.limit = importedData.pagination;
+  query.value = importedData.query;
+  ordering.value = importedData.ordering;
+  startingOffset = importedData.offset;
+}
+
 function init() {
   pageState.value.setState(State.Loading);
   api
@@ -51,6 +65,11 @@ function init() {
     .then((r) => {
       searchinfo.value = r;
       pageState.value.setState(State.Main);
+    })
+    .then(() => {
+      if (route.params.query) {
+        search(startingOffset);
+      }
     })
     .catch((err) => pageState.value.setError(err));
 }
@@ -158,6 +177,8 @@ const fieldNames: Record<string, FieldConfiguration> = {
 function search(offset = 0) {
   searchState.value.setState(State.Loading);
   resetTsvExport();
+  const b64 = exportQuery(offset);
+  router.push({ name: "search-query", params: { query: b64 } });
   api
     .search({
       query: unref(query),
@@ -172,6 +193,21 @@ function search(offset = 0) {
       pagination.value.total = r.total;
     })
     .catch((err) => pageState.value.setError(err));
+}
+
+function exportQuery(offset: number): string {
+  const data = {
+    query: query.value,
+    ordering: ordering.value,
+    pagination: pagination.value.limit,
+    offset: offset,
+  };
+
+  return btoa(JSON.stringify(data));
+}
+
+function importQuery(base64: string) {
+  return JSON.parse(atob(base64));
 }
 
 const positionInResults: Ref<PositionInResult> = computed(() =>

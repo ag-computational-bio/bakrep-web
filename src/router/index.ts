@@ -24,6 +24,12 @@ const router = createRouter({
       component: () => import("../views/search/SearchView.vue"),
     },
     {
+      path: "/search/:query",
+      name: "search-query",
+      component: () => import("../views/search/SearchView.vue"),
+      props: true,
+    },
+    {
       path: "/imprint",
       name: "imprint",
       component: () => import("../views/ImprintView.vue"),
