@@ -8,20 +8,31 @@ defineProps({
 </script>
 
 <template>
-  <div class="container-full py-2">
-    <div>
-      <div class="fw-bold">Biome:</div>
-      <div>{{ environment.biome }}</div>
-    </div>
-    <div>
-      <div class="fw-bold">Feature:</div>
-      <div>{{ environment.feature }}</div>
-    </div>
-    <div>
-      <div class="fw-bold">Material:</div>
-      <div>
-        {{ environment.material }}
-      </div>
-    </div>
-  </div>
+  <tr class="ps-2">
+    <th class="text-end">Biome:</th>
+    <td class="ps-5" v-if="environment.biome">
+      {{ environment.biome }}
+    </td>
+    <td class="ps-5" v-else>?</td>
+  </tr>
+  <tr>
+    <th class="text-end">Feature:</th>
+    <td class="ps-5" v-if="environment.feature">
+      {{ environment.feature }}
+    </td>
+    <td class="ps-5" v-else>?</td>
+  </tr>
+  <tr>
+    <th class="text-end">Material:</th>
+    <td class="ps-5" v-if="environment.material">
+      {{ environment.material }}
+    </td>
+    <td class="ps-5" v-else>?</td>
+  </tr>
 </template>
+
+<style scoped>
+th {
+  font-weight: normal;
+}
+</style>
