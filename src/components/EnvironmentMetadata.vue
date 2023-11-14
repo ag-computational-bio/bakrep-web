@@ -1,6 +1,6 @@
 <script setup lang="ts">
 import type { PropType } from "vue";
-import { type Environment } from "@/model/Environment";
+import { type Environment } from "@/model/Metadata";
 
 defineProps({
   environment: { type: Object as PropType<Environment>, required: true },
