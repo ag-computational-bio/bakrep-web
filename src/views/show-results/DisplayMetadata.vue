@@ -29,7 +29,7 @@ const props = defineProps({
       <tr>
         <th class="text-end">Environment:</th>
       </tr>
-      <template v-if="metadata.sample">
+      <template v-if="metadata.sample?.environment">
         <EnvironmentMetadata :environment="metadata.sample.environment" />
       </template>
       <tr>
