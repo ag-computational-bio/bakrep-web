@@ -31,32 +31,22 @@ import {
   ref,
   unref,
   type Ref,
+  watch,
 } from "vue";
 import ExportProgress from "./ExportProgress.vue";
 import { downloadFullTsv, type ProgressEvent } from "./ExportTsv";
 import ResultTable from "./ResultTable.vue";
-import { useRoute } from "vue-router";
 import router from "@/router";
+import { useRoute } from "vue-router";
 const pageState = usePageState();
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
 
 const api = useApi();
-const route = useRoute();
-
 const pagination: Ref<PaginationData> = ref(empty());
 const query: Ref<CompoundQuery> = ref({ op: "and", value: [] });
 const ordering: Ref<SortOption[]> = ref([{ field: "id", ord: "asc" }]);
 const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
-let startingOffset: number = 0;
-
-if (route.params.query) {
-  const importedData = importQuery(route.params.query as string);
-  pagination.value.limit = importedData.pagination;
-  query.value = importedData.query;
-  ordering.value = importedData.ordering;
-  startingOffset = importedData.offset;
-}
 
 function init() {
   pageState.value.setState(State.Loading);
@@ -66,13 +56,39 @@ function init() {
       searchinfo.value = r;
       pageState.value.setState(State.Main);
     })
-    .then(() => {
-      if (route.params.query) {
-        search(startingOffset);
-      }
-    })
+    .then(populateVariables)
+    .then(() => search())
     .catch((err) => pageState.value.setError(err));
 }
+
+const route = useRoute();
+
+function encodeQuery(): string {
+  return btoa(JSON.stringify({ query: query.value, ordering: ordering.value }));
+}
+
+function decodeQuery(encodedQuery: string): {
+  query: CompoundQuery;
+  ordering: SortOption[];
+} {
+  return JSON.parse(atob(encodedQuery));
+}
+
+function populateVariables() {
+  if (route.query.query) {
+    const decodedQuery = decodeQuery(route.query.query as string);
+    query.value = decodedQuery.query;
+    ordering.value = decodedQuery.ordering;
+  }
+}
+
+watch(
+  () => route.query,
+  () => {
+    populateVariables();
+    search();
+  },
+);
 
 function searchinfo2querybuilderrules(f: SearchInfoField): Rule {
   const config = fieldNames[f.field];
@@ -177,8 +193,15 @@ const fieldNames: Record<string, FieldConfiguration> = {
 function search(offset = 0) {
   searchState.value.setState(State.Loading);
   resetTsvExport();
-  const b64 = exportQuery(offset);
-  router.push({ name: "search-query", params: { query: b64 } });
+  const encodedQuery = encodeQuery();
+  router.push({
+    name: "search",
+    query: {
+      offset: pagination.value.offset,
+      limit: pagination.value.limit,
+      query: encodedQuery,
+    },
+  });
   api
     .search({
       query: unref(query),
@@ -193,21 +216,6 @@ function search(offset = 0) {
       pagination.value.total = r.total;
     })
     .catch((err) => pageState.value.setError(err));
-}
-
-function exportQuery(offset: number): string {
-  const data = {
-    query: query.value,
-    ordering: ordering.value,
-    pagination: pagination.value.limit,
-    offset: offset,
-  };
-
-  return btoa(JSON.stringify(data));
-}
-
-function importQuery(base64: string) {
-  return JSON.parse(atob(base64));
 }
 
 const positionInResults: Ref<PositionInResult> = computed(() =>
