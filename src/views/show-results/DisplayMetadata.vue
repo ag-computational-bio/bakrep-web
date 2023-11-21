@@ -1,12 +1,17 @@
 <script setup lang="ts">
 import type { Metadata } from "@/model/Metadata";
 import type { PropType } from "vue";
-import EnvironmentMetadata from "@/components/EnvironmentMetadata.vue";
 
 const props = defineProps({
   id: { type: String },
   metadata: { type: Object as PropType<Metadata>, required: true },
 });
+
+
+
+function getText(value: string | undefined): string {
+  return value ? value : "?";
+}
 </script>
 
 <template>
@@ -14,30 +19,44 @@ const props = defineProps({
     <tbody>
       <tr>
         <th class="text-end">Collection Date:</th>
-        <td class="ps-5" v-if="metadata.sample?.collection_date">
-          {{ metadata.sample?.collection_date }}
+        <td class="ps-5">
+          {{ getText(metadata.sample?.collection_date) }}
         </td>
-        <td class="ps-5" v-else>?</td>
       </tr>
       <tr>
         <th class="text-end">Country:</th>
-        <td class="ps-5" v-if="metadata.sample?.country">
-          {{ metadata.sample?.country }}
+        <td class="ps-5">
+          {{ getText(metadata.sample?.country) }}
         </td>
-        <td class="ps-5" v-else>?</td>
       </tr>
       <tr>
         <th class="text-end">Environment:</th>
       </tr>
       <template v-if="metadata.sample?.environment">
-        <EnvironmentMetadata :environment="metadata.sample.environment" />
+        <tr class="ps-2">
+          <th class="text-end">Biome:</th>
+          <td class="ps-5">
+            {{ getText(metadata.sample?.environment.biome) }}
+          </td>
+        </tr>
+        <tr>
+          <th class="text-end">Feature:</th>
+          <td class="ps-5">
+            {{ getText(metadata.sample?.environment.feature) }}
+          </td>
+        </tr>
+        <tr>
+          <th class="text-end">Material:</th>
+          <td class="ps-5">
+            {{ getText(metadata.sample?.environment.material) }}
+          </td>
+        </tr>
       </template>
       <tr>
         <th class="text-end">Isolation Source:</th>
-        <td class="ps-5" v-if="metadata.sample?.isolation_source">
-          {{ metadata.sample?.isolation_source }}
+        <td class="ps-5">
+          {{ getText(metadata.sample?.isolation_source) }}
         </td>
-        <td class="ps-5" v-else>?</td>
       </tr>
     </tbody>
   </table>
