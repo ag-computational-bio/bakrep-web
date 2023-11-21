@@ -36,13 +36,15 @@ import {
 import ExportProgress from "./ExportProgress.vue";
 import { downloadFullTsv, type ProgressEvent } from "./ExportTsv";
 import ResultTable from "./ResultTable.vue";
-import router from "@/router";
-import { useRoute } from "vue-router";
+import { useRoute, useRouter } from "vue-router";
 const pageState = usePageState();
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
 
 const api = useApi();
+const route = useRoute();
+const router = useRouter();
+
 const pagination: Ref<PaginationData> = ref(empty());
 const query: Ref<CompoundQuery> = ref({ op: "and", value: [] });
 const ordering: Ref<SortOption[]> = ref([{ field: "id", ord: "asc" }]);
@@ -61,7 +63,6 @@ function init() {
     .catch((err) => pageState.value.setError(err));
 }
 
-const route = useRoute();
 
 function encodeQuery(): string {
   return btoa(JSON.stringify({ query: query.value, ordering: ordering.value }));
