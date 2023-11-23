@@ -59,10 +59,8 @@ function init() {
       pageState.value.setState(State.Main);
     })
     .then(populateVariables)
-    .then(() => search())
     .catch((err) => pageState.value.setError(err));
 }
-
 
 function encodeQuery(): string {
   return btoa(JSON.stringify({ query: query.value, ordering: ordering.value }));
@@ -80,6 +78,7 @@ function populateVariables() {
     const decodedQuery = decodeQuery(route.query.query as string);
     query.value = decodedQuery.query;
     ordering.value = decodedQuery.ordering;
+    search();
   }
 }
 
@@ -87,7 +86,6 @@ watch(
   () => route.query,
   () => {
     populateVariables();
-    search();
   },
 );
 
