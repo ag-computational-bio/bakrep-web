@@ -78,7 +78,9 @@ function populateVariables() {
     const decodedQuery = decodeQuery(route.query.query as string);
     query.value = decodedQuery.query;
     ordering.value = decodedQuery.ordering;
-    search();
+    pagination.value.offset = Number.parseInt(route.query.offset as string);
+    pagination.value.limit = Number.parseInt(route.query.limit as string);
+    search(pagination.value.offset);
   }
 }
 
@@ -88,6 +90,17 @@ watch(
     populateVariables();
   },
 );
+
+function updateQuery(offset = 0) {
+  router.push({
+    name: "search",
+    query: {
+      offset: offset,
+      limit: pagination.value.limit,
+      query: encodeQuery(),
+    },
+  });
+}
 
 function searchinfo2querybuilderrules(f: SearchInfoField): Rule {
   const config = fieldNames[f.field];
@@ -192,15 +205,6 @@ const fieldNames: Record<string, FieldConfiguration> = {
 function search(offset = 0) {
   searchState.value.setState(State.Loading);
   resetTsvExport();
-  const encodedQuery = encodeQuery();
-  router.push({
-    name: "search",
-    query: {
-      offset: pagination.value.offset,
-      limit: pagination.value.limit,
-      query: encodedQuery,
-    },
-  });
   api
     .search({
       query: unref(query),
@@ -213,6 +217,7 @@ function search(offset = 0) {
       searchState.value.setState(State.Main);
       if (r.offset) pagination.value.offset = r.offset;
       pagination.value.total = r.total;
+      updateQuery(r.offset);
     })
     .catch((err) => pageState.value.setError(err));
 }
@@ -337,7 +342,7 @@ onBeforeUnmount(() => {
             v-if="pagination.total > 0"
             class="mt-3"
             :value="pagination"
-            @update:offset="search"
+            @update:offset="updateQuery"
           />
         </div>
       </Loading>
