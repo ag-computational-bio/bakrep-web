@@ -7,8 +7,6 @@ const props = defineProps({
   metadata: { type: Object as PropType<Metadata>, required: true },
 });
 
-
-
 function getText(value: string | undefined): string {
   return value ? value : "?";
 }
@@ -32,26 +30,24 @@ function getText(value: string | undefined): string {
       <tr>
         <th class="text-end">Environment:</th>
       </tr>
-      <template v-if="metadata.sample?.environment">
-        <tr class="ps-2">
-          <th class="text-end">Biome:</th>
-          <td class="ps-5">
-            {{ getText(metadata.sample?.environment.biome) }}
-          </td>
-        </tr>
-        <tr>
-          <th class="text-end">Feature:</th>
-          <td class="ps-5">
-            {{ getText(metadata.sample?.environment.feature) }}
-          </td>
-        </tr>
-        <tr>
-          <th class="text-end">Material:</th>
-          <td class="ps-5">
-            {{ getText(metadata.sample?.environment.material) }}
-          </td>
-        </tr>
-      </template>
+      <tr class="ps-2">
+        <th class="text-end">Biome:</th>
+        <td class="ps-5">
+          {{ getText(metadata.sample?.environment?.biome) }}
+        </td>
+      </tr>
+      <tr>
+        <th class="text-end">Feature:</th>
+        <td class="ps-5">
+          {{ getText(metadata.sample?.environment?.feature) }}
+        </td>
+      </tr>
+      <tr>
+        <th class="text-end">Material:</th>
+        <td class="ps-5">
+          {{ getText(metadata.sample?.environment?.material) }}
+        </td>
+      </tr>
       <tr>
         <th class="text-end">Isolation Source:</th>
         <td class="ps-5">
