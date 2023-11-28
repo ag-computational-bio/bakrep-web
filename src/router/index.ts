@@ -49,6 +49,17 @@ const router = createRouter({
       path: "/browse",
       name: "browse",
       component: () => import("../views/BrowseView.vue"),
+      props: (route) => ({
+        offset: route.query.offset,
+        limit: route.query.limit,
+        gc: route.query.qc,
+        contig: route.query.qc,
+        size: route.query.size,
+        quality: route.query.quality,
+        contamination: route.query.contamination,
+        field: route.query.field,
+        order: route.query.order,
+      }),
     },
     {
       path: "/composition",
