@@ -39,6 +39,26 @@ const contigTuple = ref<FilterTuple>({ from: 0, to: 1000 });
 const qualityTuple = ref<FilterTuple>({ from: 0, to: 100 });
 const contaminationTuple = ref<FilterTuple>({ from: 0, to: 100 });
 
+function encodeParameters(offset = 0) {
+  return {
+    offset: 0,
+    limit: pagination.value.limit,
+    gc: encodeTuple(gcTuple.value),
+    size: encodeTuple(sizeTuple.value),
+    contig: encodeTuple(contigTuple.value),
+    quality: encodeTuple(qualityTuple.value),
+    contamination: encodeTuple(contaminationTuple.value),
+    order: btoa(JSON.stringify(ordering.value)),
+  };
+}
+
+function init() {
+  router.push({
+    name: "browse",
+    query: encodeParameters(),
+  });
+}
+
 const query: Ref<CompoundQuery> = computed(() => {
   return {
     op: "and",
@@ -86,16 +106,7 @@ const query: Ref<CompoundQuery> = computed(() => {
 function updateQuery(offset = pagination.value.offset) {
   router.push({
     name: "browse",
-    query: {
-      offset: offset,
-      limit: pagination.value.limit,
-      gc: encodeTuple(gcTuple.value),
-      size: encodeTuple(sizeTuple.value),
-      contig: encodeTuple(contigTuple.value),
-      quality: encodeTuple(qualityTuple.value),
-      contamination: encodeTuple(contaminationTuple.value),
-      order: btoa(JSON.stringify(ordering.value)),
-    },
+    query: encodeParameters(offset),
   });
 }
 
@@ -171,7 +182,7 @@ function updateOrdering(sortkey: string, direction: SortDirection | null) {
   filter();
 }
 
-onMounted(filter);
+onMounted(init);
 </script>
 
 <template>
