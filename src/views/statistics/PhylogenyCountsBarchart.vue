@@ -33,6 +33,7 @@ const layout: Partial<Layout> = {
   height: 800,
   yaxis: {
     automargin: true,
+    showticklabels: false,
   },
   xaxis: {
     type: "log",
