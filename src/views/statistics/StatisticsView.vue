@@ -51,7 +51,10 @@ state.value.setState(State.Loading);
       <p class="px-5">
         This graph displays the genus composition of the bakrep dataset, the
         y-axis shows the different genus while the x-axis displays how often a
-        sample of that genus is found in the database.
+        sample of that genus is found in the database. The x axis is
+        logarithmic, which results in the stair case effect you can see, since
+        there are more samples that are found just a few times than those that
+        are plentiful.
       </p>
       <p class="px-5">
         Both graphs are interactive, hovering over a bar will reveal the genus
@@ -65,7 +68,10 @@ state.value.setState(State.Loading);
       <p class="px-5">
         This graph displays the species composition of the bakrep dataset, the
         y-axis shows the different species while the x-axis displays how often a
-        sample of that species is found in the database.
+        sample of that species is found in the database.The x axis is
+        logarithmic, which results in the stair case effect you can see, since
+        there are more samples that are found just a few times than those that
+        are plentiful.
       </p>
       <h3 class="ps-5">Species Composition:</h3>
       <PhylogenyCountsBarChart :inputData="speciesData" />
