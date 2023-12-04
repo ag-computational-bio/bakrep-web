@@ -33,11 +33,22 @@ export type FilterTuple = {
   to: number;
 };
 
-const sizeTuple = ref<FilterTuple>({ from: 0, to: 9999999 });
-const gcTuple = ref<FilterTuple>({ from: 0, to: 100 });
-const contigTuple = ref<FilterTuple>({ from: 0, to: 1000 });
-const qualityTuple = ref<FilterTuple>({ from: 0, to: 100 });
-const contaminationTuple = ref<FilterTuple>({ from: 0, to: 100 });
+const props = defineProps({
+  offset: { type: Number, default: 0 },
+  limit: { type: Number, default: 10 },
+  gc: { type: String, default: "0;100" },
+  contig: { type: String, default: "0;1000" },
+  size: { type: String, default: "0;9999999" },
+  quality: { type: String, default: "0;100" },
+  contamination: { type: String, default: "0;100" },
+  order: { type: String },
+});
+
+const sizeTuple = ref<FilterTuple>(decodeTuple(props.size));
+const gcTuple = ref<FilterTuple>(decodeTuple(props.gc));
+const contigTuple = ref<FilterTuple>(decodeTuple(props.contig));
+const qualityTuple = ref<FilterTuple>(decodeTuple(props.quality));
+const contaminationTuple = ref<FilterTuple>(decodeTuple(props.contamination));
 
 function encodeParameters(offset = 0) {
   return {
@@ -50,13 +61,6 @@ function encodeParameters(offset = 0) {
     contamination: encodeTuple(contaminationTuple.value),
     order: btoa(JSON.stringify(ordering.value)),
   };
-}
-
-function init() {
-  if (route.query) {
-    decodeQuery();
-  }
-  updateQuery();
 }
 
 const query: Ref<CompoundQuery> = computed(() => {
@@ -147,7 +151,6 @@ function decodeTuple(tuple: string): FilterTuple {
 }
 
 function populateVariables() {
-  console.log("Populating variables");
   decodeQuery();
   filter(pagination.value.offset);
 }
@@ -174,7 +177,6 @@ function filter(offset = 0) {
       searchState.value.setState(State.Main);
       if (r.offset) pagination.value.offset = r.offset;
       pagination.value.total = r.total;
-      updateQuery(r.offset);
     })
     .catch((err) => searchState.value.setError(err));
 }
@@ -194,7 +196,11 @@ function updateOrdering(sortkey: string, direction: SortDirection | null) {
     else
       ordering.value = [{ field: sortkey, ord: direction }, ...ordering.value];
   }
-  filter();
+  updateQuery();
+}
+
+function init() {
+  updateQuery();
 }
 
 onMounted(init);
@@ -213,7 +219,7 @@ onMounted(init);
           <QueryFilter label="Genome Size" v-model="sizeTuple" />
           <QueryFilter label="Completeness" v-model="qualityTuple" />
           <QueryFilter label="Contamination" v-model="contaminationTuple" />
-          <button class="btn btn-light w-100" @click="filter()">
+          <button class="btn btn-light w-100" @click="updateQuery()">
             Apply Filter
           </button>
         </div>
