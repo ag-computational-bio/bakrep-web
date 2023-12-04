@@ -147,7 +147,6 @@ function decodeTuple(tuple: string): FilterTuple {
 }
 
 function populateVariables() {
-  console.log("Populating variables");
   decodeQuery();
   filter(pagination.value.offset);
 }
