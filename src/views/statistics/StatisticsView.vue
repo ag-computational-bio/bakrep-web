@@ -48,6 +48,17 @@ state.value.setState(State.Loading);
     </div>
     <div>
       <h3 class="ps-5">Genus Composition:</h3>
+      <p class="px-5">
+        This graph displays the genus composition of the bakrep dataset, the
+        y-axis shows the different genus while the x-axis displays how often a
+        sample of that genus is found in the database.
+      </p>
+      <p class="px-5">
+        Both graphs are interactive, hovering over a bar will reveal the genus
+        that is selected. It is also possible to select a zoom rectangle by
+        simply dragging inside the graph. More options are available once you
+        hover your mouse inside the graph panel.
+      </p>
       <PhylogenyCountsBarChart :inputData="genusData" />
     </div>
     <div>
