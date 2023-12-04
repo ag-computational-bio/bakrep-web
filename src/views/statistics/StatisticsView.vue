@@ -47,7 +47,7 @@ state.value.setState(State.Loading);
       <RepositoryStatistics :entries="summaryData" />
     </div>
     <div>
-      <h3 class="ps-5">Genus Composition:</h3>
+      <h3 class="ps-5 pt-2">Genus Composition:</h3>
       <p class="px-5">
         This graph displays the genus composition of the bakrep dataset, the
         y-axis shows the different genus while the x-axis displays how often a
@@ -62,6 +62,11 @@ state.value.setState(State.Loading);
       <PhylogenyCountsBarChart :inputData="genusData" />
     </div>
     <div>
+      <p class="px-5">
+        This graph displays the species composition of the bakrep dataset, the
+        y-axis shows the different species while the x-axis displays how often a
+        sample of that species is found in the database.
+      </p>
       <h3 class="ps-5">Species Composition:</h3>
       <PhylogenyCountsBarChart :inputData="speciesData" />
     </div>
