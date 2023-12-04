@@ -41,7 +41,7 @@ const contaminationTuple = ref<FilterTuple>({ from: 0, to: 100 });
 
 function encodeParameters(offset = 0) {
   return {
-    offset: 0,
+    offset: offset,
     limit: pagination.value.limit,
     gc: encodeTuple(gcTuple.value),
     size: encodeTuple(sizeTuple.value),
@@ -53,10 +53,10 @@ function encodeParameters(offset = 0) {
 }
 
 function init() {
-  router.push({
-    name: "browse",
-    query: encodeParameters(),
-  });
+  if (route.query) {
+    decodeQuery();
+  }
+  updateQuery();
 }
 
 const query: Ref<CompoundQuery> = computed(() => {
@@ -111,14 +111,30 @@ function updateQuery(offset = pagination.value.offset) {
 }
 
 function decodeQuery() {
-  gcTuple.value = decodeTuple(route.query.gc as string);
-  sizeTuple.value = decodeTuple(route.query.size as string);
-  contigTuple.value = decodeTuple(route.query.contig as string);
-  qualityTuple.value = decodeTuple(route.query.quality as string);
-  contaminationTuple.value = decodeTuple(route.query.contamination as string);
-  ordering.value = JSON.parse(atob(route.query.order as string));
-  pagination.value.limit = Number.parseInt(route.query.limit as string);
-  pagination.value.offset = Number.parseInt(route.query.offset as string);
+  if (route.query.qc) {
+    gcTuple.value = decodeTuple(route.query.gc as string);
+  }
+  if (route.query.size) {
+    sizeTuple.value = decodeTuple(route.query.size as string);
+  }
+  if (route.query.contig) {
+    contigTuple.value = decodeTuple(route.query.contig as string);
+  }
+  if (route.query.quality) {
+    qualityTuple.value = decodeTuple(route.query.quality as string);
+  }
+  if (route.query.contamination) {
+    contaminationTuple.value = decodeTuple(route.query.contamination as string);
+  }
+  if (route.query.order) {
+    ordering.value = JSON.parse(atob(route.query.order as string));
+  }
+  if (route.query.limit) {
+    pagination.value.limit = Number.parseInt(route.query.limit as string);
+  }
+  if (route.query.offset) {
+    pagination.value.offset = Number.parseInt(route.query.offset as string);
+  }
 }
 
 function encodeTuple(tuple: FilterTuple): string {
@@ -131,10 +147,9 @@ function decodeTuple(tuple: string): FilterTuple {
 }
 
 function populateVariables() {
-  if (route.query) {
-    decodeQuery();
-    filter(pagination.value.offset);
-  }
+  console.log("Populating variables");
+  decodeQuery();
+  filter(pagination.value.offset);
 }
 
 watch(
