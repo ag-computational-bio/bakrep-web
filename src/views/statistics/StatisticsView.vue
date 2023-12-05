@@ -49,29 +49,28 @@ state.value.setState(State.Loading);
     <div>
       <h3 class="ps-5 pt-2">Genus Composition:</h3>
       <p class="px-5">
-        This graph displays the genus composition of the bakrep dataset, the
-        y-axis shows the different genus while the x-axis displays how often a
-        sample of that genus is found in the database. The x axis is
-        logarithmic, which results in the stair case effect you can see, since
-        there are more samples that are found just a few times than those that
-        are plentiful.
+        This chart presents the number of entries per genus for all genera
+        stored in bakre, the y-axis shows the different genus while the x-axis
+        represents how often this genus is found in the database. To improve the
+        horizontal resolution of the low abundant genera, the x-axis is
+        logarithmically scaled.
       </p>
       <p class="px-5">
-        Both graphs are interactive, hovering over a bar will reveal the genus
-        that is selected. It is also possible to select a zoom rectangle by
-        simply dragging inside the graph. More options are available once you
-        hover your mouse inside the graph panel.
+        The default horizontal resolution contains multiple genera per pixel. In
+        order to see more details, you can zoom into areas of interest. Create a
+        zoom selection by clicking in one of the corners of your area of
+        interest and drag a selection box to the other corner of your interest.
+        Hovering over a bar will reveal the genus that is selected.
       </p>
       <PhylogenyCountsBarChart :inputData="genusData" />
     </div>
     <div>
       <p class="px-5">
-        This graph displays the species composition of the bakrep dataset, the
-        y-axis shows the different species while the x-axis displays how often a
-        sample of that species is found in the database.The x axis is
-        logarithmic, which results in the stair case effect you can see, since
-        there are more samples that are found just a few times than those that
-        are plentiful.
+        This chart presents the number of entries per species for all species
+        stored in bakre, the y-axis shows the different species while the x-axis
+        represents how often this species is found in the database. To improve
+        the horizontal resolution of the low abundant species, the x-axis is
+        logarithmically scaled.
       </p>
       <h3 class="ps-5">Species Composition:</h3>
       <PhylogenyCountsBarChart :inputData="speciesData" />
