@@ -17,7 +17,15 @@ import {
   type CompoundQuery,
 } from "@/model/Search";
 import ResultTable from "@/views/search/ResultTable.vue";
-import { computed, onMounted, ref, unref, type Ref, watch } from "vue";
+import {
+  computed,
+  onMounted,
+  ref,
+  unref,
+  type Ref,
+  watch,
+  type PropType,
+} from "vue";
 import { useRoute, useRouter } from "vue-router";
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
@@ -36,19 +44,44 @@ export type FilterTuple = {
 const props = defineProps({
   offset: { type: Number, default: 0 },
   limit: { type: Number, default: 10 },
-  gc: { type: String, default: "0;100" },
-  contig: { type: String, default: "0;1000" },
-  size: { type: String, default: "0;9999999" },
-  quality: { type: String, default: "0;100" },
-  contamination: { type: String, default: "0;100" },
+  gc: {
+    type: Object as PropType<FilterTuple>,
+    default() {
+      return { from: 0, to: 100 };
+    },
+  },
+  contig: {
+    type: Object as PropType<FilterTuple>,
+    default() {
+      return { from: 0, to: 100 };
+    },
+  },
+  size: {
+    type: Object as PropType<FilterTuple>,
+    default() {
+      return { from: 0, to: 1000000 };
+    },
+  },
+  quality: {
+    type: Object as PropType<FilterTuple>,
+    default() {
+      return { from: 0, to: 100 };
+    },
+  },
+  contamination: {
+    type: Object as PropType<FilterTuple>,
+    default() {
+      return { from: 0, to: 100 };
+    },
+  },
   order: { type: String },
 });
 
-const sizeTuple = ref<FilterTuple>(decodeTuple(props.size));
-const gcTuple = ref<FilterTuple>(decodeTuple(props.gc));
-const contigTuple = ref<FilterTuple>(decodeTuple(props.contig));
-const qualityTuple = ref<FilterTuple>(decodeTuple(props.quality));
-const contaminationTuple = ref<FilterTuple>(decodeTuple(props.contamination));
+const sizeTuple = ref<FilterTuple>(props.size);
+const gcTuple = ref<FilterTuple>(props.gc);
+const contigTuple = ref<FilterTuple>(props.contig);
+const qualityTuple = ref<FilterTuple>(props.quality);
+const contaminationTuple = ref<FilterTuple>(props.contamination);
 
 function encodeParameters(offset = 0) {
   return {
@@ -151,7 +184,8 @@ function decodeTuple(tuple: string): FilterTuple {
 }
 
 function populateVariables() {
-  decodeQuery();
+  console.log("running");
+  // decodeQuery();
   filter(pagination.value.offset);
 }
 

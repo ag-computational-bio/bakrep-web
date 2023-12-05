@@ -52,11 +52,11 @@ const router = createRouter({
       props: (route) => ({
         offset: parseInt(route.query.offset as string),
         limit: parseInt(route.query.limit as string),
-        gc: route.query.qc,
-        contig: route.query.qc,
-        size: route.query.size,
-        quality: route.query.quality,
-        contamination: route.query.contamination,
+        gc: decodeTuple(route.query.qc as string),
+        contig: decodeTuple(route.query.qc as string),
+        size: decodeTuple(route.query.size as string),
+        quality: decodeTuple(route.query.quality as string),
+        contamination: decodeTuple(route.query.contamination as string),
         field: route.query.field,
         order: route.query.order,
       }),
@@ -75,3 +75,14 @@ const router = createRouter({
 });
 
 export default router;
+
+function decodeTuple(tuple: string, defaultTuple: any): any {
+  if (tuple) {
+    const arr = tuple.split(";");
+    return { from: Number.parseInt(arr[0]), to: Number.parseInt(arr[1]) };
+  } else {
+    return { from: 0, to: 100 };
+  }
+}
+
+function getTupleRange(fieldId: string) {}
