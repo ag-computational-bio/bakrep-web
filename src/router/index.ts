@@ -25,6 +25,8 @@ const router = createRouter({
       props: (route) => ({
         offset: parseInt(route.query.offset as string),
         limit: parseInt(route.query.limit as string),
+        offset: parseInt(route.query.offset as string),
+        limit: parseInt(route.query.limit as string),
         query: route.query.query,
       }),
     },
