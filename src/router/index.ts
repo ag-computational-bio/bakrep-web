@@ -23,8 +23,8 @@ const router = createRouter({
       name: "search",
       component: () => import("../views/search/SearchView.vue"),
       props: (route) => ({
-        offset: route.query.offset,
-        limit: route.query.limit,
+        offset: parseInt(route.query.offset as string),
+        limit: parseInt(route.query.limit as string),
         query: route.query.query,
       }),
     },
@@ -50,7 +50,7 @@ const router = createRouter({
       name: "browse",
       component: () => import("../views/BrowseView.vue"),
       props: (route) => ({
-        offset: route.query.offset,
+        offset: parseInt(route.query.offset as string),
         limit: route.query.limit,
         gc: route.query.qc,
         contig: route.query.qc,
