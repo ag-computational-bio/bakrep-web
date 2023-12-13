@@ -15,7 +15,7 @@ const items = ref([
     class="navbar navbar-expand-lg navbar-light fixed-top bg-light navbar-scroll"
   >
     <div class="container-fluid">
-      <router-link class="navbar-brand" to="/">BakRep Web</router-link>
+      <router-link class="navbar-brand" to="/">BakRep</router-link>
       <button
         class="navbar-toggler"
         type="button"
