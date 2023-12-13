@@ -214,7 +214,10 @@ function init() {
       contaminationTuple.value =
         getTupleRange("checkm.contamination") || contaminationTuple.value;
     })
-    .then(populateVariables)
+    .then(() => {
+      updateUrl();
+      filter(pagination.value.offset);
+    })
     .catch((err) => pageState.value.setError(err));
 }
 
