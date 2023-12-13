@@ -15,18 +15,12 @@ import {
   type SortOption,
   type SortDirection,
   type CompoundQuery,
+  type SearchInfo,
 } from "@/model/Search";
 import ResultTable from "@/views/search/ResultTable.vue";
-import {
-  computed,
-  onMounted,
-  ref,
-  unref,
-  type Ref,
-  watch,
-  type PropType,
-} from "vue";
+import { computed, onMounted, ref, unref, type Ref, watch } from "vue";
 import { useRoute, useRouter } from "vue-router";
+const pageState = usePageState();
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
 
@@ -44,44 +38,20 @@ export type FilterTuple = {
 const props = defineProps({
   offset: { type: Number, default: 0 },
   limit: { type: Number, default: 10 },
-  gc: {
-    type: Object as PropType<FilterTuple>,
-    default() {
-      return { from: 0, to: 100 };
-    },
-  },
-  contig: {
-    type: Object as PropType<FilterTuple>,
-    default() {
-      return { from: 0, to: 100 };
-    },
-  },
-  size: {
-    type: Object as PropType<FilterTuple>,
-    default() {
-      return { from: 0, to: 1000000 };
-    },
-  },
-  quality: {
-    type: Object as PropType<FilterTuple>,
-    default() {
-      return { from: 0, to: 100 };
-    },
-  },
-  contamination: {
-    type: Object as PropType<FilterTuple>,
-    default() {
-      return { from: 0, to: 100 };
-    },
-  },
+  gc: { type: String, default: "0;100" },
+  contig: { type: String, default: "0;10000" },
+  size: { type: String, default: "0;1000000" },
+  quality: { type: String, default: "0;100" },
+  contamination: { type: String, default: "0;100" },
   order: { type: String },
 });
 
-const sizeTuple = ref<FilterTuple>(props.size);
-const gcTuple = ref<FilterTuple>(props.gc);
-const contigTuple = ref<FilterTuple>(props.contig);
-const qualityTuple = ref<FilterTuple>(props.quality);
-const contaminationTuple = ref<FilterTuple>(props.contamination);
+const sizeTuple = ref<FilterTuple>(decodeTuple(props.size));
+const gcTuple = ref<FilterTuple>(decodeTuple(props.gc));
+const contigTuple = ref<FilterTuple>(decodeTuple(props.contig));
+const qualityTuple = ref<FilterTuple>(decodeTuple(props.quality));
+const contaminationTuple = ref<FilterTuple>(decodeTuple(props.contamination));
+const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
 
 function encodeParameters(offset = 0) {
   return {
@@ -184,8 +154,7 @@ function decodeTuple(tuple: string): FilterTuple {
 }
 
 function populateVariables() {
-  console.log("running");
-  // decodeQuery();
+  decodeQuery();
   filter(pagination.value.offset);
 }
 
@@ -233,8 +202,31 @@ function updateOrdering(sortkey: string, direction: SortDirection | null) {
   updateQuery();
 }
 
+function getTupleRange(field: string): FilterTuple | undefined {
+  const info = searchinfo.value.fields.find((o) => o.field === field);
+  if (info) return { from: info.min, to: info.max };
+}
+
 function init() {
-  updateQuery();
+  pageState.value.setState(State.Loading);
+  api
+    .searchinfo()
+    .then((r) => {
+      searchinfo.value = r;
+      pageState.value.setState(State.Main);
+    })
+    .then(() => {
+      // let obj = arr.find(o => o.name === 'string 1');
+      sizeTuple.value = getTupleRange("bakta.stats.size") || sizeTuple.value;
+      contigTuple.value =
+        getTupleRange("bakta.stats.no_sequences") || contigTuple.value;
+      qualityTuple.value =
+        getTupleRange("checkm.completeness") || qualityTuple.value;
+      contaminationTuple.value =
+        getTupleRange("checkm.contamination") || contaminationTuple.value;
+    })
+    .then(() => filter(pagination.value.offset))
+    .catch((err) => pageState.value.setError(err));
 }
 
 onMounted(init);
@@ -245,37 +237,39 @@ onMounted(init);
     <div class="row">
       <h2>Browse BakRep Genomes</h2>
     </div>
-    <div class="row">
-      <div class="col">
-        <div class="rounded bg-body-secondary p-4 mb-4">
-          <QueryFilter label="GC" v-model="gcTuple" />
-          <QueryFilter label="Contigs" v-model="contigTuple" />
-          <QueryFilter label="Genome Size" v-model="sizeTuple" />
-          <QueryFilter label="Completeness" v-model="qualityTuple" />
-          <QueryFilter label="Contamination" v-model="contaminationTuple" />
-          <button class="btn btn-light w-100" @click="updateQuery()">
-            Apply Filter
-          </button>
+    <Loading :state="pageState">
+      <div class="row">
+        <div class="col">
+          <div class="rounded bg-body-secondary p-4 mb-4">
+            <QueryFilter label="GC" v-model="gcTuple" />
+            <QueryFilter label="Contigs" v-model="contigTuple" />
+            <QueryFilter label="Genome Size" v-model="sizeTuple" />
+            <QueryFilter label="Completeness" v-model="qualityTuple" />
+            <QueryFilter label="Contamination" v-model="contaminationTuple" />
+            <button class="btn btn-light w-100" @click="updateQuery()">
+              Apply Filter
+            </button>
+          </div>
         </div>
       </div>
-    </div>
-    <Loading :state="searchState">
-      <div class="row px-3">
-        Showing results {{ positionInResults.firstElement }}-{{
-          positionInResults.lastElement
-        }}
-        of {{ pagination.total }} results
-        <ResultTable
-          :ordering="ordering"
-          :entries="entries"
-          @update:ordering="updateOrdering"
-        />
-        <Pagination
-          class="mt-3"
-          :value="pagination"
-          @update:offset="updateQuery"
-        />
-      </div>
+      <Loading :state="searchState">
+        <div class="row px-3">
+          Showing results {{ positionInResults.firstElement }}-{{
+            positionInResults.lastElement
+          }}
+          of {{ pagination.total }} results
+          <ResultTable
+            :ordering="ordering"
+            :entries="entries"
+            @update:ordering="updateOrdering"
+          />
+          <Pagination
+            class="mt-3"
+            :value="pagination"
+            @update:offset="updateQuery"
+          />
+        </div>
+      </Loading>
     </Loading>
   </main>
 </template>
