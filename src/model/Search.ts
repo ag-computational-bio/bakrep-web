@@ -107,8 +107,6 @@ export type SearchInfoNested = {
   fields: SearchInfoField[];
   ops: string[];
   type: "nested";
-  min: number;
-  max: number;
 };
 export type SearchInfoField = SearchInfoLeaf | SearchInfoNested;
 

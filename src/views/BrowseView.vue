@@ -110,7 +110,7 @@ const query: Ref<CompoundQuery> = computed(() => {
   };
 });
 
-function updateQuery(offset = pagination.value.offset) {
+function updateUrl(offset = pagination.value.offset) {
   router.push({
     name: "browse",
     query: encodeParameters(offset),
@@ -150,7 +150,7 @@ function encodeTuple(tuple: FilterTuple): string {
 
 function decodeTuple(tuple: string): FilterTuple {
   const arr = tuple.split(";");
-  return { from: Number.parseInt(arr[0]), to: Number.parseInt(arr[1]) };
+  return { from: Number.parseFloat(arr[0]), to: Number.parseFloat(arr[1]) };
 }
 
 function populateVariables() {
@@ -199,7 +199,7 @@ function updateOrdering(sortkey: string, direction: SortDirection | null) {
     else
       ordering.value = [{ field: sortkey, ord: direction }, ...ordering.value];
   }
-  updateQuery();
+  updateUrl();
 }
 
 function getTupleRange(field: string): FilterTuple | undefined {
@@ -246,7 +246,7 @@ onMounted(init);
             <QueryFilter label="Genome Size" v-model="sizeTuple" />
             <QueryFilter label="Completeness" v-model="qualityTuple" />
             <QueryFilter label="Contamination" v-model="contaminationTuple" />
-            <button class="btn btn-light w-100" @click="updateQuery()">
+            <button class="btn btn-light w-100" @click="updateUrl()">
               Apply Filter
             </button>
           </div>
@@ -266,7 +266,7 @@ onMounted(init);
           <Pagination
             class="mt-3"
             :value="pagination"
-            @update:offset="updateQuery"
+            @update:offset="updateUrl"
           />
         </div>
       </Loading>
