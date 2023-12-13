@@ -193,7 +193,11 @@ function updateOrdering(sortkey: string, direction: SortDirection | null) {
 
 function getTupleRange(field: string): FilterTuple | undefined {
   const info = searchinfo.value.fields.find((o) => o.field === field);
-  if (info) return { from: info.min, to: info.max };
+  if (info) {
+    if ("min" in info && "max" in info) {
+      return { from: info.min, to: info.max };
+    }
+  }
 }
 
 function init() {
