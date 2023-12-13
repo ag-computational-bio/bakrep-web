@@ -35,22 +35,11 @@ export type FilterTuple = {
   to: number;
 };
 
-const props = defineProps({
-  offset: { type: Number, default: 0 },
-  limit: { type: Number, default: 10 },
-  gc: { type: String, default: "0;100" },
-  contig: { type: String, default: "0;10000" },
-  size: { type: String, default: "0;1000000" },
-  quality: { type: String, default: "0;100" },
-  contamination: { type: String, default: "0;100" },
-  order: { type: String },
-});
-
-const sizeTuple = ref<FilterTuple>(decodeTuple(props.size));
-const gcTuple = ref<FilterTuple>(decodeTuple(props.gc));
-const contigTuple = ref<FilterTuple>(decodeTuple(props.contig));
-const qualityTuple = ref<FilterTuple>(decodeTuple(props.quality));
-const contaminationTuple = ref<FilterTuple>(decodeTuple(props.contamination));
+const sizeTuple = ref<FilterTuple>({ from: 0, to: 10000000 });
+const gcTuple = ref<FilterTuple>({ from: 0, to: 100 });
+const contigTuple = ref<FilterTuple>({ from: 0, to: 10000 });
+const qualityTuple = ref<FilterTuple>({ from: 0, to: 100 });
+const contaminationTuple = ref<FilterTuple>({ from: 0, to: 100 });
 const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
 
 function encodeParameters(offset = 0) {

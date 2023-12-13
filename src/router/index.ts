@@ -22,11 +22,6 @@ const router = createRouter({
       path: "/search",
       name: "search",
       component: () => import("../views/search/SearchView.vue"),
-      props: (route) => ({
-        offset: parseInt(route.query.offset as string),
-        limit: parseInt(route.query.limit as string),
-        query: route.query.query,
-      }),
     },
     {
       path: "/imprint",
@@ -49,17 +44,6 @@ const router = createRouter({
       path: "/browse",
       name: "browse",
       component: () => import("../views/BrowseView.vue"),
-      props: (route) => ({
-        offset: parseInt(route.query.offset as string),
-        limit: parseInt(route.query.limit as string),
-        gc: route.query.qc as string,
-        contig: route.query.contig as string,
-        size: route.query.size as string,
-        quality: route.query.quality as string,
-        contamination: route.query.contamination as string,
-        field: route.query.field as string,
-        order: route.query.order as string,
-      }),
     },
     {
       path: "/composition",
