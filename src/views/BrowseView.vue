@@ -106,7 +106,7 @@ function updateUrl(offset = pagination.value.offset) {
   });
 }
 
-function decodeQuery() {
+function parseFiltersFromRoute() {
   if (route.query.qc) {
     gcTuple.value = decodeTuple(route.query.gc as string);
   }
@@ -143,7 +143,7 @@ function decodeTuple(tuple: string): FilterTuple {
 }
 
 function populateVariables() {
-  decodeQuery();
+  parseFiltersFromRoute();
   filter(pagination.value.offset);
 }
 
@@ -214,10 +214,7 @@ function init() {
       contaminationTuple.value =
         getTupleRange("checkm.contamination") || contaminationTuple.value;
     })
-    .then(() => {
-      updateUrl();
-      filter(pagination.value.offset);
-    })
+    .then(populateVariables)
     .catch((err) => pageState.value.setError(err));
 }
 
