@@ -99,6 +99,8 @@ const query: Ref<CompoundQuery> = computed(() => {
   };
 });
 
+let initialized = false;
+
 function updateUrl(offset = pagination.value.offset) {
   pagination.value.offset = offset;
   const parameter = encodeParameters(offset);
@@ -111,10 +113,18 @@ function updateUrl(offset = pagination.value.offset) {
     parameter.offset != Number.parseInt(route.query.offset as string)
   ) {
     // if a parameter changed, update the url else, reload the table
-    router.push({
-      name: "browse",
-      query: parameter,
-    });
+    if (!initialized) {
+      router.replace({
+        name: "browse",
+        query: parameter,
+      });
+      initialized = true;
+    } else {
+      router.push({
+        name: "browse",
+        query: parameter,
+      });
+    }
   } else {
     filter();
   }
