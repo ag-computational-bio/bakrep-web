@@ -1,6 +1,12 @@
 body {
   --header-height: 80px;
   --footer-height: 80px;
+  background-image: url("images/metacoder_species2.png");
+  background-repeat: no-repeat;
+  background-size: contain;
+  background-position-y: calc(51vh);
+  background-position-x: calc(70vw);
+  background-attachment: fixed;
 }
 #content {
   margin-top: calc(var(--header-height) + 1rem);

@@ -24,9 +24,6 @@
           query the repository
         </p>
       </div>
-      <div class="col-md-12 col-lg-6">
-        <img src="/krona_main.svg" class="w-100" />
-      </div>
     </div>
   </main>
 </template>
