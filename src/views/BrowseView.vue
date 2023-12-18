@@ -35,14 +35,14 @@ export type FilterTuple = {
   to: number;
 };
 
-const sizeTuple = ref<FilterTuple>({ from: 0, to: 10000000 });
-const gcTuple = ref<FilterTuple>({ from: 0, to: 100 });
-const contigTuple = ref<FilterTuple>({ from: 0, to: 10000 });
-const qualityTuple = ref<FilterTuple>({ from: 0, to: 100 });
-const contaminationTuple = ref<FilterTuple>({ from: 0, to: 100 });
+const sizeTuple = ref<FilterTuple>({ from: 0, to: 0 });
+const gcTuple = ref<FilterTuple>({ from: 0, to: 0 });
+const contigTuple = ref<FilterTuple>({ from: 0, to: 0 });
+const qualityTuple = ref<FilterTuple>({ from: 0, to: 0 });
+const contaminationTuple = ref<FilterTuple>({ from: 0, to: 0 });
 const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
 
-function encodeParameters(offset = 0) {
+function encodeParameters(offset = pagination.value.offset) {
   return {
     offset: offset,
     limit: pagination.value.limit,
@@ -107,26 +107,40 @@ function updateUrl(offset = pagination.value.offset) {
 }
 
 function parseFiltersFromRoute() {
-  if (route.query.qc) {
-    gcTuple.value = decodeTuple(route.query.gc as string);
-  }
-  if (route.query.size) {
+  if (!route.query.size) {
+    sizeTuple.value = getTupleRange("bakta.stats.size") || {
+      from: 0,
+      to: 1000000,
+    };
+  } else {
     sizeTuple.value = decodeTuple(route.query.size as string);
   }
-  if (route.query.contig) {
+  if (!route.query.contig) {
+    contigTuple.value = getTupleRange("bakta.stats.no_sequences") || {
+      from: 0,
+      to: 10000,
+    };
+  } else {
     contigTuple.value = decodeTuple(route.query.contig as string);
   }
-  if (route.query.quality) {
+  if (!route.query.quality) {
+    const tuple = getTupleRange("checkm2.quality.completeness");
+    if (tuple) qualityTuple.value = roundTupleRange(tuple, 1, 100);
+  } else {
     qualityTuple.value = decodeTuple(route.query.quality as string);
   }
-  if (route.query.contamination) {
+  if (!route.query.contamination) {
+    contaminationTuple.value =
+      getTupleRange("checkm2.quality.contamination") ||
+      contaminationTuple.value;
+  } else {
     contaminationTuple.value = decodeTuple(route.query.contamination as string);
   }
-  if (route.query.order) {
-    ordering.value = JSON.parse(atob(route.query.order as string));
-  }
-  if (route.query.limit) {
-    pagination.value.limit = Number.parseInt(route.query.limit as string);
+  if (!route.query.gc) {
+    const tuple = getTupleRange("bakta.stats.gc");
+    if (tuple) gcTuple.value = roundTupleRange(tuple, 1, 100);
+  } else {
+    gcTuple.value = decodeTuple(route.query.gc as string);
   }
   if (route.query.offset) {
     pagination.value.offset = Number.parseInt(route.query.offset as string);
@@ -200,6 +214,13 @@ function getTupleRange(field: string): FilterTuple | undefined {
   }
 }
 
+function roundTupleRange(tuple: FilterTuple, decimals: number, scale = 1) {
+  return {
+    from: Number((tuple.from * scale).toFixed(decimals)),
+    to: Number((tuple.to * scale).toFixed(decimals)),
+  };
+}
+
 function init() {
   pageState.value.setState(State.Loading);
   api
@@ -208,19 +229,9 @@ function init() {
       searchinfo.value = r;
       pageState.value.setState(State.Main);
     })
-    .then(() => {
-      // let obj = arr.find(o => o.name === 'string 1');
-      sizeTuple.value = getTupleRange("bakta.stats.size") || sizeTuple.value;
-      contigTuple.value =
-        getTupleRange("bakta.stats.no_sequences") || contigTuple.value;
-      qualityTuple.value =
-        getTupleRange("checkm.completeness") || qualityTuple.value;
-      contaminationTuple.value =
-        getTupleRange("checkm.contamination") || contaminationTuple.value;
-    })
+    .then(parseFiltersFromRoute)
     .then(() => {
       updateUrl();
-      filter(pagination.value.offset);
     })
     .catch((err) => pageState.value.setError(err));
 }
@@ -242,7 +253,7 @@ onMounted(init);
             <QueryFilter label="Genome Size" v-model="sizeTuple" />
             <QueryFilter label="Completeness" v-model="qualityTuple" />
             <QueryFilter label="Contamination" v-model="contaminationTuple" />
-            <button class="btn btn-light w-100" @click="updateUrl()">
+            <button class="btn btn-light w-100" @click="filter()">
               Apply Filter
             </button>
           </div>
