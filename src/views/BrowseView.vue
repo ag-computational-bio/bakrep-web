@@ -107,7 +107,8 @@ function updateUrl(offset = pagination.value.offset) {
     parameter.quality != (route.query.quality as string) ||
     parameter.gc != (route.query.gc as string) ||
     parameter.size != (route.query.size as string) ||
-    parameter.order != (route.query.order as string)
+    parameter.order != (route.query.order as string) ||
+    parameter.offset != Number.parseInt(route.query.offset as string)
   ) {
     // if a parameter changed, update the url else, reload the table
     router.push({
