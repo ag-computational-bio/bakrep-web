@@ -100,45 +100,52 @@ const query: Ref<CompoundQuery> = computed(() => {
 });
 
 function updateUrl(offset = pagination.value.offset) {
-  router.push({
-    name: "browse",
-    query: encodeParameters(offset),
-  });
+  pagination.value.offset = offset;
+  const parameter = encodeParameters(offset);
+  if (
+    parameter.contamination != (route.query.contamination as string) ||
+    parameter.quality != (route.query.quality as string) ||
+    parameter.gc != (route.query.gc as string) ||
+    parameter.size != (route.query.size as string) ||
+    parameter.order != (route.query.order as string)
+  ) {
+    // if a parameter changed, update the url else, reload the table
+    router.push({
+      name: "browse",
+      query: parameter,
+    });
+  } else {
+    filter();
+  }
 }
 
 function parseFiltersFromRoute() {
   if (!route.query.size) {
-    sizeTuple.value = getTupleRange("bakta.stats.size") || {
-      from: 0,
-      to: 1000000,
-    };
+    sizeTuple.value = getTupleRange("bakta.stats.size");
   } else {
     sizeTuple.value = decodeTuple(route.query.size as string);
   }
   if (!route.query.contig) {
-    contigTuple.value = getTupleRange("bakta.stats.no_sequences") || {
-      from: 0,
-      to: 10000,
-    };
+    contigTuple.value = getTupleRange("bakta.stats.no_sequences");
   } else {
     contigTuple.value = decodeTuple(route.query.contig as string);
   }
   if (!route.query.quality) {
-    const tuple = getTupleRange("checkm2.quality.completeness");
-    if (tuple) qualityTuple.value = roundTupleRange(tuple, 1, 100);
+    qualityTuple.value = roundTupleRange(
+      getTupleRange("checkm2.quality.completeness"),
+      1,
+      100,
+    );
   } else {
     qualityTuple.value = decodeTuple(route.query.quality as string);
   }
   if (!route.query.contamination) {
-    contaminationTuple.value =
-      getTupleRange("checkm2.quality.contamination") ||
-      contaminationTuple.value;
+    contaminationTuple.value = getTupleRange("checkm2.quality.contamination");
   } else {
     contaminationTuple.value = decodeTuple(route.query.contamination as string);
   }
   if (!route.query.gc) {
-    const tuple = getTupleRange("bakta.stats.gc");
-    if (tuple) gcTuple.value = roundTupleRange(tuple, 1, 100);
+    gcTuple.value = roundTupleRange(getTupleRange("bakta.stats.gc"), 1, 100);
   } else {
     gcTuple.value = decodeTuple(route.query.gc as string);
   }
@@ -155,18 +162,6 @@ function decodeTuple(tuple: string): FilterTuple {
   const arr = tuple.split(";");
   return { from: Number.parseFloat(arr[0]), to: Number.parseFloat(arr[1]) };
 }
-
-function populateVariables() {
-  parseFiltersFromRoute();
-  filter(pagination.value.offset);
-}
-
-watch(
-  () => route.query,
-  () => {
-    populateVariables();
-  },
-);
 
 function filter(offset = 0) {
   searchState.value.setState(State.Loading);
@@ -205,13 +200,14 @@ function updateOrdering(sortkey: string, direction: SortDirection | null) {
   updateUrl();
 }
 
-function getTupleRange(field: string): FilterTuple | undefined {
+function getTupleRange(field: string): FilterTuple {
   const info = searchinfo.value.fields.find((o) => o.field === field);
   if (info) {
     if ("min" in info && "max" in info) {
       return { from: info.min, to: info.max };
     }
   }
+  return { from: 0, to: 0 };
 }
 
 function roundTupleRange(tuple: FilterTuple, decimals: number, scale = 1) {
@@ -236,6 +232,39 @@ function init() {
     .catch((err) => pageState.value.setError(err));
 }
 
+watch(
+  [
+    () => route.query.size,
+    () => route.query.contig,
+    () => route.query.gc,
+    () => route.query.contamination,
+    () => route.query.quality,
+    () => route.query.order,
+    () => route.query.limit,
+    () => route.query.offset,
+  ],
+  ([
+    newSize,
+    newContig,
+    newGc,
+    newContamination,
+    newQuality,
+    newOrder,
+    newLimit,
+    newOffset,
+  ]) => {
+    sizeTuple.value = decodeTuple(newSize as string);
+    contigTuple.value = decodeTuple(newContig as string);
+    gcTuple.value = decodeTuple(newGc as string);
+    qualityTuple.value = decodeTuple(newQuality as string);
+    contaminationTuple.value = decodeTuple(newContamination as string);
+    ordering.value = JSON.parse(atob(newOrder as string));
+    pagination.value.limit = Number.parseInt(newLimit as string);
+    pagination.value.offset = Number.parseInt(newOffset as string);
+    filter();
+  },
+);
+
 onMounted(init);
 </script>
 
@@ -253,7 +282,7 @@ onMounted(init);
             <QueryFilter label="Genome Size" v-model="sizeTuple" />
             <QueryFilter label="Completeness" v-model="qualityTuple" />
             <QueryFilter label="Contamination" v-model="contaminationTuple" />
-            <button class="btn btn-light w-100" @click="filter()">
+            <button class="btn btn-light w-100" @click="updateUrl()">
               Apply Filter
             </button>
           </div>
