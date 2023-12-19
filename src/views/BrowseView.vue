@@ -99,7 +99,7 @@ const query: Ref<CompoundQuery> = computed(() => {
   };
 });
 
-let initialized = false;
+let replace = false;
 
 function updateUrl(offset = pagination.value.offset) {
   pagination.value.offset = offset;
@@ -113,12 +113,12 @@ function updateUrl(offset = pagination.value.offset) {
     parameter.offset != Number.parseInt(route.query.offset as string)
   ) {
     // if a parameter changed, update the url else, reload the table
-    if (!initialized) {
+    if (replace) {
       router.replace({
         name: "browse",
         query: parameter,
       });
-      initialized = true;
+      replace = false;
     } else {
       router.push({
         name: "browse",
@@ -132,16 +132,19 @@ function updateUrl(offset = pagination.value.offset) {
 
 function parseFiltersFromRoute() {
   if (!route.query.size) {
+    replace = true;
     sizeTuple.value = getTupleRange("bakta.stats.size");
   } else {
     sizeTuple.value = decodeTuple(route.query.size as string);
   }
   if (!route.query.contig) {
+    replace = true;
     contigTuple.value = getTupleRange("bakta.stats.no_sequences");
   } else {
     contigTuple.value = decodeTuple(route.query.contig as string);
   }
   if (!route.query.quality) {
+    replace = true;
     qualityTuple.value = roundTupleRange(
       getTupleRange("checkm2.quality.completeness"),
       1,
@@ -151,16 +154,21 @@ function parseFiltersFromRoute() {
     qualityTuple.value = decodeTuple(route.query.quality as string);
   }
   if (!route.query.contamination) {
+    replace = true;
     contaminationTuple.value = getTupleRange("checkm2.quality.contamination");
   } else {
     contaminationTuple.value = decodeTuple(route.query.contamination as string);
   }
   if (!route.query.gc) {
+    replace = true;
     gcTuple.value = roundTupleRange(getTupleRange("bakta.stats.gc"), 1, 100);
   } else {
     gcTuple.value = decodeTuple(route.query.gc as string);
   }
-  if (route.query.offset) {
+  if (!route.query.offset) {
+    replace = true;
+    pagination.value.offset = 0;
+  } else {
     pagination.value.offset = Number.parseInt(route.query.offset as string);
   }
 }
