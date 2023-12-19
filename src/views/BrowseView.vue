@@ -293,7 +293,7 @@ onMounted(init);
             <QueryFilter label="Genome Size" v-model="sizeTuple" />
             <QueryFilter label="Completeness" v-model="qualityTuple" />
             <QueryFilter label="Contamination" v-model="contaminationTuple" />
-            <button class="btn btn-light w-100" @click="updateUrl()">
+            <button class="btn btn-light w-100" @click="updateUrl(0)">
               Apply Filter
             </button>
           </div>
