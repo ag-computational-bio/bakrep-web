@@ -50,13 +50,13 @@ state.value.setState(State.Loading);
       <h3 class="ps-5 pt-2">Genus Composition:</h3>
       <p class="px-5">
         This chart presents the number of entries per genus for all genera
-        stored in bakre, the y-axis shows the different genus while the x-axis
+        stored in bakrep, the y-axis shows the different genera while the x-axis
         represents how often this genus is found in the database. To improve the
-        horizontal resolution of the low abundant genera, the x-axis is
+        vertical resolution of the low abundant genera, the x-axis is
         logarithmically scaled.
       </p>
       <p class="px-5">
-        The default horizontal resolution contains multiple genera per pixel. In
+        The default vertical resolution contains multiple genera per pixel. In
         order to see more details, you can zoom into areas of interest. Create a
         zoom selection by clicking in one of the corners of your area of
         interest and drag a selection box to the other corner of your interest.
@@ -67,10 +67,10 @@ state.value.setState(State.Loading);
     <div>
       <p class="px-5">
         This chart presents the number of entries per species for all species
-        stored in bakre, the y-axis shows the different species while the x-axis
-        represents how often this species is found in the database. To improve
-        the horizontal resolution of the low abundant species, the x-axis is
-        logarithmically scaled.
+        stored in bakrep, the y-axis shows the different species while the
+        x-axis represents how often this species is found in the database. To
+        improve the vertical resolution of the low abundant species, the x-axis
+        is logarithmically scaled.
       </p>
       <h3 class="ps-5">Species Composition:</h3>
       <PhylogenyCountsBarChart :inputData="speciesData" />
