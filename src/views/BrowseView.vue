@@ -34,10 +34,8 @@ export type Range = {
   to: number;
 };
 
-type Filter = Record<
-  "size" | "gc" | "contigs" | "completeness" | "contamination",
-  Range
->;
+type FilterKeys = "size" | "gc" | "contigs" | "completeness" | "contamination";
+type Filter = Record<FilterKeys, Range>;
 
 const filters = ref<Filter>({
   size: { from: 0, to: 0 },
@@ -49,39 +47,26 @@ const filters = ref<Filter>({
 const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
 
 function buildFilterQuery(filter: Filter) {
+  function c(field: string, range: Range) {
+    return {
+      field: field,
+      op: "[]",
+      value: range,
+    };
+  }
   return {
     op: "and",
     value: [
-      {
-        field: "bakta.stats.size",
-        op: "[]",
-        value: filter.size,
-      },
-      {
-        field: "bakta.stats.gc",
-        op: "[]",
-        value: {
-          // gc is used in percent in ui, but ranges from 0 to 1 in database
-          // so we need to convert here
-          from: filter.gc.from / 100,
-          to: filter.gc.to / 100,
-        },
-      },
-      {
-        field: "bakta.stats.no_sequences",
-        op: "[]",
-        value: filter.contigs,
-      },
-      {
-        field: "checkm2.quality.completeness",
-        op: "[]",
-        value: filter.completeness,
-      },
-      {
-        field: "checkm2.quality.contamination",
-        op: "[]",
-        value: filter.contamination,
-      },
+      c("bakta.stats.size", filter.size),
+      c("bakta.stats.gc", {
+        // gc is used in percent in ui, but ranges from 0 to 1 in database
+        // so we need to convert here
+        from: filter.gc.from / 100,
+        to: filter.gc.to / 100,
+      }),
+      c("bakta.stats.no_sequences", filter.contigs),
+      c("checkm2.quality.completeness", filter.completeness),
+      c("checkm2.quality.contamination", filter.contamination),
     ],
   };
 }
@@ -144,45 +129,21 @@ function decodeRange(tuple: string): Range {
 }
 
 function parseFiltersFromRoute() {
-  if (!route.query.size) {
-    filters.value.size = getRangeFromSearchInfo("bakta.stats.size");
-  } else {
-    filters.value.size = decodeRange(route.query.size as string);
+  function extract(key: FilterKeys, field: string, round: boolean = false) {
+    if (!route.query[key]) {
+      let v = getRangeFromSearchInfo(field);
+      if (round) v = roundRange(v, 1, 100);
+      filters.value[key] = v;
+    } else {
+      filters.value[key] = decodeRange(route.query[key] as string);
+    }
   }
-  if (!route.query.contigs) {
-    filters.value.contigs = getRangeFromSearchInfo("bakta.stats.no_sequences");
-  } else {
-    filters.value.contigs = decodeRange(route.query.contigs as string);
-  }
-  if (!route.query.completeness) {
-    filters.value.completeness = roundRange(
-      getRangeFromSearchInfo("checkm2.quality.completeness"),
-      1,
-      100,
-    );
-  } else {
-    filters.value.completeness = decodeRange(
-      route.query.completeness as string,
-    );
-  }
-  if (!route.query.contamination) {
-    filters.value.contamination = getRangeFromSearchInfo(
-      "checkm2.quality.contamination",
-    );
-  } else {
-    filters.value.contamination = decodeRange(
-      route.query.contamination as string,
-    );
-  }
-  if (!route.query.gc) {
-    filters.value.gc = roundRange(
-      getRangeFromSearchInfo("bakta.stats.gc"),
-      1,
-      100,
-    );
-  } else {
-    filters.value.gc = decodeRange(route.query.gc as string);
-  }
+  extract("size", "bakta.stats.size");
+  extract("contigs", "bakta.stats.no_sequences");
+  extract("completeness", "checkm2.quality.completeness", true);
+  extract("contamination", "checkm2.quality.contamination");
+  extract("gc", "bakta.stats.gc", true);
+
   if (!route.query.offset) {
     pagination.value.offset = 0;
   } else {
