@@ -12,13 +12,12 @@ import {
 import Pagination from "@/components/pagination/Pagination.vue";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
 import {
-  type SortOption,
-  type SortDirection,
-  type CompoundQuery,
   type SearchInfo,
+  type SortDirection,
+  type SortOption,
 } from "@/model/Search";
 import ResultTable from "@/views/search/ResultTable.vue";
-import { computed, onMounted, ref, unref, type Ref, watch } from "vue";
+import { computed, onMounted, ref, watch, type Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
 const pageState = usePageState();
 const searchState = usePageState();
@@ -30,132 +29,159 @@ const router = useRouter();
 
 const pagination: Ref<PaginationData> = ref(empty());
 
-export type FilterTuple = {
+export type Range = {
   from: number;
   to: number;
 };
 
-const sizeTuple = ref<FilterTuple>({ from: 0, to: 0 });
-const gcTuple = ref<FilterTuple>({ from: 0, to: 0 });
-const contigTuple = ref<FilterTuple>({ from: 0, to: 0 });
-const qualityTuple = ref<FilterTuple>({ from: 0, to: 0 });
-const contaminationTuple = ref<FilterTuple>({ from: 0, to: 0 });
+type Filter = Record<
+  "size" | "gc" | "contigs" | "completeness" | "contamination",
+  Range
+>;
+
+const filters = ref<Filter>({
+  size: { from: 0, to: 0 },
+  gc: { from: 0, to: 0 },
+  contigs: { from: 0, to: 0 },
+  completeness: { from: 0, to: 0 },
+  contamination: { from: 0, to: 0 },
+});
 const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
 
-function encodeParameters(offset = pagination.value.offset) {
-  return {
-    offset: offset,
-    limit: pagination.value.limit,
-    gc: encodeTuple(gcTuple.value),
-    size: encodeTuple(sizeTuple.value),
-    contig: encodeTuple(contigTuple.value),
-    quality: encodeTuple(qualityTuple.value),
-    contamination: encodeTuple(contaminationTuple.value),
-    order: btoa(JSON.stringify(ordering.value)),
-  };
-}
-
-const query: Ref<CompoundQuery> = computed(() => {
+function buildFilterQuery(filter: Filter) {
   return {
     op: "and",
     value: [
-      // Size Filter
-
       {
         field: "bakta.stats.size",
         op: "[]",
-        value: sizeTuple.value,
+        value: filter.size,
       },
-
       {
         field: "bakta.stats.gc",
         op: "[]",
-        value: { from: gcTuple.value.from / 100, to: gcTuple.value.to / 100 },
+        value: {
+          // gc is used in percent in ui, but ranges from 0 to 1 in database
+          // so we need to convert here
+          from: filter.gc.from / 100,
+          to: filter.gc.to / 100,
+        },
       },
-      // Contig Count Filter
-
       {
         field: "bakta.stats.no_sequences",
         op: "[]",
-        value: contigTuple.value,
+        value: filter.contigs,
       },
-
-      // Quality Filter
-
       {
         field: "checkm2.quality.completeness",
         op: "[]",
-        value: qualityTuple.value,
+        value: filter.completeness,
       },
-
-      // Contamination Filter
-
       {
         field: "checkm2.quality.contamination",
         op: "[]",
-        value: contaminationTuple.value,
+        value: filter.contamination,
       },
     ],
   };
-});
+}
 
 function updateUrl(offset = pagination.value.offset) {
   pagination.value.offset = offset;
-  const parameter = encodeParameters(offset);
+  const newRouteQuery = encodeQueryForRoute(offset);
   if (
-    parameter.contamination != (route.query.contamination as string) ||
-    parameter.quality != (route.query.quality as string) ||
-    parameter.gc != (route.query.gc as string) ||
-    parameter.size != (route.query.size as string) ||
-    parameter.order != (route.query.order as string) ||
-    parameter.offset != Number.parseInt(route.query.offset as string)
+    // route parameters differ from user parameters
+    newRouteQuery.contamination != (route.query.contamination as string) ||
+    newRouteQuery.completeness != (route.query.completeness as string) ||
+    newRouteQuery.gc != (route.query.gc as string) ||
+    newRouteQuery.size != (route.query.size as string) ||
+    newRouteQuery.order != (route.query.order as string) ||
+    newRouteQuery.offset != Number.parseInt(route.query.offset as string)
   ) {
-    // if a parameter changed, update the url else, reload the table
+    // When the page is opened the first time and the route does not contain the query
+    // yet, the route is updated with a default query.
+    // In order to avoid an additional browser history item, we replace the history
+    // item in that case.
+    // In all other cases the changes to the query and the pagination are pushed to the
+    // browsers history stack, so the user can use it for navigation between different
+    // states of this page.
     if (Object.keys(route.query).length == 0) {
       router.replace({
         name: "browse",
-        query: parameter,
+        query: newRouteQuery,
       });
     } else {
       router.push({
         name: "browse",
-        query: parameter,
+        query: newRouteQuery,
       });
     }
   } else {
-    filter();
+    applyFilter();
   }
+}
+
+function encodeQueryForRoute(offset = pagination.value.offset) {
+  return {
+    offset: offset,
+    limit: pagination.value.limit,
+    gc: encodeRange(filters.value.gc),
+    size: encodeRange(filters.value.size),
+    contigs: encodeRange(filters.value.contigs),
+    completeness: encodeRange(filters.value.completeness),
+    contamination: encodeRange(filters.value.contamination),
+    order: btoa(JSON.stringify(ordering.value)),
+  };
+}
+
+function encodeRange(tuple: Range): string {
+  return `${tuple.from};${tuple.to}`;
+}
+
+function decodeRange(tuple: string): Range {
+  const arr = tuple.split(";");
+  return { from: Number.parseFloat(arr[0]), to: Number.parseFloat(arr[1]) };
 }
 
 function parseFiltersFromRoute() {
   if (!route.query.size) {
-    sizeTuple.value = getTupleRange("bakta.stats.size");
+    filters.value.size = getRangeFromSearchInfo("bakta.stats.size");
   } else {
-    sizeTuple.value = decodeTuple(route.query.size as string);
+    filters.value.size = decodeRange(route.query.size as string);
   }
-  if (!route.query.contig) {
-    contigTuple.value = getTupleRange("bakta.stats.no_sequences");
+  if (!route.query.contigs) {
+    filters.value.contigs = getRangeFromSearchInfo("bakta.stats.no_sequences");
   } else {
-    contigTuple.value = decodeTuple(route.query.contig as string);
+    filters.value.contigs = decodeRange(route.query.contigs as string);
   }
-  if (!route.query.quality) {
-    qualityTuple.value = roundTupleRange(
-      getTupleRange("checkm2.quality.completeness"),
+  if (!route.query.completeness) {
+    filters.value.completeness = roundRange(
+      getRangeFromSearchInfo("checkm2.quality.completeness"),
       1,
       100,
     );
   } else {
-    qualityTuple.value = decodeTuple(route.query.quality as string);
+    filters.value.completeness = decodeRange(
+      route.query.completeness as string,
+    );
   }
   if (!route.query.contamination) {
-    contaminationTuple.value = getTupleRange("checkm2.quality.contamination");
+    filters.value.contamination = getRangeFromSearchInfo(
+      "checkm2.quality.contamination",
+    );
   } else {
-    contaminationTuple.value = decodeTuple(route.query.contamination as string);
+    filters.value.contamination = decodeRange(
+      route.query.contamination as string,
+    );
   }
   if (!route.query.gc) {
-    gcTuple.value = roundTupleRange(getTupleRange("bakta.stats.gc"), 1, 100);
+    filters.value.gc = roundRange(
+      getRangeFromSearchInfo("bakta.stats.gc"),
+      1,
+      100,
+    );
   } else {
-    gcTuple.value = decodeTuple(route.query.gc as string);
+    filters.value.gc = decodeRange(route.query.gc as string);
   }
   if (!route.query.offset) {
     pagination.value.offset = 0;
@@ -164,21 +190,12 @@ function parseFiltersFromRoute() {
   }
 }
 
-function encodeTuple(tuple: FilterTuple): string {
-  return `${tuple.from};${tuple.to}`;
-}
-
-function decodeTuple(tuple: string): FilterTuple {
-  const arr = tuple.split(";");
-  return { from: Number.parseFloat(arr[0]), to: Number.parseFloat(arr[1]) };
-}
-
-function filter(offset = 0) {
+function applyFilter(offset = 0) {
   searchState.value.setState(State.Loading);
 
   api
     .search({
-      query: unref(query),
+      query: buildFilterQuery(filters.value),
       sort: ordering.value,
       offset: offset,
       limit: pagination.value.limit,
@@ -210,7 +227,7 @@ function updateOrdering(sortkey: string, direction: SortDirection | null) {
   updateUrl();
 }
 
-function getTupleRange(field: string): FilterTuple {
+function getRangeFromSearchInfo(field: string): Range {
   const info = searchinfo.value.fields.find((o) => o.field === field);
   if (info) {
     if ("min" in info && "max" in info) {
@@ -220,7 +237,7 @@ function getTupleRange(field: string): FilterTuple {
   return { from: 0, to: 0 };
 }
 
-function roundTupleRange(tuple: FilterTuple, decimals: number, scale = 1) {
+function roundRange(tuple: Range, decimals: number, scale = 1) {
   return {
     from: Number((tuple.from * scale).toFixed(decimals)),
     to: Number((tuple.to * scale).toFixed(decimals)),
@@ -243,35 +260,17 @@ function init() {
 }
 
 watch(
-  [
-    () => route.query.size,
-    () => route.query.contig,
-    () => route.query.gc,
-    () => route.query.contamination,
-    () => route.query.quality,
-    () => route.query.order,
-    () => route.query.limit,
-    () => route.query.offset,
-  ],
-  ([
-    newSize,
-    newContig,
-    newGc,
-    newContamination,
-    newQuality,
-    newOrder,
-    newLimit,
-    newOffset,
-  ]) => {
-    sizeTuple.value = decodeTuple(newSize as string);
-    contigTuple.value = decodeTuple(newContig as string);
-    gcTuple.value = decodeTuple(newGc as string);
-    qualityTuple.value = decodeTuple(newQuality as string);
-    contaminationTuple.value = decodeTuple(newContamination as string);
-    ordering.value = JSON.parse(atob(newOrder as string));
-    pagination.value.limit = Number.parseInt(newLimit as string);
-    pagination.value.offset = Number.parseInt(newOffset as string);
-    filter();
+  () => route.query,
+  (newQuery) => {
+    filters.value.size = decodeRange(newQuery.size as string);
+    filters.value.contigs = decodeRange(newQuery.contigs as string);
+    filters.value.gc = decodeRange(newQuery.gc as string);
+    filters.value.completeness = decodeRange(newQuery.completeness as string);
+    filters.value.contamination = decodeRange(newQuery.contamination as string);
+    ordering.value = JSON.parse(atob(newQuery.order as string));
+    pagination.value.limit = Number.parseInt(newQuery.limit as string);
+    pagination.value.offset = Number.parseInt(newQuery.offset as string);
+    applyFilter();
   },
 );
 
@@ -287,11 +286,14 @@ onMounted(init);
       <div class="row">
         <div class="col">
           <div class="rounded bg-body-secondary p-4 mb-4">
-            <QueryFilter label="GC" v-model="gcTuple" />
-            <QueryFilter label="Contigs" v-model="contigTuple" />
-            <QueryFilter label="Genome Size" v-model="sizeTuple" />
-            <QueryFilter label="Completeness" v-model="qualityTuple" />
-            <QueryFilter label="Contamination" v-model="contaminationTuple" />
+            <QueryFilter label="GC" v-model="filters.gc" />
+            <QueryFilter label="Contigs" v-model="filters.contigs" />
+            <QueryFilter label="Genome Size" v-model="filters.size" />
+            <QueryFilter label="Completeness" v-model="filters.completeness" />
+            <QueryFilter
+              label="Contamination"
+              v-model="filters.contamination"
+            />
             <button class="btn btn-light w-100" @click="updateUrl(0)">
               Apply Filter
             </button>
