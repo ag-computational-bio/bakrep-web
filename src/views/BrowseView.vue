@@ -149,6 +149,11 @@ function parseFiltersFromRoute() {
   } else {
     pagination.value.offset = Number.parseInt(route.query.offset as string);
   }
+  if (!route.query.limit) {
+    pagination.value.limit = 20;
+  } else {
+    pagination.value.limit = Number.parseInt(route.query.limit as string);
+  }
 }
 
 function applyFilter(offset = 0) {
