@@ -22,11 +22,6 @@ const router = createRouter({
       path: "/search",
       name: "search",
       component: () => import("../views/search/SearchView.vue"),
-      props: (route) => ({
-        offset: route.query.offset,
-        limit: route.query.limit,
-        query: route.query.query,
-      }),
     },
     {
       path: "/imprint",

@@ -9,23 +9,23 @@
 </template>
 
 <script setup lang="ts">
-import type { FilterTuple } from "@/views/BrowseView.vue";
+import type { Range } from "@/views/BrowseView.vue";
 import { computed, type PropType } from "vue";
 
 const props = defineProps({
   label: { type: String, required: true },
-  modelValue: { type: Object as PropType<FilterTuple>, required: true },
+  modelValue: { type: Object as PropType<Range>, required: true },
 });
 
 const emits = defineEmits<{
-  (e: "update:modelValue", value: FilterTuple): void;
+  (e: "update:modelValue", value: Range): void;
 }>();
 
 const from = computed({
   get: () => props.modelValue.from,
   set: (x) => {
     x = Number(x);
-    if(!isNaN(x)) {
+    if (!isNaN(x)) {
       emits("update:modelValue", { ...props.modelValue, from: x });
     }
   },
@@ -34,7 +34,7 @@ const to = computed({
   get: () => props.modelValue.to,
   set: (x) => {
     x = Number(x);
-    if(!isNaN(x)) {
+    if (!isNaN(x)) {
       emits("update:modelValue", { ...props.modelValue, to: x });
     }
   },
