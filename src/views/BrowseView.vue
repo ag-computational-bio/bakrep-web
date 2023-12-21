@@ -252,9 +252,9 @@ onMounted(init);
       <div class="row">
         <div class="col">
           <div class="rounded bg-body-secondary p-4 mb-4">
-            <QueryFilter label="GC" v-model="filters.gc" />
+            <QueryFilter label="GC in %" v-model="filters.gc" />
             <QueryFilter label="Contigs" v-model="filters.contigs" />
-            <QueryFilter label="Genome Size" v-model="filters.size" />
+            <QueryFilter label="Genome Size in bp" v-model="filters.size" />
             <QueryFilter label="Completeness" v-model="filters.completeness" />
             <QueryFilter
               label="Contamination"
