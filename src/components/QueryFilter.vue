@@ -43,6 +43,6 @@ const to = computed({
 
 <style scoped>
 .input-label {
-  width: 8.5rem;
+  width: 12rem;
 }
 </style>
