@@ -3,27 +3,43 @@
 <template>
   <main class="container pt-5">
     <div class="row">
-      <div class="col-md-12 col-lg-6">
+      <div class="col-md-12 col-lg-10">
         <h2>BakRep</h2>
+        <p>&nbsp;</p>
         <p>
-          The large amount of bacterial genomic data in public genome databases
-          is an important resource for research in various fields. However, most
-          of this data has been processed differently, making accurate
-          comparisons challenging. <em>Blackwell et al</em>., used a uniform
-          approach to assemble and characterise 661,405 bacterial genomes
-          retrieved from the European Nucleotide Archive (ENA) in November of
-          2018. We build up on this resource and further analyse the assembled
-          genomes in a standardised manner. We conducted a robust taxonomic
-          classification using the Genome Taxonomy Database (GTDB) and
-          furthermore subtyped all eligible genomes via multilocus-sequence
-          typing. In addition we annotated all genomes assigning functional
-          categories, e.g. COG and E.C., and database cross references to public
-          databases. The overarching goal is to make this standardised resource
-          available to non-bioinformaticians via an interactive website. This
-          website will provide researchers with a flexible search engine to
-          query the repository
+            <b>TL;DR</b><br>
+            >640,000 bacterial genomes, uniformly processed & characterized, enriched with metadata, accessible via a flexible search engine<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;- genomic information at your fingertips!
+        </p>
+        <p>
+            Public databases are brimming with bacterial WGS data posing a genetic treasure for many different applications. 
+            However, most analyses focus on particular tiny subgroups that are hard to establish from raw sequencing data or metadata, only. 
+            To this end, BakRep (Denglish blend of Bakterien & Repository) provides access to both comprehensive standardized genome characterizations and metadata via a flexible search engine.
+        </p>
+        <p>
+            BakRep comprises assembly QC metrics, robust taxonomic classifications, MLST typing, genome annotations and original metadata 
+            for a precious collection of bacterial genomes assembled by <a href="https://doi.org/10.1371/journal.pbio.3001421" target="_blank"><em>Blackwell et al</em></a>
         </p>
       </div>
+    </div>
+    <div class="row mt-5">
+        <div class="col-md-6 col-lg-5">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Search</h5>
+                    <p class="card-text">by characterizations & metadata.</p>
+                    <a href="search" class="btn btn-primary">Search</a>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-6 col-lg-5">
+            <div class="card" style="width: 18rem;">
+                <div class="card-body">
+                    <h5 class="card-title">Browse</h5>
+                    <p class="card-text">by assembly/QC metrics.</p>
+                    <a href="browse" class="btn btn-primary">Browse</a>
+                </div>
+            </div>
+        </div>
     </div>
   </main>
 </template>
