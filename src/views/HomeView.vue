@@ -17,7 +17,7 @@
         </p>
         <p>
             BakRep comprises assembly QC metrics, robust taxonomic classifications, MLST typing, genome annotations and original metadata 
-            for a precious collection of bacterial genomes assembled by <a href="https://doi.org/10.1371/journal.pbio.3001421" target="_blank"><em>Blackwell et al</em></a>
+            for a precious collection of bacterial genomes assembled by <a href="https://doi.org/10.1371/journal.pbio.3001421" target="_blank"><em>Blackwell et al.</em></a>
         </p>
       </div>
     </div>
