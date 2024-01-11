@@ -31,8 +31,12 @@ data.push({
 
 const layout: Partial<Layout> = {
   height: 800,
+  margin: {
+    t: 50,
+  },
   yaxis: {
     automargin: true,
+    showticklabels: false,
   },
   xaxis: {
     type: "log",
