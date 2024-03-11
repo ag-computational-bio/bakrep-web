@@ -146,7 +146,7 @@ function parseFiltersFromRoute() {
   extract("size", "bakta.stats.size");
   extract("contigs", "bakta.stats.no_sequences");
   extract("completeness", "checkm2.quality.completeness", true, 1);
-  extract("contamination", "checkm2.quality.contamination");
+  extract("contamination", "checkm2.quality.contamination", true, 1);
   extract("gc", "bakta.stats.gc", true);
 
   if (!route.query.offset) {
