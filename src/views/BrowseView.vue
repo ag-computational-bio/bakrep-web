@@ -129,10 +129,15 @@ function decodeRange(tuple: string): Range {
 }
 
 function parseFiltersFromRoute() {
-  function extract(key: FilterKeys, field: string, round: boolean = false) {
+  function extract(
+    key: FilterKeys,
+    field: string,
+    round: boolean = false,
+    roundingScale: number = 100,
+  ) {
     if (!route.query[key]) {
       let v = getRangeFromSearchInfo(field);
-      if (round) v = roundRange(v, 1, 100);
+      if (round) v = roundRange(v, 1, roundingScale);
       filters.value[key] = v;
     } else {
       filters.value[key] = decodeRange(route.query[key] as string);
@@ -140,7 +145,7 @@ function parseFiltersFromRoute() {
   }
   extract("size", "bakta.stats.size");
   extract("contigs", "bakta.stats.no_sequences");
-  extract("completeness", "checkm2.quality.completeness", true);
+  extract("completeness", "checkm2.quality.completeness", true, 1);
   extract("contamination", "checkm2.quality.contamination");
   extract("gc", "bakta.stats.gc", true);
 
