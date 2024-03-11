@@ -7,7 +7,6 @@
     </p>
     <p>
         For technical questions and bug reports, we happily accept issues on <a href="https://github.com/ag-computational-bio/bakrep-web" target="_blank">GitHub</a>.<br/>
-        General contact and questions: <a href="mailto:bakrep@computational.bio.uni-giessen.de" target="_blank">bakrep@computational.bio.uni-giessen.de</a>
     </p>
     <p>
         We gratefully acknowledge the initial assembly of all genomes, which was conducted by <a href="https://doi.org/10.1371/journal.pbio.3001421" target="_blank"><em>Blackwell et al.</em></a> in 2021<br>
