@@ -283,14 +283,6 @@ watch(
 );
 
 onMounted(init);
-
-const completions = ref<string[]>([]);
-function updateSpecies(t: string) {
-  filters.value.species = t;
-  api
-    .completeClassficationText("species", t)
-    .then((x) => (completions.value = x));
-}
 </script>
 
 <template>
@@ -313,9 +305,8 @@ function updateSpecies(t: string) {
             <div class="input-group mb-3">
               <span class="input-label input-group-text">Species:</span>
               <AutocompleteInput
-                :model-value="filters.species"
-                @update:model-value="updateSpecies"
-                :options="completions"
+                v-model:model-value="filters.species"
+                :lookup-fn="(t) => api.completeClassficationText('species', t)"
               />
             </div>
             <button class="btn btn-light w-100" @click="updateUrl(0)">

@@ -28,12 +28,15 @@
   </div>
 </template>
 <script setup lang="ts">
-import { computed, ref, watch } from "vue";
+import { computed, ref } from "vue";
+
+export type LookupCompletionFunction = (prefix: string) => Promise<string[]>;
 
 const props = defineProps<{
   modelValue: string;
-  options: string[];
+  lookupFn: LookupCompletionFunction;
 }>();
+const options = ref<string[]>([]);
 const selectedIndex = ref(0);
 const isFocused = ref(false);
 
@@ -43,14 +46,17 @@ const emit = defineEmits<{
 
 const text = computed({
   get: () => props.modelValue,
-  set: (x) => emit("update:modelValue", x),
+  set: (x) => {
+    emit("update:modelValue", x);
+    lookup(x);
+  },
 });
 function selectNextItem() {
-  selectedIndex.value = (selectedIndex.value + 1) % props.options.length;
+  selectedIndex.value = (selectedIndex.value + 1) % options.value.length;
 }
 function selectPreviousItem() {
   const next = selectedIndex.value - 1;
-  if (next < 0) selectedIndex.value = props.options.length - 1;
+  if (next < 0) selectedIndex.value = options.value.length - 1;
   else selectedIndex.value = next;
 }
 function selectItem(idx: number) {
@@ -58,21 +64,23 @@ function selectItem(idx: number) {
 }
 function focus() {
   isFocused.value = true;
+  if (props.modelValue.length > 0) lookup(props.modelValue);
 }
 function blur() {
   isFocused.value = false;
 }
 function emitSelected() {
-  emit("update:modelValue", props.options[selectedIndex.value]);
-  blur();
+  emit("update:modelValue", options.value[selectedIndex.value]);
+  options.value = [];
 }
-watch(
-  () => props.options,
-  (o) => {
-    if (selectedIndex.value >= o.length) selectedIndex.value = o.length - 1;
-    if (inputField.value === document.activeElement) isFocused.value = true;
-  },
-);
+function updateOptions(newOptions: string[]) {
+  options.value = newOptions;
+  if (selectedIndex.value >= newOptions.length)
+    selectedIndex.value = newOptions.length - 1;
+}
+function lookup(prefix: string) {
+  props.lookupFn(prefix).then(updateOptions).catch(console.error);
+}
 
 const inputField = ref<HTMLInputElement>();
 </script>
