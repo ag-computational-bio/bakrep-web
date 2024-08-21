@@ -42,6 +42,7 @@ const isFocused = ref(false);
 
 const emit = defineEmits<{
   (e: "update:modelValue", v: string): void;
+  (e: "submit"): void;
 }>();
 
 const text = computed({
@@ -52,11 +53,16 @@ const text = computed({
   },
 });
 function selectNextItem() {
-  selectedIndex.value = (selectedIndex.value + 1) % options.value.length;
+  if (options.value.length > 0)
+    selectedIndex.value = (selectedIndex.value + 1) % options.value.length;
+  else selectedIndex.value = 0;
 }
 function selectPreviousItem() {
   const next = selectedIndex.value - 1;
-  if (next < 0) selectedIndex.value = options.value.length - 1;
+  if (next < 0)
+    if (options.value.length > 0)
+      selectedIndex.value = options.value.length - 1;
+    else selectedIndex.value = 0;
   else selectedIndex.value = next;
 }
 function selectItem(idx: number) {
@@ -70,15 +76,16 @@ function blur() {
   isFocused.value = false;
 }
 function emitSelected() {
-  console.log(options.value, selectedIndex.value);
   if (selectedIndex.value >= 0 && selectedIndex.value < options.value.length)
     emit("update:modelValue", options.value[selectedIndex.value]);
+  if (options.value.length == 0) emit("submit");
   options.value = [];
 }
 function updateOptions(newOptions: string[]) {
   options.value = newOptions;
   if (selectedIndex.value >= newOptions.length)
     selectedIndex.value = newOptions.length - 1;
+  if (selectedIndex.value < 0) selectedIndex.value = 0;
 }
 function lookup(prefix: string) {
   props.lookupFn(prefix).then(updateOptions).catch(console.error);

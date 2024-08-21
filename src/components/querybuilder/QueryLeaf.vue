@@ -30,6 +30,7 @@
               v-if="rule.completionPath && typeof value === 'string'"
               v-model="value"
               :lookup-fn="options.lookupFn(rule)"
+              @submit="$emit('submit')"
             />
             <input
               v-else
