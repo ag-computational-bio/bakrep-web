@@ -70,7 +70,8 @@ function blur() {
   isFocused.value = false;
 }
 function emitSelected() {
-  if (selectedIndex.value < options.value.length)
+  console.log(options.value, selectedIndex.value);
+  if (selectedIndex.value >= 0 && selectedIndex.value < options.value.length)
     emit("update:modelValue", options.value[selectedIndex.value]);
   options.value = [];
 }
