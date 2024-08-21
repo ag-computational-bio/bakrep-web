@@ -10,10 +10,11 @@ import {
 } from "@/components/pagination/Pagination";
 import Pagination from "@/components/pagination/Pagination.vue";
 import QueryBuilder from "@/components/querybuilder/QueryBuilder.vue";
-import type {
-  LeafRule,
-  NestedRule,
-  Rule,
+import {
+  defaultOptions,
+  type LeafRule,
+  type NestedRule,
+  type Rule,
 } from "@/components/querybuilder/Rule";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
 import type {
@@ -37,6 +38,8 @@ import ExportProgress from "./ExportProgress.vue";
 import { downloadFullTsv, type ProgressEvent } from "./ExportTsv";
 import ResultTable from "./ResultTable.vue";
 import { useRoute, useRouter } from "vue-router";
+import type { LookupCompletionFunction } from "@/components/AutocompleteInput.vue";
+import { isClassificationKey } from "@/model/GtdbtkResult";
 const pageState = usePageState();
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
@@ -123,6 +126,7 @@ function searchinfo2querybuilderrules(f: SearchInfoField): Rule {
       label: field,
       type: f.type as "number" | "text",
       ops: f.ops.map((o) => ({ label: o, description: o })),
+      completionPath: f.completionPath,
     };
     return leafRule;
   }
@@ -279,6 +283,16 @@ onMounted(init);
 onBeforeUnmount(() => {
   if (cancelExport) cancelExport.abort();
 });
+
+function createLookupFn(r: Rule): LookupCompletionFunction {
+  if (r.field.startsWith("gtdbtk.classification.")) {
+    const field = r.field.replace("gtdbtk.classification.", "");
+    if (isClassificationKey(field))
+      return (p) => api.completeClassficationText(field, p);
+  }
+
+  throw "Unsupported completable text field";
+}
 </script>
 
 <template>
@@ -286,7 +300,12 @@ onBeforeUnmount(() => {
     <Loading :state="pageState">
       <div class="row">
         <div class="col-12">
-          <QueryBuilder v-model:query="query" :rules="rules" @submit="search" />
+          <QueryBuilder
+            v-model:query="query"
+            :rules="rules"
+            :options="defaultOptions({ lookupFn: createLookupFn })"
+            @submit="search"
+          />
         </div>
       </div>
 

@@ -100,6 +100,7 @@ export type SearchInfoLeaf = {
   type: "text" | "number";
   min: number;
   max: number;
+  completionPath?: string;
 };
 
 export type SearchInfoNested = {

@@ -26,7 +26,13 @@
 
           <!-- Basic text input -->
           <div class="col" v-if="rule.type === 'text'">
+            <AutocompleteInput
+              v-if="rule.completionPath && typeof value === 'string'"
+              v-model="value"
+              :lookup-fn="options.lookupFn(rule)"
+            />
             <input
+              v-else
               v-model="value"
               class="form-control"
               type="text"
@@ -76,6 +82,7 @@ import { type PropType, computed, type Ref } from "vue";
 import type { LeafRule, QueryBuilderOptions, Rule } from "./Rule";
 import { isNumber } from "chart.js/helpers";
 import RangeInput from "./input/RangeInput.vue";
+import AutocompleteInput from "../AutocompleteInput.vue";
 
 const props = defineProps({
   index: { type: Number as PropType<number>, default: 0 },

@@ -20,4 +20,10 @@ const GtdbtkResultSchema = z.object({
 export type Classification = z.infer<typeof ClassfificationSchema>;
 export type GtdbtkResult = z.infer<typeof GtdbtkResultSchema>;
 
-export { GtdbtkResultSchema, ClassfificationSchema };
+function isClassificationKey(s: string): s is keyof Classification {
+  for (const k of Object.keys(ClassfificationSchema.shape))
+    if (s === k) return true;
+  return false;
+}
+
+export { GtdbtkResultSchema, ClassfificationSchema, isClassificationKey };
