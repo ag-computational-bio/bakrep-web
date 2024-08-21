@@ -137,7 +137,7 @@ const showFeatures = computed(() =>
           <td scope="row">
             <router-link
               :to="{
-                name: 'result',
+                name: 'result-tab',
                 params: { id: entry.id, tab: 'summary' },
               }"
             >
