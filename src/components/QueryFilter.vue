@@ -41,7 +41,7 @@ const to = computed({
 });
 </script>
 
-<style scoped>
+<style>
 .input-label {
   width: 8.5rem;
 }

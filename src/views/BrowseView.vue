@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useApi } from "@/BakrepApi";
 import usePageState, { State } from "@/PageState";
+import AutocompleteInput from "@/components/AutocompleteInput.vue";
 import Loading from "@/components/Loading.vue";
 import QueryFilter from "@/components/QueryFilter.vue";
 import {
@@ -12,6 +13,7 @@ import {
 import Pagination from "@/components/pagination/Pagination.vue";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
 import {
+  type CompoundQuery,
   type SearchInfo,
   type SortDirection,
   type SortOption,
@@ -34,8 +36,14 @@ export type Range = {
   to: number;
 };
 
-type FilterKeys = "size" | "gc" | "contigs" | "completeness" | "contamination";
-type Filter = Record<FilterKeys, Range>;
+type Filter = {
+  size: Range;
+  gc: Range;
+  contigs: Range;
+  completeness: Range;
+  contamination: Range;
+  species: string;
+};
 
 const filters = ref<Filter>({
   size: { from: 0, to: 0 },
@@ -43,6 +51,7 @@ const filters = ref<Filter>({
   contigs: { from: 0, to: 0 },
   completeness: { from: 0, to: 0 },
   contamination: { from: 0, to: 0 },
+  species: "",
 });
 const searchinfo: Ref<SearchInfo> = ref({ fields: [] });
 
@@ -54,10 +63,10 @@ function buildFilterQuery(filter: Filter) {
       value: range,
     };
   }
-  return {
+  const q: CompoundQuery = {
     op: "and",
     value: [
-      c("bakta.stats.size", filter.size),
+      c("bakta.stats.size", filter.size as Range),
       c("bakta.stats.gc", {
         // gc is used in percent in ui, but ranges from 0 to 1 in database
         // so we need to convert here
@@ -69,6 +78,13 @@ function buildFilterQuery(filter: Filter) {
       c("checkm2.quality.contamination", filter.contamination),
     ],
   };
+  if (filter.species)
+    q.value.push({
+      field: "gtdbtk.classification.species",
+      op: "eq",
+      value: filter.species,
+    });
+  return q;
 }
 
 function updateUrl(offset = pagination.value.offset) {
@@ -81,7 +97,8 @@ function updateUrl(offset = pagination.value.offset) {
     newRouteQuery.gc != (route.query.gc as string) ||
     newRouteQuery.size != (route.query.size as string) ||
     newRouteQuery.order != (route.query.order as string) ||
-    newRouteQuery.offset != Number.parseInt(route.query.offset as string)
+    newRouteQuery.offset != Number.parseInt(route.query.offset as string) ||
+    newRouteQuery.species != (route.query.species as string)
   ) {
     // When the page is opened the first time and the route does not contain the query
     // yet, the route is updated with a default query.
@@ -115,6 +132,7 @@ function encodeQueryForRoute(offset = pagination.value.offset) {
     contigs: encodeRange(filters.value.contigs),
     completeness: encodeRange(filters.value.completeness),
     contamination: encodeRange(filters.value.contamination),
+    species: filters.value.species,
     order: btoa(JSON.stringify(ordering.value)),
   };
 }
@@ -130,17 +148,25 @@ function decodeRange(tuple: string): Range {
 
 function parseFiltersFromRoute() {
   function extract(
-    key: FilterKeys,
+    key: keyof Filter,
     field: string,
     round: boolean = false,
     roundingScale: number = 100,
   ) {
-    if (!route.query[key]) {
-      let v = getRangeFromSearchInfo(field);
-      if (round) v = roundRange(v, 1, roundingScale);
-      filters.value[key] = v;
+    if (key === "species") {
+      if (!route.query[key]) {
+        filters.value.species = "";
+      } else {
+        filters.value.species = route.query[key] as string;
+      }
     } else {
-      filters.value[key] = decodeRange(route.query[key] as string);
+      if (!route.query[key]) {
+        let v = getRangeFromSearchInfo(field);
+        if (round) v = roundRange(v, 1, roundingScale);
+        filters.value[key] = v;
+      } else {
+        filters.value[key] = decodeRange(route.query[key] as string);
+      }
     }
   }
   extract("size", "bakta.stats.size");
@@ -148,6 +174,7 @@ function parseFiltersFromRoute() {
   extract("completeness", "checkm2.quality.completeness", true, 1);
   extract("contamination", "checkm2.quality.contamination", true, 1);
   extract("gc", "bakta.stats.gc", true);
+  extract("species", "gtdbtk.classification.species");
 
   if (!route.query.offset) {
     pagination.value.offset = 0;
@@ -238,6 +265,7 @@ watch(
     filters.value.gc = decodeRange(newQuery.gc as string);
     filters.value.completeness = decodeRange(newQuery.completeness as string);
     filters.value.contamination = decodeRange(newQuery.contamination as string);
+    filters.value.species = newQuery.species as string;
     ordering.value = JSON.parse(atob(newQuery.order as string));
     pagination.value.limit = Number.parseInt(newQuery.limit as string);
     pagination.value.offset = Number.parseInt(newQuery.offset as string);
@@ -246,6 +274,14 @@ watch(
 );
 
 onMounted(init);
+
+const completions = ref<string[]>([]);
+function updateSpecies(t: string) {
+  filters.value.species = t;
+  api
+    .completeClassficationText("species", t)
+    .then((x) => (completions.value = x));
+}
 </script>
 
 <template>
@@ -265,6 +301,14 @@ onMounted(init);
               label="Contamination"
               v-model="filters.contamination"
             />
+            <div class="input-group mb-3">
+              <span class="input-label input-group-text">Species:</span>
+              <AutocompleteInput
+                :model-value="filters.species"
+                @update:model-value="updateSpecies"
+                :options="completions"
+              />
+            </div>
             <button class="btn btn-light w-100" @click="updateUrl(0)">
               Apply Filter
             </button>
