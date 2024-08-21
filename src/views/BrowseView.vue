@@ -260,15 +260,24 @@ function init() {
 watch(
   () => route.query,
   (newQuery) => {
-    filters.value.size = decodeRange(newQuery.size as string);
-    filters.value.contigs = decodeRange(newQuery.contigs as string);
-    filters.value.gc = decodeRange(newQuery.gc as string);
-    filters.value.completeness = decodeRange(newQuery.completeness as string);
-    filters.value.contamination = decodeRange(newQuery.contamination as string);
-    filters.value.species = newQuery.species as string;
-    ordering.value = JSON.parse(atob(newQuery.order as string));
-    pagination.value.limit = Number.parseInt(newQuery.limit as string);
-    pagination.value.offset = Number.parseInt(newQuery.offset as string);
+    if (typeof newQuery.size === "string")
+      filters.value.size = decodeRange(newQuery.size);
+    if (typeof newQuery.contigs === "string")
+      filters.value.contigs = decodeRange(newQuery.contigs);
+    if (typeof newQuery.gc === "string")
+      filters.value.gc = decodeRange(newQuery.gc);
+    if (typeof newQuery.completeness === "string")
+      filters.value.completeness = decodeRange(newQuery.completeness);
+    if (typeof newQuery.contamination === "string")
+      filters.value.contamination = decodeRange(newQuery.contamination);
+    if (typeof newQuery.species === "string")
+      filters.value.species = newQuery.species;
+    if (typeof newQuery.order === "string")
+      ordering.value = JSON.parse(atob(newQuery.order));
+    if (typeof newQuery.limit === "string")
+      pagination.value.limit = Number.parseInt(newQuery.limit);
+    if (typeof newQuery.offset === "string")
+      pagination.value.offset = Number.parseInt(newQuery.offset);
     applyFilter();
   },
 );
