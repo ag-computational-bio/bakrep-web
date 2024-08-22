@@ -2,6 +2,7 @@ import json5 from "json5";
 import {
   BakrepSearchResultSchema,
   type BakrepSearchResult,
+  type SimpleFeature,
 } from "./model/BakrepSearchResult";
 import { BaktaResultSchema, type BaktaResult } from "./model/BaktaResults";
 import { CheckmResultSchema, type CheckmResult } from "./model/CheckmResults";
@@ -56,6 +57,10 @@ interface BakrepApi {
   searchinfo(): Promise<SearchInfo>;
   completeClassficationText(
     field: keyof Classification,
+    prefix: string,
+  ): Promise<StringCompletionResult>;
+  completeFeatureText(
+    field: keyof SimpleFeature,
     prefix: string,
   ): Promise<StringCompletionResult>;
 }
@@ -181,6 +186,13 @@ class BakrepApiImpl implements BakrepApi {
   }
   completeClassficationText(field: keyof Classification, prefix: string) {
     return fetch(`${baseurl}/completion/classification/${field}/${prefix}`, {
+      method: "GET",
+    })
+      .then(this.toJson)
+      .then((j) => StringCompletionResultSchema.parse(j));
+  }
+  completeFeatureText(field: keyof SimpleFeature, prefix: string) {
+    return fetch(`${baseurl}/completion/feature/${field}/${prefix}`, {
       method: "GET",
     })
       .then(this.toJson)

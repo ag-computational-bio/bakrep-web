@@ -43,5 +43,6 @@ const BakrepSearchResultSchema = z.object({
 
 export type BakrepSearchResultEntry = z.infer<typeof BakrepSearchEntrySchema>;
 export type BakrepSearchResult = z.infer<typeof BakrepSearchResultSchema>;
+export type SimpleFeature = z.infer<typeof SimpleFeatureSchema>;
 
 export { BakrepSearchEntrySchema, BakrepSearchResultSchema };

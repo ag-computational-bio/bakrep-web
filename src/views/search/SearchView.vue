@@ -290,6 +290,10 @@ function createLookupFn(r: Rule): LookupCompletionFunction {
     if (isClassificationKey(field))
       return (p) => api.completeClassficationText(field, p);
   }
+  if (r.field === "gene" || r.field === "product") {
+    const f = r.field;
+    return (p) => api.completeFeatureText(f, p);
+  }
 
   throw "Unsupported completable text field";
 }
