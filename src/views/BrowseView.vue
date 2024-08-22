@@ -4,12 +4,7 @@ import usePageState, { State } from "@/PageState";
 import AutocompleteInput from "@/components/AutocompleteInput.vue";
 import Loading from "@/components/Loading.vue";
 import QueryFilter from "@/components/QueryFilter.vue";
-import {
-  empty,
-  toPosition,
-  type PaginationData,
-  type PositionInResult,
-} from "@/components/pagination/Pagination";
+import { empty, type PaginationData } from "@/components/pagination/Pagination";
 import Pagination from "@/components/pagination/Pagination.vue";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
 import {
@@ -21,6 +16,7 @@ import {
 import ResultTable from "@/views/search/ResultTable.vue";
 import { computed, onMounted, ref, watch, type Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import SearchResultNumbers from "./search/SearchResultNumbers.vue";
 const pageState = usePageState();
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
@@ -187,6 +183,7 @@ function parseFiltersFromRoute() {
     pagination.value.limit = Number.parseInt(route.query.limit as string);
   }
 }
+const query = computed(() => buildFilterQuery(filters.value));
 
 function applyFilter(offset = 0) {
   searchState.value.setState(State.Loading);
@@ -208,10 +205,6 @@ function applyFilter(offset = 0) {
 }
 
 const ordering: Ref<SortOption[]> = ref([{ field: "id", ord: "asc" }]);
-
-const positionInResults: Ref<PositionInResult> = computed(() =>
-  toPosition(pagination.value),
-);
 
 function updateOrdering(sortkey: string, direction: SortDirection | null) {
   const idx = ordering.value.findIndex((s) => s.field === sortkey);
@@ -282,6 +275,8 @@ watch(
   },
 );
 
+const exportInProgress = ref(false);
+
 onMounted(init);
 </script>
 
@@ -335,10 +330,15 @@ onMounted(init);
       </div>
       <Loading :state="searchState">
         <div class="row px-3">
-          Showing results {{ positionInResults.firstElement }}-{{
-            positionInResults.lastElement
-          }}
-          of {{ pagination.total }} results
+          <SearchResultNumbers
+            ref="exportComponent"
+            :api="api"
+            :pagination="pagination"
+            :query="query"
+            @exporting="exportInProgress = true"
+            @export-done="exportInProgress = false"
+            @export-failed="exportInProgress = false"
+          />
           <ResultTable
             :ordering="ordering"
             :entries="entries"
