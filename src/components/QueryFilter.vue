@@ -1,9 +1,19 @@
 <template>
   <div class="input-group mb-3">
     <span class="input-label input-group-text">{{ label }}:</span>
-    <input class="form-control" type="number" v-model="from" />
+    <input
+      class="form-control"
+      type="number"
+      v-model="from"
+      @keydown.enter.prevent="emits('submit')"
+    />
     <span class="input-group-text">Min</span>
-    <input class="form-control" type="number" v-model="to" />
+    <input
+      class="form-control"
+      type="number"
+      v-model="to"
+      @keydown.enter.prevent="emits('submit')"
+    />
     <span class="input-group-text">Max</span>
   </div>
 </template>
@@ -19,6 +29,7 @@ const props = defineProps({
 
 const emits = defineEmits<{
   (e: "update:modelValue", value: Range): void;
+  (e: "submit"): void;
 }>();
 
 const from = computed({

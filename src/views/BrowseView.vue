@@ -294,19 +294,37 @@ onMounted(init);
       <div class="row">
         <div class="col">
           <div class="rounded bg-body-secondary p-4 mb-4">
-            <QueryFilter label="GC" v-model="filters.gc" />
-            <QueryFilter label="Contigs" v-model="filters.contigs" />
-            <QueryFilter label="Genome Size" v-model="filters.size" />
-            <QueryFilter label="Completeness" v-model="filters.completeness" />
+            <QueryFilter
+              label="GC"
+              v-model="filters.gc"
+              @submit="applyFilter"
+            />
+            <QueryFilter
+              label="Contigs"
+              v-model="filters.contigs"
+              @submit="applyFilter"
+            />
+            <QueryFilter
+              label="Genome Size"
+              v-model="filters.size"
+              @submit="applyFilter"
+            />
+            <QueryFilter
+              label="Completeness"
+              v-model="filters.completeness"
+              @submit="applyFilter"
+            />
             <QueryFilter
               label="Contamination"
               v-model="filters.contamination"
+              @submit="applyFilter"
             />
             <div class="input-group mb-3">
               <span class="input-label input-group-text">Species:</span>
               <AutocompleteInput
                 v-model:model-value="filters.species"
                 :lookup-fn="(t) => api.completeClassficationText('species', t)"
+                @submit="applyFilter"
               />
             </div>
             <button class="btn btn-light w-100" @click="updateUrl(0)">
