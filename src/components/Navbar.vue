@@ -6,6 +6,7 @@ const items = ref([
   { href: { name: "search" }, text: "Search" },
   { href: { name: "composition" }, text: "Species composition" },
   { href: { name: "statistics" }, text: "Repository statistics" },
+  { href: { name: "docs" }, text: "Documentation" },
   { href: { name: "about" }, text: "About" },
 ]);
 </script>
