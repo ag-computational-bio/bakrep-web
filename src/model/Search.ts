@@ -98,8 +98,8 @@ export type SearchInfoLeaf = {
   field: string;
   ops: string[];
   type: "text" | "number";
-  min: number;
-  max: number;
+  min?: number;
+  max?: number;
   completionPath?: string;
 };
 

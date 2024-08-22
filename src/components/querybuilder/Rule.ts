@@ -3,6 +3,8 @@ import type { LookupCompletionFunction } from "../AutocompleteInput.vue";
 
 export type LeafRule = {
   completionPath?: string;
+  min?: number;
+  max?: number;
   group?: string;
   field: string;
   label: string;
@@ -64,9 +66,15 @@ export function defaultOptions(
     },
     defaultValue(r: Rule, op: RuleOp) {
       if (r.type === "text") return "";
-      if (r.type === "number")
-        if (op.label === "[]") return { from: 0, to: 0 };
+      if (r.type === "number") {
+        const orZero = (n?: number) => (n == undefined ? 0 : n);
+
+        if (op.label === "[]")
+          return { from: orZero(r.min), to: orZero(r.max) };
+        if (["<", "<="].some((o) => op.label === o)) return orZero(r.max);
+        if ([">", ">="].some((o) => op.label === o)) return orZero(r.min);
         else return 0;
+      }
       throw "No default value";
     },
     lookupFn() {

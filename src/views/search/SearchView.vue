@@ -1,6 +1,7 @@
 <script setup lang="ts">
 import { useApi } from "@/BakrepApi";
 import usePageState, { State } from "@/PageState";
+import type { LookupCompletionFunction } from "@/components/AutocompleteInput.vue";
 import Loading from "@/components/Loading.vue";
 import {
   empty,
@@ -17,6 +18,7 @@ import {
   type Rule,
 } from "@/components/querybuilder/Rule";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
+import { isClassificationKey } from "@/model/GtdbtkResult";
 import type {
   CompoundQuery,
   SearchInfo,
@@ -31,15 +33,13 @@ import {
   onMounted,
   ref,
   unref,
-  type Ref,
   watch,
+  type Ref,
 } from "vue";
+import { useRoute, useRouter } from "vue-router";
 import ExportProgress from "./ExportProgress.vue";
 import { downloadFullTsv, type ProgressEvent } from "./ExportTsv";
 import ResultTable from "./ResultTable.vue";
-import { useRoute, useRouter } from "vue-router";
-import type { LookupCompletionFunction } from "@/components/AutocompleteInput.vue";
-import { isClassificationKey } from "@/model/GtdbtkResult";
 const pageState = usePageState();
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
@@ -127,6 +127,8 @@ function searchinfo2querybuilderrules(f: SearchInfoField): Rule {
       type: f.type as "number" | "text",
       ops: f.ops.map((o) => ({ label: o, description: o })),
       completionPath: f.completionPath,
+      min: f.min,
+      max: f.max,
     };
     return leafRule;
   }
