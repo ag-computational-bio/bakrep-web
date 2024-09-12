@@ -5,13 +5,13 @@ import type { GtdbtkResult } from "@/model/GtdbtkResult";
 import type { MlstResult } from "@/model/MlstResults";
 import type { PropType } from "vue";
 
+import ContigBar from "@/views/show-results/ContigBar.vue";
+import type { Metadata } from "@/model/Metadata";
 import BaktaStats from "@/views/show-results/bakta/BaktaStats.vue";
 import DisplayAssembly from "@/views/show-results/DisplayAssembly.vue";
 import GtdbtkTaxonomy from "@/views/show-results/GtdbtkTaxonomy.vue";
+import PhylogenyTree from "@/views/show-results/PhylogenyTree.vue";
 import DisplayMetadata from "./DisplayMetadata.vue";
-import PhylogenyTree from "@/components/PhylogenyTree.vue";
-import ContigBar from "@/components/ContigBar.vue";
-import type { Metadata } from "@/model/Metadata";
 
 const props = defineProps({
   id: { type: String },

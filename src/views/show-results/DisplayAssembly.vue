@@ -50,7 +50,6 @@ import type { BaktaResult } from "@/model/BaktaResults";
 import type { CheckmResult } from "@/model/CheckmResults";
 import type { PropType } from "vue";
 import { ratioToPercentage } from "@/util";
-import ContigBar from "@/components/ContigBar.vue";
 
 defineProps({
   bakta: { type: Object as PropType<BaktaResult> },

@@ -1,8 +1,8 @@
 <!-- eslint-disable prettier/prettier -->
 <script setup lang="ts">
-import DownloadLinks from "@/components/DownloadLinks.vue";
 import Loading from "@/components/Loading.vue";
 import usePageState, { State } from "@/PageState";
+import DownloadLinks from "@/views/show-results/DownloadLinks.vue";
 import { computed, onMounted, ref, type Ref } from "vue";
 
 import { useApi } from "@/BakrepApi";
