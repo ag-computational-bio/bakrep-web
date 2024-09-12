@@ -97,7 +97,7 @@ const showFeatures = computed(() =>
           />
         </th>
         <th scope="col">
-          Species
+          Species (GTDB)
           <SortSymbol
             :ordering="ordering"
             sortkey="gtdbtk.classification.species"
