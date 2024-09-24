@@ -97,7 +97,7 @@ const showFeatures = computed(() =>
           />
         </th>
         <th scope="col">
-          Species
+          Species (GTDB)
           <SortSymbol
             :ordering="ordering"
             sortkey="gtdbtk.classification.species"
@@ -137,7 +137,7 @@ const showFeatures = computed(() =>
           <td scope="row">
             <router-link
               :to="{
-                name: 'result',
+                name: 'result-tab',
                 params: { id: entry.id, tab: 'summary' },
               }"
             >

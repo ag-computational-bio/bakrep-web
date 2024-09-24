@@ -1,5 +1,8 @@
 import { type BakrepApi } from "@/BakrepApi";
+import type { PaginationData } from "@/components/pagination/Pagination";
 import type { Query, SearchAfter, SortOption } from "@/model/Search";
+import { ref } from "vue";
+import { saveAs } from "file-saver";
 
 /**
  * Downloads all entries for the query as a tsv element. The data is loaded in chunks (chunksize it hard coded to 2000 at the moment).
@@ -12,7 +15,7 @@ import type { Query, SearchAfter, SortOption } from "@/model/Search";
  * @param req
  * @param handler
  */
-export function downloadFullTsv(
+function downloadFullTsv(
   api: BakrepApi,
   req: ExportRequest,
   handler: ExportHandler,
@@ -92,3 +95,59 @@ export type ProgressEvent = {
   total: number;
   count: number;
 };
+
+export function useExportTsv(api: BakrepApi) {
+  let cancelExport: AbortController | undefined = undefined;
+  const progress = ref<ProgressEvent>();
+  const exportError = ref<string>();
+  const exportInProgress = ref(false);
+  function exportTsv(query: Query, pagination: PaginationData): Promise<void> {
+    return new Promise((res, rej) => {
+      const queryCopy = JSON.parse(JSON.stringify(query));
+      exportError.value = undefined;
+      exportInProgress.value = true;
+      progress.value = { total: pagination.total, count: 0, progress: 0 };
+      cancelExport = downloadFullTsv(
+        api,
+        {
+          query: queryCopy,
+          sort: [{ field: "id", ord: "asc" }],
+        },
+        {
+          onError: (e) => {
+            exportError.value = e as string;
+            exportInProgress.value = false;
+            rej(e);
+          },
+          onFinished: (d) => {
+            const blob = new Blob([d], {
+              type: "text/tab-separated-values;charset=utf-8",
+            });
+            saveAs(blob, "bakrep-export.tsv");
+            exportInProgress.value = false;
+            cancelExport = undefined;
+            res();
+          },
+          onProgress: (p) => (progress.value = p),
+        },
+      );
+    });
+  }
+  function cancelTsvExport() {
+    if (cancelExport) cancelExport.abort();
+  }
+  function resetTsvExport() {
+    cancelTsvExport();
+    progress.value = undefined;
+    exportError.value = undefined;
+    exportInProgress.value = false;
+  }
+  return {
+    cancelTsvExport,
+    exportTsv,
+    resetTsvExport,
+    progress,
+    exportError,
+    exportInProgress,
+  };
+}

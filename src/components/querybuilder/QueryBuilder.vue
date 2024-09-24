@@ -12,39 +12,17 @@
     />
   </div>
 </template>
+
 <script setup lang="ts">
 import type { CompoundQuery, Query } from "@/model/Search";
-import type { QueryBuilderOptions, Rule, RuleOp } from "./Rule";
 import type { PropType } from "vue";
 import QueryGroup from "./QueryGroup.vue";
+import { defaultOptions, type QueryBuilderOptions, type Rule } from "./Rule";
 
 const props = defineProps({
   options: {
     type: Object as PropType<QueryBuilderOptions>,
-    default: () => ({
-      maxDepth: 3,
-      labels: {
-        removeRule: "&times;",
-        resetGroup: "&circlearrowleft;",
-        removeGroup: "&times;",
-        matchType: "Type",
-        matchTypes: {
-          or: "At least one must match",
-          and: "All must match",
-        },
-        addRule: "Add field",
-        addGroup: "Add group",
-        textInputPlaceholder: "Enter search",
-      },
-      defaultValue: (r: Rule, op: RuleOp) =>
-        r.type === "text"
-          ? ""
-          : r.type === "number"
-          ? op.label === "[]"
-            ? { from: 0, to: 0 }
-            : 0
-          : undefined,
-    }),
+    default: defaultOptions(),
   },
   rules: { type: Array as PropType<Rule[]>, default: () => [] },
   query: {

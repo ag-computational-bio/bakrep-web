@@ -1,21 +1,19 @@
 <script setup lang="ts">
 import { useApi } from "@/BakrepApi";
 import usePageState, { State } from "@/PageState";
+import type { LookupCompletionFunction } from "@/components/AutocompleteInput.vue";
 import Loading from "@/components/Loading.vue";
-import {
-  empty,
-  toPosition,
-  type PaginationData,
-  type PositionInResult,
-} from "@/components/pagination/Pagination";
+import { empty, type PaginationData } from "@/components/pagination/Pagination";
 import Pagination from "@/components/pagination/Pagination.vue";
 import QueryBuilder from "@/components/querybuilder/QueryBuilder.vue";
-import type {
-  LeafRule,
-  NestedRule,
-  Rule,
+import {
+  defaultOptions,
+  type LeafRule,
+  type NestedRule,
+  type Rule,
 } from "@/components/querybuilder/Rule";
 import type { BakrepSearchResultEntry } from "@/model/BakrepSearchResult";
+import { isClassificationKey } from "@/model/GtdbtkResult";
 import type {
   CompoundQuery,
   SearchInfo,
@@ -23,20 +21,10 @@ import type {
   SortDirection,
   SortOption,
 } from "@/model/Search";
-import { saveAs } from "file-saver";
-import {
-  computed,
-  onBeforeUnmount,
-  onMounted,
-  ref,
-  unref,
-  type Ref,
-  watch,
-} from "vue";
-import ExportProgress from "./ExportProgress.vue";
-import { downloadFullTsv, type ProgressEvent } from "./ExportTsv";
-import ResultTable from "./ResultTable.vue";
+import { computed, onMounted, ref, unref, watch, type Ref } from "vue";
 import { useRoute, useRouter } from "vue-router";
+import ResultTable from "./ResultTable.vue";
+import SearchResultNumbers from "./SearchResultNumbers.vue";
 const pageState = usePageState();
 const searchState = usePageState();
 const entries: Ref<BakrepSearchResultEntry[]> = ref([]);
@@ -123,6 +111,9 @@ function searchinfo2querybuilderrules(f: SearchInfoField): Rule {
       label: field,
       type: f.type as "number" | "text",
       ops: f.ops.map((o) => ({ label: o, description: o })),
+      completionPath: f.completionPath,
+      min: f.min,
+      max: f.max,
     };
     return leafRule;
   }
@@ -204,7 +195,7 @@ const fieldNames: Record<string, FieldConfiguration> = {
 
 function search(offset = 0) {
   searchState.value.setState(State.Loading);
-  resetTsvExport();
+  if (exportComponent.value) exportComponent.value.resetTsvExport();
   api
     .search({
       query: unref(query),
@@ -222,10 +213,6 @@ function search(offset = 0) {
     .catch((err) => pageState.value.setError(err));
 }
 
-const positionInResults: Ref<PositionInResult> = computed(() =>
-  toPosition(pagination.value),
-);
-
 function updateOrdering(sortkey: string, direction: SortDirection | null) {
   const idx = ordering.value.findIndex((s) => s.field === sortkey);
   if (direction == null) {
@@ -238,47 +225,24 @@ function updateOrdering(sortkey: string, direction: SortDirection | null) {
   search();
 }
 
-let cancelExport: AbortController | undefined = undefined;
-const progress = ref<ProgressEvent>();
-const exportError = ref<string>();
+const exportComponent = ref<typeof SearchResultNumbers>();
 const exportInProgress = ref(false);
-function exportTsv() {
-  exportError.value = undefined;
-  exportInProgress.value = true;
-  progress.value = { total: pagination.value.total, count: 0, progress: 0 };
-  cancelExport = downloadFullTsv(
-    api,
-    {
-      query: query.value,
-      sort: [{ field: "id", ord: "asc" }],
-    },
-    {
-      onError: (e) => {
-        exportError.value = e as string;
-        exportInProgress.value = false;
-      },
-      onFinished: (d) => {
-        const blob = new Blob([d], {
-          type: "text/tab-separated-values;charset=utf-8",
-        });
-        saveAs(blob, "bakrep-export.tsv");
-        exportInProgress.value = false;
-        cancelExport = undefined;
-      },
-      onProgress: (p) => (progress.value = p),
-    },
-  );
-}
-function resetTsvExport() {
-  progress.value = undefined;
-  exportError.value = undefined;
-  exportInProgress.value = false;
-}
 
 onMounted(init);
-onBeforeUnmount(() => {
-  if (cancelExport) cancelExport.abort();
-});
+
+function createLookupFn(r: Rule): LookupCompletionFunction {
+  if (r.field.startsWith("gtdbtk.classification.")) {
+    const field = r.field.replace("gtdbtk.classification.", "");
+    if (isClassificationKey(field))
+      return (p) => api.completeClassficationText(field, p);
+  }
+  if (r.field === "gene" || r.field === "product") {
+    const f = r.field;
+    return (p) => api.completeFeatureText(f, p);
+  }
+
+  throw "Unsupported completable text field";
+}
 </script>
 
 <template>
@@ -286,7 +250,12 @@ onBeforeUnmount(() => {
     <Loading :state="pageState">
       <div class="row">
         <div class="col-12">
-          <QueryBuilder v-model:query="query" :rules="rules" @submit="search" />
+          <QueryBuilder
+            v-model:query="query"
+            :rules="rules"
+            :options="defaultOptions({ lookupFn: createLookupFn })"
+            @submit="search"
+          />
         </div>
       </div>
 
@@ -307,30 +276,15 @@ onBeforeUnmount(() => {
       </div>
       <Loading :state="searchState">
         <div class="row">
-          <div class="col-12 d-flex justify-content-between align-items-end">
-            <div class="fs-tiny">
-              Showing search results {{ positionInResults.firstElement }}-{{
-                positionInResults.lastElement
-              }}
-              of {{ pagination.total }} results
-            </div>
-            <div v-if="pagination.total > 0">
-              <button
-                class="btn btn-sm btn-link link-secondary"
-                @click="exportTsv"
-                :disabled="exportInProgress"
-              >
-                Export as tsv
-              </button>
-            </div>
-          </div>
-          <div class="col-12">
-            <ExportProgress
-              v-if="progress"
-              :progress="progress"
-              :error="exportError"
-            />
-          </div>
+          <SearchResultNumbers
+            ref="exportComponent"
+            :api="api"
+            :pagination="pagination"
+            :query="query"
+            @exporting="exportInProgress = true"
+            @export-done="exportInProgress = false"
+            @export-failed="exportInProgress = false"
+          />
           <div class="col-12">
             <ResultTable
               :ordering="ordering"

@@ -16,7 +16,7 @@ export const SingleRule: Story = {
   render: (args) => ({
     components: { QueryBuilder },
     setup() {
-      var query = ref(args.query);
+      const query = ref(args.query);
       function updateQuery(nq: CompoundQuery) {
         args.query = nq;
       }

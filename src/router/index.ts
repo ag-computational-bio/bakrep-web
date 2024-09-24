@@ -22,11 +22,6 @@ const router = createRouter({
       path: "/search",
       name: "search",
       component: () => import("../views/search/SearchView.vue"),
-      props: (route) => ({
-        offset: route.query.offset,
-        limit: route.query.limit,
-        query: route.query.query,
-      }),
     },
     {
       path: "/imprint",
@@ -59,6 +54,11 @@ const router = createRouter({
       path: "/statistics",
       name: "statistics",
       component: () => import("../views/statistics/StatisticsView.vue"),
+    },
+    {
+      path: "/docs",
+      name: "docs",
+      component: () => import("../views/documentation/DocumentationMain.vue"),
     },
   ],
 });

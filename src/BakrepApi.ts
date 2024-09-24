@@ -2,11 +2,16 @@ import json5 from "json5";
 import {
   BakrepSearchResultSchema,
   type BakrepSearchResult,
+  type SimpleFeature,
 } from "./model/BakrepSearchResult";
 import { BaktaResultSchema, type BaktaResult } from "./model/BaktaResults";
 import { CheckmResultSchema, type CheckmResult } from "./model/CheckmResults";
 import { DatasetSchema, type Dataset } from "./model/Dataset";
-import { GtdbtkResultSchema, type GtdbtkResult } from "./model/GtdbtkResult";
+import {
+  GtdbtkResultSchema,
+  type Classification,
+  type GtdbtkResult,
+} from "./model/GtdbtkResult";
 import { MlstResultSchema, type MlstResult } from "./model/MlstResults";
 import type { SearchInfo, SearchRequest } from "./model/Search";
 import {
@@ -23,6 +28,10 @@ import {
   type TsvSearchResult,
 } from "./model/TsvSearchResult";
 import { MetadataSchema, type Metadata } from "./model/Metadata";
+import {
+  StringCompletionResultSchema,
+  type StringCompletionResult,
+} from "./model/CompletionResult";
 
 let baseurl: string = "http://localhost:8080";
 function initApi(url: string) {
@@ -46,6 +55,14 @@ interface BakrepApi {
     abort?: AbortController | undefined,
   ): Promise<TsvSearchResult>;
   searchinfo(): Promise<SearchInfo>;
+  completeClassficationText(
+    field: keyof Classification,
+    prefix: string,
+  ): Promise<StringCompletionResult>;
+  completeFeatureText(
+    field: keyof SimpleFeature,
+    prefix: string,
+  ): Promise<StringCompletionResult>;
 }
 
 class BakrepApiImpl implements BakrepApi {
@@ -166,6 +183,20 @@ class BakrepApiImpl implements BakrepApi {
     })
       .then(this.toJson)
       .then((j) => BakrepSearchResultSchema.parse(j));
+  }
+  completeClassficationText(field: keyof Classification, prefix: string) {
+    return fetch(`${baseurl}/completion/classification/${field}/${prefix}`, {
+      method: "GET",
+    })
+      .then(this.toJson)
+      .then((j) => StringCompletionResultSchema.parse(j));
+  }
+  completeFeatureText(field: keyof SimpleFeature, prefix: string) {
+    return fetch(`${baseurl}/completion/feature/${field}/${prefix}`, {
+      method: "GET",
+    })
+      .then(this.toJson)
+      .then((j) => StringCompletionResultSchema.parse(j));
   }
   searchTsv(
     request: SearchRequest,

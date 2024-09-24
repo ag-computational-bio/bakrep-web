@@ -1,8 +1,7 @@
-<!-- eslint-disable prettier/prettier -->
 <script setup lang="ts">
-import DownloadLinks from "@/components/DownloadLinks.vue";
 import Loading from "@/components/Loading.vue";
 import usePageState, { State } from "@/PageState";
+import DownloadLinks from "@/views/show-results/DownloadLinks.vue";
 import { computed, onMounted, ref, type Ref } from "vue";
 
 import { useApi } from "@/BakrepApi";
@@ -98,16 +97,7 @@ state.value.setState(State.Loading);
         <template v-if="active_tab === 'annotation-table'">
           <BaktaAnnotationTable :data="baktaResult" />
         </template>
-        <template
-          v-if="
-            active_tab == 'summary' &&
-            baktaResult &&
-            gtdbtkResult &&
-            checkmResult &&
-            metadata &&
-            mlstResult
-          "
-        >
+        <template v-if="active_tab == 'summary'">
           <SummaryPane
             :id="id"
             :bakta="baktaResult"
