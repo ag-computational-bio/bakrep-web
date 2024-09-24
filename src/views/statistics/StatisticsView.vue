@@ -49,30 +49,38 @@ state.value.setState(State.Loading);
     <div>
       <h3 class="ps-5 pt-2">Genus Composition:</h3>
       <p class="px-5">
-        This chart presents the number of entries per genus for all genera
-        stored in bakrep, the y-axis shows the different genera while the x-axis
-        represents how often this genus is found in the database. To improve the
-        vertical resolution of the low abundant genera, the x-axis is
-        logarithmically scaled.
+                This chart presents the number of entries per genus for all
+                genera stored in bakrep. The y-axis shows the genera sorted
+                according to their abundance. The x-axis shows the
+                logarithmically scaled abundance for the genera.
       </p>
       <p class="px-5">
-        The default vertical resolution contains multiple genera per pixel. In
-        order to see more details, you can zoom into areas of interest. Create a
-        zoom selection by clicking in one of the corners of your area of
-        interest and drag a selection box to the other corner of your interest.
-        Hovering over a bar will reveal the genus that is selected.
+                The default vertical resolution contains multiple genera per
+                visible line. In order to see more details, you can zoom into
+                areas of interest. Click on one of the corners of your area of
+                interest and drag a selection box to the other corner of your
+                interest. Once you release the mouse the plot will be zoomed to
+                the selected area. Hovering over a bar will reveal the genus
+                that is selected.
       </p>
       <PhylogenyCountsBarChart :inputData="genusData" />
     </div>
     <div>
       <p class="px-5">
-        This chart presents the number of entries per species for all species
-        stored in bakrep, the y-axis shows the different species while the
-        x-axis represents how often this species is found in the database. To
-        improve the vertical resolution of the low abundant species, the x-axis
-        is logarithmically scaled.
-      </p>
-      <h3 class="ps-5">Species Composition:</h3>
+                This chart presents the number of entries per species for all
+                species stored in bakrep. The y-axis shows the species sorted
+                according to their abundance. The x-axis shows the
+                logarithmically scaled abundance for the species.
+              </p>
+              <p class="px-5">
+                The default vertical resolution contains multiple genera per
+                visible line. In order to see more details, you can zoom into
+                areas of interest. Click on one of the corners of your area of
+                interest and drag a selection box to the other corner of your
+                interest. Once you release the mouse the plot will be zoomed to
+                the selected area. Hovering over a bar will reveal the genus
+                that is selected.
+              </p>
       <PhylogenyCountsBarChart :inputData="speciesData" />
     </div>
   </Loading>
