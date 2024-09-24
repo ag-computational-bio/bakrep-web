@@ -80,10 +80,9 @@
 import type { BaktaResult } from "@/model/BaktaResults";
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
 import type { MlstResult } from "@/model/MlstResults";
-import type { PropType } from "vue";
-const props = defineProps({
-  bakta: { type: Object as PropType<BaktaResult>, required: true },
-  gtdb: { type: Object as PropType<GtdbtkResult>, required: true },
-  mlst: { type: Object as PropType<MlstResult>, required: true },
-});
+defineProps<{
+  bakta?: BaktaResult;
+  gtdb?: GtdbtkResult;
+  mlst?: MlstResult;
+}>();
 </script>

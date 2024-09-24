@@ -1,4 +1,3 @@
-<!-- eslint-disable prettier/prettier -->
 <script setup lang="ts">
 import Loading from "@/components/Loading.vue";
 import usePageState, { State } from "@/PageState";
@@ -98,16 +97,7 @@ state.value.setState(State.Loading);
         <template v-if="active_tab === 'annotation-table'">
           <BaktaAnnotationTable :data="baktaResult" />
         </template>
-        <template
-          v-if="
-            active_tab == 'summary' &&
-            baktaResult &&
-            gtdbtkResult &&
-            checkmResult &&
-            metadata &&
-            mlstResult
-          "
-        >
+        <template v-if="active_tab == 'summary'">
           <SummaryPane
             :id="id"
             :bakta="baktaResult"

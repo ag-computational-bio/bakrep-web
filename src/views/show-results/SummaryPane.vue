@@ -3,24 +3,23 @@ import type { BaktaResult } from "@/model/BaktaResults";
 import type { CheckmResult } from "@/model/CheckmResults";
 import type { GtdbtkResult } from "@/model/GtdbtkResult";
 import type { MlstResult } from "@/model/MlstResults";
-import type { PropType } from "vue";
 
-import ContigBar from "@/views/show-results/ContigBar.vue";
 import type { Metadata } from "@/model/Metadata";
 import BaktaStats from "@/views/show-results/bakta/BaktaStats.vue";
+import ContigBar from "@/views/show-results/ContigBar.vue";
 import DisplayAssembly from "@/views/show-results/DisplayAssembly.vue";
 import GtdbtkTaxonomy from "@/views/show-results/GtdbtkTaxonomy.vue";
 import PhylogenyTree from "@/views/show-results/PhylogenyTree.vue";
 import DisplayMetadata from "./DisplayMetadata.vue";
 
-const props = defineProps({
-  id: { type: String },
-  bakta: { type: Object as PropType<BaktaResult>, required: true },
-  checkm: { type: Object as PropType<CheckmResult>, required: true },
-  gtdbtk: { type: Object as PropType<GtdbtkResult>, required: true },
-  mlst: { type: Object as PropType<MlstResult>, required: true },
-  metadata: { type: Object as PropType<Metadata>, required: true },
-});
+defineProps<{
+  id: string;
+  bakta?: BaktaResult;
+  checkm?: CheckmResult;
+  gtdbtk?: GtdbtkResult;
+  mlst?: MlstResult;
+  metadata?: Metadata;
+}>();
 </script>
 
 <template>
@@ -64,10 +63,12 @@ const props = defineProps({
     <div class="col-12">
       <h5>Contigs:</h5>
       <ContigBar
+        v-if="bakta"
         :sequences="bakta.sequences"
         :length="bakta.stats.size"
         :n50="bakta.stats.n50"
       />
+      <template v-else> No contig data available </template>
     </div>
   </div>
   <div class="row gx-2 gy-2 pt-4">

@@ -1,11 +1,8 @@
 <script setup lang="ts">
 import type { Metadata } from "@/model/Metadata";
-import type { PropType } from "vue";
-
-const props = defineProps({
-  id: { type: String },
-  metadata: { type: Object as PropType<Metadata>, required: true },
-});
+defineProps<{
+  metadata?: Metadata;
+}>();
 
 function getText(value: string | undefined): string {
   return value ? value : "?";
@@ -13,7 +10,7 @@ function getText(value: string | undefined): string {
 </script>
 
 <template>
-  <table>
+  <table v-if="metadata">
     <tbody>
       <tr>
         <th class="text-end">Collection Date:</th>
@@ -56,4 +53,5 @@ function getText(value: string | undefined): string {
       </tr>
     </tbody>
   </table>
+  <div v-else>No metadata available</div>
 </template>
