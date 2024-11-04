@@ -68,14 +68,14 @@
     </ul>
     <h3>Publication</h3>
     <p>
-      BakRep – A searchable large-scale web repository for bacterial genomes,
+      BakRep – a searchable large-scale web repository for bacterial genomes,
       characterizations and metadata <br />
       Linda Fenske, Lukas Jelonek, Alexander Goesmann, Oliver Schwengers
       <br />
-      bioRxiv 2024.05.28.596065; doi:
-      <a href="https://doi.org/10.1101/2024.05.28.596065"
-        >10.1101/2024.05.28.596065 (Preprint)</a
-      >
+      Microbial Genomics 2024;10:001305; doi:
+      <a href="https://doi.org/10.1099/mgen.0.001305">
+        10.1099/mgen.0.001305
+      </a>
     </p>
   </div>
 </template>
