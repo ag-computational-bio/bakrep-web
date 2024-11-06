@@ -185,14 +185,14 @@ function parseFiltersFromRoute() {
 }
 const query = computed(() => buildFilterQuery(filters.value));
 
-function applyFilter(offset = 0) {
+function loadSearchResults() {
   searchState.value.setState(State.Loading);
 
   api
     .search({
       query: buildFilterQuery(filters.value),
       sort: ordering.value,
-      offset: offset,
+      offset: pagination.value.offset,
       limit: pagination.value.limit,
     })
     .then((r) => {
@@ -271,9 +271,14 @@ watch(
       pagination.value.limit = Number.parseInt(newQuery.limit);
     if (typeof newQuery.offset === "string")
       pagination.value.offset = Number.parseInt(newQuery.offset);
-    applyFilter();
+    loadSearchResults();
   },
 );
+
+function applyFilter() {
+  pagination.value.offset = 0;
+  loadSearchResults();
+}
 
 const exportInProgress = ref(false);
 
