@@ -3,7 +3,8 @@
   "exclude": [],
   "compilerOptions": {
     "composite": true,
-    "lib": [],
+    "target": "ES2023",
+    "lib": ["DOM", "ES2023"],
     "types": ["node", "jsdom"]
   }
 }

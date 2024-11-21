@@ -1,0 +1,654 @@
+[
+  {
+    "id": "SAMD00000669.contig00001",
+    "length": 442584,
+    "featureCounts": [
+      { "type": "cds", "count": 389 },
+      { "type": "tRNA", "count": 3 },
+      { "type": "ncRNA-region", "count": 1 }
+    ],
+    "gc": 0.36185447282323807
+  },
+  {
+    "id": "SAMD00000669.contig00002",
+    "length": 311983,
+    "featureCounts": [
+      { "type": "cds", "count": 283 },
+      { "type": "ncRNA-region", "count": 1 },
+      { "type": "tRNA", "count": 2 }
+    ],
+    "gc": 0.3661000759656776
+  },
+  {
+    "id": "SAMD00000669.contig00003",
+    "length": 288189,
+    "featureCounts": [
+      { "type": "cds", "count": 270 },
+      { "type": "tRNA", "count": 1 },
+      { "type": "ncRNA", "count": 1 }
+    ],
+    "gc": 0.3517171023182703
+  },
+  {
+    "id": "SAMD00000669.contig00004",
+    "length": 284167,
+    "featureCounts": [
+      { "type": "cds", "count": 261 },
+      { "type": "ncRNA-region", "count": 1 }
+    ],
+    "gc": 0.37647580472046366
+  },
+  {
+    "id": "SAMD00000669.contig00005",
+    "length": 212549,
+    "featureCounts": [
+      { "type": "cds", "count": 210 },
+      { "type": "tRNA", "count": 4 }
+    ],
+    "gc": 0.3654921923885786
+  },
+  {
+    "id": "SAMD00000669.contig00006",
+    "length": 164143,
+    "featureCounts": [
+      { "type": "cds", "count": 143 },
+      { "type": "sorf", "count": 1 },
+      { "type": "tRNA", "count": 8 },
+      { "type": "ncRNA-region", "count": 1 }
+    ],
+    "gc": 0.36410325143320155
+  },
+  {
+    "id": "SAMD00000669.contig00007",
+    "length": 150895,
+    "featureCounts": [
+      { "type": "cds", "count": 140 },
+      { "type": "tRNA", "count": 1 }
+    ],
+    "gc": 0.3633321183604493
+  },
+  {
+    "id": "SAMD00000669.contig00008",
+    "length": 148478,
+    "featureCounts": [
+      { "type": "cds", "count": 135 },
+      { "type": "tRNA", "count": 2 },
+      { "type": "ncRNA-region", "count": 2 }
+    ],
+    "gc": 0.3680141165694581
+  },
+  {
+    "id": "SAMD00000669.contig00009",
+    "length": 142839,
+    "featureCounts": [
+      { "type": "cds", "count": 121 },
+      { "type": "tRNA", "count": 1 }
+    ],
+    "gc": 0.3641582480975084
+  },
+  {
+    "id": "SAMD00000669.contig00010",
+    "length": 136606,
+    "featureCounts": [
+      { "type": "cds", "count": 96 },
+      { "type": "ncRNA-region", "count": 2 }
+    ],
+    "gc": 0.363746833960441
+  },
+  {
+    "id": "SAMD00000669.contig00011",
+    "length": 121381,
+    "featureCounts": [{ "type": "cds", "count": 120 }],
+    "gc": 0.3598503884462972
+  },
+  {
+    "id": "SAMD00000669.contig00012",
+    "length": 115045,
+    "featureCounts": [
+      { "type": "cds", "count": 112 },
+      { "type": "ncRNA-region", "count": 1 },
+      { "type": "tRNA", "count": 1 }
+    ],
+    "gc": 0.36055456560476334
+  },
+  {
+    "id": "SAMD00000669.contig00013",
+    "length": 114714,
+    "featureCounts": [
+      { "type": "cds", "count": 105 },
+      { "type": "ncRNA", "count": 2 }
+    ],
+    "gc": 0.36320762940879053
+  },
+  {
+    "id": "SAMD00000669.contig00014",
+    "length": 88253,
+    "featureCounts": [
+      { "type": "cds", "count": 81 },
+      { "type": "ncRNA-region", "count": 1 }
+    ],
+    "gc": 0.3703783440789548
+  },
+  {
+    "id": "SAMD00000669.contig00015",
+    "length": 88043,
+    "featureCounts": [
+      { "type": "cds", "count": 88 },
+      { "type": "tRNA", "count": 3 }
+    ],
+    "gc": 0.36610519859614055
+  },
+  {
+    "id": "SAMD00000669.contig00016",
+    "length": 81559,
+    "featureCounts": [
+      { "type": "cds", "count": 80 },
+      { "type": "tmRNA", "count": 1 },
+      { "type": "tRNA", "count": 2 }
+    ],
+    "gc": 0.36594367267867434
+  },
+  {
+    "id": "SAMD00000669.contig00017",
+    "length": 78601,
+    "featureCounts": [
+      { "type": "tRNA", "count": 1 },
+      { "type": "cds", "count": 69 }
+    ],
+    "gc": 0.3642574521952647
+  },
+  {
+    "id": "SAMD00000669.contig00018",
+    "length": 75915,
+    "featureCounts": [
+      { "type": "cds", "count": 70 },
+      { "type": "ncRNA-region", "count": 1 },
+      { "type": "tRNA", "count": 6 }
+    ],
+    "gc": 0.3674767832444181
+  },
+  {
+    "id": "SAMD00000669.contig00019",
+    "length": 75868,
+    "featureCounts": [
+      { "type": "cds", "count": 80 },
+      { "type": "ncRNA-region", "count": 1 }
+    ],
+    "gc": 0.3571466230821954
+  },
+  {
+    "id": "SAMD00000669.contig00020",
+    "length": 69003,
+    "featureCounts": [{ "type": "cds", "count": 67 }],
+    "gc": 0.36360737938930193
+  },
+  {
+    "id": "SAMD00000669.contig00021",
+    "length": 65293,
+    "featureCounts": [
+      { "type": "ncRNA-region", "count": 1 },
+      { "type": "cds", "count": 54 },
+      { "type": "tRNA", "count": 1 }
+    ],
+    "gc": 0.3592575008040678
+  },
+  {
+    "id": "SAMD00000669.contig00022",
+    "length": 56639,
+    "featureCounts": [
+      { "type": "cds", "count": 49 },
+      { "type": "tRNA", "count": 2 }
+    ],
+    "gc": 0.3593636893306732
+  },
+  {
+    "id": "SAMD00000669.contig00023",
+    "length": 47618,
+    "featureCounts": [{ "type": "cds", "count": 35 }],
+    "gc": 0.36801209626611786
+  },
+  {
+    "id": "SAMD00000669.contig00024",
+    "length": 44120,
+    "featureCounts": [{ "type": "cds", "count": 36 }],
+    "gc": 0.37985040797824116
+  },
+  {
+    "id": "SAMD00000669.contig00025",
+    "length": 43114,
+    "featureCounts": [{ "type": "cds", "count": 32 }],
+    "gc": 0.3673516723106184
+  },
+  {
+    "id": "SAMD00000669.contig00026",
+    "length": 41171,
+    "featureCounts": [{ "type": "cds", "count": 35 }],
+    "gc": 0.36273104855359356
+  },
+  {
+    "id": "SAMD00000669.contig00027",
+    "length": 36538,
+    "featureCounts": [{ "type": "cds", "count": 27 }],
+    "gc": 0.3702720455416279
+  },
+  {
+    "id": "SAMD00000669.contig00028",
+    "length": 36288,
+    "featureCounts": [
+      { "type": "cds", "count": 28 },
+      { "type": "tRNA", "count": 1 }
+    ],
+    "gc": 0.3720513668430335
+  },
+  {
+    "id": "SAMD00000669.contig00029",
+    "length": 34173,
+    "featureCounts": [
+      { "type": "cds", "count": 36 },
+      { "type": "ncRNA-region", "count": 1 }
+    ],
+    "gc": 0.38138296315804876
+  },
+  {
+    "id": "SAMD00000669.contig00030",
+    "length": 32319,
+    "featureCounts": [
+      { "type": "cds", "count": 31 },
+      { "type": "tRNA", "count": 2 }
+    ],
+    "gc": 0.3451839475231288
+  },
+  {
+    "id": "SAMD00000669.contig00031",
+    "length": 31694,
+    "featureCounts": [
+      { "type": "cds", "count": 26 },
+      { "type": "ncRNA-region", "count": 1 }
+    ],
+    "gc": 0.3711112513409478
+  },
+  {
+    "id": "SAMD00000669.contig00032",
+    "length": 29534,
+    "featureCounts": [{ "type": "cds", "count": 25 }],
+    "gc": 0.37265524480260037
+  },
+  {
+    "id": "SAMD00000669.contig00033",
+    "length": 26173,
+    "featureCounts": [
+      { "type": "cds", "count": 25 },
+      { "type": "tRNA", "count": 1 }
+    ],
+    "gc": 0.3638482405532419
+  },
+  {
+    "id": "SAMD00000669.contig00034",
+    "length": 24059,
+    "featureCounts": [{ "type": "cds", "count": 20 }],
+    "gc": 0.36443742466436674
+  },
+  {
+    "id": "SAMD00000669.contig00035",
+    "length": 22258,
+    "featureCounts": [{ "type": "cds", "count": 23 }],
+    "gc": 0.35389522868182227
+  },
+  {
+    "id": "SAMD00000669.contig00036",
+    "length": 21095,
+    "featureCounts": [
+      { "type": "cds", "count": 21 },
+      { "type": "ncRNA-region", "count": 1 }
+    ],
+    "gc": 0.3776250296278739
+  },
+  {
+    "id": "SAMD00000669.contig00037",
+    "length": 20205,
+    "featureCounts": [
+      { "type": "cds", "count": 14 },
+      { "type": "tRNA", "count": 1 }
+    ],
+    "gc": 0.3663944568176194
+  },
+  {
+    "id": "SAMD00000669.contig00038",
+    "length": 20085,
+    "featureCounts": [{ "type": "cds", "count": 22 }],
+    "gc": 0.3799850634802091
+  },
+  {
+    "id": "SAMD00000669.contig00039",
+    "length": 18287,
+    "featureCounts": [
+      { "type": "cds", "count": 14 },
+      { "type": "ncRNA-region", "count": 1 }
+    ],
+    "gc": 0.3687865696943184
+  },
+  {
+    "id": "SAMD00000669.contig00040",
+    "length": 16321,
+    "featureCounts": [{ "type": "cds", "count": 10 }],
+    "gc": 0.35892408553397465
+  },
+  {
+    "id": "SAMD00000669.contig00041",
+    "length": 15889,
+    "featureCounts": [{ "type": "cds", "count": 19 }],
+    "gc": 0.3443262634527031
+  },
+  {
+    "id": "SAMD00000669.contig00042",
+    "length": 6846,
+    "featureCounts": [{ "type": "cds", "count": 9 }],
+    "gc": 0.35787321063394684
+  },
+  {
+    "id": "SAMD00000669.contig00043",
+    "length": 6777,
+    "featureCounts": [{ "type": "cds", "count": 5 }],
+    "gc": 0.40829275490630074
+  },
+  {
+    "id": "SAMD00000669.contig00044",
+    "length": 5779,
+    "featureCounts": [{ "type": "cds", "count": 3 }],
+    "gc": 0.329641806540924
+  },
+  {
+    "id": "SAMD00000669.contig00045",
+    "length": 5206,
+    "featureCounts": [
+      { "type": "rRNA", "count": 3 },
+      { "type": "tRNA", "count": 2 }
+    ],
+    "gc": 0.47253169419900115
+  },
+  {
+    "id": "SAMD00000669.contig00046",
+    "length": 5138,
+    "featureCounts": [{ "type": "cds", "count": 2 }],
+    "gc": 0.3598676527831841
+  },
+  {
+    "id": "SAMD00000669.contig00047",
+    "length": 4550,
+    "featureCounts": [
+      { "type": "ncRNA", "count": 1 },
+      { "type": "cds", "count": 4 }
+    ],
+    "gc": 0.3334065934065934
+  },
+  {
+    "id": "SAMD00000669.contig00048",
+    "length": 4544,
+    "featureCounts": [{ "type": "cds", "count": 5 }],
+    "gc": 0.3191021126760563
+  },
+  {
+    "id": "SAMD00000669.contig00049",
+    "length": 3413,
+    "featureCounts": [{ "type": "cds", "count": 3 }],
+    "gc": 0.35188983299150306
+  },
+  {
+    "id": "SAMD00000669.contig00050",
+    "length": 3139,
+    "featureCounts": [{ "type": "cds", "count": 3 }],
+    "gc": 0.352341510035043
+  },
+  {
+    "id": "SAMD00000669.contig00051",
+    "length": 2234,
+    "featureCounts": [{ "type": "cds", "count": 4 }],
+    "gc": 0.3258728737690242
+  },
+  {
+    "id": "SAMD00000669.contig00052",
+    "length": 2029,
+    "featureCounts": [],
+    "gc": 0.3730901922129128
+  },
+  {
+    "id": "SAMD00000669.contig00053",
+    "length": 1953,
+    "featureCounts": [{ "type": "cds", "count": 2 }],
+    "gc": 0.318484383000512
+  },
+  {
+    "id": "SAMD00000669.contig00054",
+    "length": 1898,
+    "featureCounts": [{ "type": "cds", "count": 2 }],
+    "gc": 0.3303477344573235
+  },
+  {
+    "id": "SAMD00000669.contig00055",
+    "length": 1824,
+    "featureCounts": [{ "type": "cds", "count": 1 }],
+    "gc": 0.39418859649122806
+  },
+  {
+    "id": "SAMD00000669.contig00056",
+    "length": 1509,
+    "featureCounts": [{ "type": "cds", "count": 2 }],
+    "gc": 0.34393638170974156
+  },
+  {
+    "id": "SAMD00000669.contig00057",
+    "length": 1461,
+    "featureCounts": [{ "type": "cds", "count": 1 }],
+    "gc": 0.3867214236824093
+  },
+  {
+    "id": "SAMD00000669.contig00058",
+    "length": 1258,
+    "featureCounts": [{ "type": "cds", "count": 2 }],
+    "gc": 0.35294117647058826
+  },
+  {
+    "id": "SAMD00000669.contig00059",
+    "length": 1249,
+    "featureCounts": [],
+    "gc": 0.3971176941553243
+  },
+  {
+    "id": "SAMD00000669.contig00060",
+    "length": 1204,
+    "featureCounts": [{ "type": "cds", "count": 1 }],
+    "gc": 0.3338870431893688
+  },
+  {
+    "id": "SAMD00000669.contig00061",
+    "length": 1194,
+    "featureCounts": [{ "type": "cds", "count": 1 }],
+    "gc": 0.3241206030150754
+  },
+  {
+    "id": "SAMD00000669.contig00062",
+    "length": 1173,
+    "featureCounts": [{ "type": "cds", "count": 1 }],
+    "gc": 0.41602728047740833
+  },
+  {
+    "id": "SAMD00000669.contig00063",
+    "length": 1163,
+    "featureCounts": [{ "type": "cds", "count": 1 }],
+    "gc": 0.3250214961306965
+  },
+  {
+    "id": "SAMD00000669.contig00064",
+    "length": 1142,
+    "featureCounts": [{ "type": "cds", "count": 4 }],
+    "gc": 0.33887915936952717
+  },
+  {
+    "id": "SAMD00000669.contig00065",
+    "length": 1092,
+    "featureCounts": [],
+    "gc": 0.510989010989011
+  },
+  {
+    "id": "SAMD00000669.contig00066",
+    "length": 772,
+    "featureCounts": [{ "type": "cds", "count": 1 }],
+    "gc": 0.3380829015544041
+  },
+  {
+    "id": "SAMD00000669.contig00067",
+    "length": 726,
+    "featureCounts": [],
+    "gc": 0.33608815426997246
+  },
+  {
+    "id": "SAMD00000669.contig00068",
+    "length": 715,
+    "featureCounts": [],
+    "gc": 0.3356643356643357
+  },
+  {
+    "id": "SAMD00000669.contig00069",
+    "length": 604,
+    "featureCounts": [],
+    "gc": 0.31788079470198677
+  },
+  {
+    "id": "SAMD00000669.contig00070",
+    "length": 590,
+    "featureCounts": [],
+    "gc": 0.4288135593220339
+  },
+  {
+    "id": "SAMD00000669.contig00071",
+    "length": 521,
+    "featureCounts": [],
+    "gc": 0.3800383877159309
+  },
+  {
+    "id": "SAMD00000669.contig00072",
+    "length": 502,
+    "featureCounts": [],
+    "gc": 0.448207171314741
+  },
+  {
+    "id": "SAMD00000669.contig00073",
+    "length": 496,
+    "featureCounts": [],
+    "gc": 0.46774193548387094
+  },
+  {
+    "id": "SAMD00000669.contig00074",
+    "length": 458,
+    "featureCounts": [],
+    "gc": 0.34934497816593885
+  },
+  {
+    "id": "SAMD00000669.contig00075",
+    "length": 441,
+    "featureCounts": [],
+    "gc": 0.3492063492063492
+  },
+  {
+    "id": "SAMD00000669.contig00076",
+    "length": 388,
+    "featureCounts": [],
+    "gc": 0.47164948453608246
+  },
+  {
+    "id": "SAMD00000669.contig00077",
+    "length": 385,
+    "featureCounts": [],
+    "gc": 0.535064935064935
+  },
+  {
+    "id": "SAMD00000669.contig00078",
+    "length": 361,
+    "featureCounts": [{ "type": "cds", "count": 1 }],
+    "gc": 0.3739612188365651
+  },
+  {
+    "id": "SAMD00000669.contig00079",
+    "length": 348,
+    "featureCounts": [],
+    "gc": 0.3275862068965517
+  },
+  {
+    "id": "SAMD00000669.contig00080",
+    "length": 343,
+    "featureCounts": [],
+    "gc": 0.30029154518950435
+  },
+  {
+    "id": "SAMD00000669.contig00081",
+    "length": 340,
+    "featureCounts": [],
+    "gc": 0.4294117647058823
+  },
+  {
+    "id": "SAMD00000669.contig00082",
+    "length": 335,
+    "featureCounts": [],
+    "gc": 0.4298507462686567
+  },
+  {
+    "id": "SAMD00000669.contig00083",
+    "length": 273,
+    "featureCounts": [],
+    "gc": 0.31135531135531136
+  },
+  {
+    "id": "SAMD00000669.contig00084",
+    "length": 271,
+    "featureCounts": [],
+    "gc": 0.3062730627306273
+  },
+  {
+    "id": "SAMD00000669.contig00085",
+    "length": 248,
+    "featureCounts": [],
+    "gc": 0.36693548387096775
+  },
+  {
+    "id": "SAMD00000669.contig00086",
+    "length": 247,
+    "featureCounts": [],
+    "gc": 0.340080971659919
+  },
+  {
+    "id": "SAMD00000669.contig00087",
+    "length": 244,
+    "featureCounts": [],
+    "gc": 0.3770491803278688
+  },
+  {
+    "id": "SAMD00000669.contig00088",
+    "length": 235,
+    "featureCounts": [],
+    "gc": 0.3659574468085106
+  },
+  {
+    "id": "SAMD00000669.contig00089",
+    "length": 222,
+    "featureCounts": [],
+    "gc": 0.33783783783783783
+  },
+  {
+    "id": "SAMD00000669.contig00090",
+    "length": 219,
+    "featureCounts": [],
+    "gc": 0.2831050228310502
+  },
+  {
+    "id": "SAMD00000669.contig00091",
+    "length": 213,
+    "featureCounts": [],
+    "gc": 0.3145539906103286
+  },
+  {
+    "id": "SAMD00000669.contig00092",
+    "length": 211,
+    "featureCounts": [],
+    "gc": 0.33649289099526064
+  }
+]

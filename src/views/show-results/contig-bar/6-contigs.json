@@ -1,0 +1,65 @@
+[
+  {
+    "id": "SAMEA104055231.contig00001",
+    "length": 1463981,
+    "featureCounts": [
+      { "type": "tRNA", "count": 11 },
+      { "type": "cds", "count": 1389 },
+      { "type": "ncRNA-region", "count": 13 },
+      { "type": "ncRNA", "count": 8 },
+      { "type": "tmRNA", "count": 1 },
+      { "type": "sorf", "count": 2 },
+      { "type": "crispr", "count": 2 }
+    ],
+    "gc": 0.4284905336886203
+  },
+  {
+    "id": "SAMEA104055231.contig00002",
+    "length": 407800,
+    "featureCounts": [
+      { "type": "cds", "count": 392 },
+      { "type": "tRNA", "count": 21 },
+      { "type": "ncRNA-region", "count": 2 },
+      { "type": "ncRNA", "count": 5 }
+    ],
+    "gc": 0.43395782246199116
+  },
+  {
+    "id": "SAMEA104055231.contig00003",
+    "length": 388536,
+    "featureCounts": [
+      { "type": "cds", "count": 371 },
+      { "type": "ncRNA", "count": 2 },
+      { "type": "ncRNA-region", "count": 2 },
+      { "type": "tRNA", "count": 8 }
+    ],
+    "gc": 0.43801089216958017
+  },
+  {
+    "id": "SAMEA104055231.contig00004",
+    "length": 158527,
+    "featureCounts": [
+      { "type": "cds", "count": 162 },
+      { "type": "ncRNA-region", "count": 1 },
+      { "type": "ncRNA", "count": 1 },
+      { "type": "tRNA", "count": 5 },
+      { "type": "oriC", "count": 1 }
+    ],
+    "gc": 0.4171402978672403
+  },
+  {
+    "id": "SAMEA104055231.contig00005",
+    "length": 5072,
+    "featureCounts": [
+      { "type": "rRNA", "count": 3 },
+      { "type": "tRNA", "count": 1 }
+    ],
+    "gc": 0.5037460567823344
+  },
+  {
+    "id": "SAMEA104055231.contig00006",
+    "length": 248,
+    "featureCounts": [{ "type": "tRNA", "count": 2 }],
+    "gc": 0.532258064516129
+  }
+]

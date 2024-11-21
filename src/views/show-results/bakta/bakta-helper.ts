@@ -68,7 +68,7 @@ function featureCount(bakta: BaktaResult | undefined): FeatureCount {
 function sequencesCountString(bakta: BaktaResult | undefined): string {
   if (!bakta) return "0 contigs";
   const data = bakta.sequences.map(
-    (x) => (x.complete ? "complete " : "") + x.type
+    (x) => (x.complete ? "complete " : "") + x.type,
   );
   const counts = data.reduce((acc: Record<string, number>, cur) => {
     if (!(cur in acc)) {

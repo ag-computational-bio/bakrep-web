@@ -1,0 +1,15 @@
+[
+  {
+    "id": "SAMN02199213.contig00001",
+    "length": 3018829,
+    "featureCounts": [
+      { "type": "cds", "count": 2827 },
+      { "type": "tRNA", "count": 49 },
+      { "type": "ncRNA", "count": 3 },
+      { "type": "ncRNA-region", "count": 3 },
+      { "type": "rRNA", "count": 6 },
+      { "type": "sorf", "count": 1 }
+    ],
+    "gc": 0.6248913071922921
+  }
+]
