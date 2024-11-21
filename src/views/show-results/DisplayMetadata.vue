@@ -13,41 +13,41 @@ function getText(value: string | undefined): string {
   <table v-if="metadata">
     <tbody>
       <tr>
-        <th class="text-end">Collection Date:</th>
-        <td class="ps-5">
+        <th class="text-end pe-2">Collection Date:</th>
+        <td>
           {{ getText(metadata.sample?.collection_date) }}
         </td>
       </tr>
       <tr>
-        <th class="text-end">Country:</th>
-        <td class="ps-5">
+        <th class="text-end pe-2">Country:</th>
+        <td>
           {{ getText(metadata.sample?.country) }}
         </td>
       </tr>
       <tr>
-        <th class="text-end">Environment:</th>
+        <th class="text-end pt-3">Environment:</th>
       </tr>
       <tr class="ps-2">
-        <th class="text-end">Biome:</th>
-        <td class="ps-5">
+        <th class="text-end pe-2">Biome:</th>
+        <td>
           {{ getText(metadata.sample?.environment?.biome) }}
         </td>
       </tr>
       <tr>
-        <th class="text-end">Feature:</th>
-        <td class="ps-5">
+        <th class="text-end pe-2">Feature:</th>
+        <td>
           {{ getText(metadata.sample?.environment?.feature) }}
         </td>
       </tr>
       <tr>
-        <th class="text-end">Material:</th>
-        <td class="ps-5">
+        <th class="text-end pe-2">Material:</th>
+        <td>
           {{ getText(metadata.sample?.environment?.material) }}
         </td>
       </tr>
       <tr>
-        <th class="text-end">Isolation Source:</th>
-        <td class="ps-5">
+        <th class="text-end pe-2">Isolation Source:</th>
+        <td>
           {{ getText(metadata.sample?.isolation_source) }}
         </td>
       </tr>

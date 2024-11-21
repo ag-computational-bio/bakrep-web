@@ -5,17 +5,17 @@
         <tbody>
           <template v-if="bakta">
             <tr>
-              <th scope="row">Species:</th>
+              <th class="text-end pe-2" scope="row">Species:</th>
               <td>{{ bakta.genome.genus }} {{ bakta.genome.species }}</td>
             </tr>
             <tr>
-              <th scope="row">Strain:</th>
+              <th class="text-end pe-2" scope="row">Strain:</th>
               <td>{{ bakta.genome.strain ? bakta.genome.strain : "-" }}</td>
             </tr>
           </template>
           <template v-if="gtdb">
             <tr>
-              <th scope="row">Reference genome:</th>
+              <th class="text-end pe-2" scope="row">Reference genome:</th>
               <td>
                 <a
                   class="fw-bold p-0"
@@ -30,7 +30,7 @@
               </td>
             </tr>
             <tr>
-              <th scope="row">Classification method:</th>
+              <th class="text-end pe-2" scope="row">Classification method:</th>
               <td>{{ gtdb.classification_method }}</td>
             </tr>
           </template>
@@ -47,21 +47,21 @@
         <tbody>
           <template v-if="mlst">
             <tr>
-              <th scope="row">MLST sequence type:</th>
+              <th class="text-end pe-2" scope="row">MLST sequence type:</th>
               <td>{{ mlst[0].sequence_type }}</td>
             </tr>
             <tr>
-              <th scope="row">Schema:</th>
+              <th class="text-end pe-2" scope="row">Schema:</th>
               <td>{{ mlst[0].scheme }}</td>
             </tr>
           </template>
           <template v-else>
             <tr>
-              <th scope="row">NA</th>
+              <th class="text-end pe-2" scope="row">NA</th>
             </tr>
           </template>
           <tr>
-            <th scope="row" class="align-top">Alleles:</th>
+            <th scope="row" class="text-end pe-2 align-top">Alleles:</th>
             <td>
               <ul v-if="mlst[0].alleles">
                 <li v-for="e of Object.entries(mlst[0].alleles)" :key="e[0]">

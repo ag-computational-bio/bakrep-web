@@ -2,44 +2,44 @@
   <table class="table statstable">
     <template v-if="bakta">
       <tr>
-        <th scope="row">Genome size:</th>
+        <th class="text-end pe-2" scope="row">Genome size:</th>
         <td>{{ bakta.stats.size.toLocaleString("gb") + " bp" }}</td>
       </tr>
       <tr>
-        <th scope="row">GC:</th>
+        <th class="text-end pe-2" scope="row">GC:</th>
         <td>{{ ratioToPercentage(bakta.stats.gc) }}</td>
       </tr>
       <tr>
-        <th scope="row">No. sequences:</th>
+        <th class="text-end pe-2" scope="row">No. sequences:</th>
         <td>{{ bakta.stats.no_sequences }}</td>
       </tr>
     </template>
     <template v-if="bakta">
       <tr>
-        <th scope="row">N50:</th>
+        <th class="text-end pe-2" scope="row">N50:</th>
         <td>{{ bakta.stats.n50.toLocaleString("gb") + " bp" }}</td>
       </tr>
     </template>
     <template v-else>
       <tr>
-        <th scope="row">NA</th>
+        <th class="text-end pe-2" scope="row">NA</th>
       </tr>
     </template>
     <template v-if="checkm">
       <tr>
-        <th scope="row">Completeness:</th>
+        <th class="text-end pe-2" scope="row">Completeness:</th>
         <td>{{ checkm.quality.completeness + " %" }}</td>
       </tr>
     </template>
     <template v-if="checkm">
       <tr>
-        <th scope="row">Contamination:</th>
+        <th class="text-end pe-2" scope="row">Contamination:</th>
         <td>{{ checkm.quality.contamination + " %" }}</td>
       </tr>
     </template>
     <template v-else>
       <tr>
-        <th scope="row">NA</th>
+        <th class="text-end pe-2" scope="row">NA</th>
       </tr>
     </template>
   </table>

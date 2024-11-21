@@ -1,6 +1,6 @@
 <template>
   <div class="row">
-    <div class="label" :class="labelClass">{{ label }}</div>
+    <div class="label text-end" :class="labelClass">{{ label }}</div>
     <div class="value" :class="valueClass">{{ value }}</div>
   </div>
 </template>
