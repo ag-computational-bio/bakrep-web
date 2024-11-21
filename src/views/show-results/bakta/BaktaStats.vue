@@ -84,8 +84,5 @@ import DisplayTuple from "./DisplayTuple.vue";
 const props = defineProps({
   data: { type: Object as PropType<BaktaResult> },
 });
-const name = computed(() => bakta.genomeName(props.data));
-const size = computed(() => bakta.formattedSize(props.data));
 const featureCount = computed(() => bakta.featureCount(props.data));
-const sequencesCount = computed(() => bakta.sequencesCountString(props.data));
 </script>

@@ -24,11 +24,6 @@ const router = createRouter({
       component: () => import("../views/search/SearchView.vue"),
     },
     {
-      path: "/imprint",
-      name: "imprint",
-      component: () => import("../views/ImprintView.vue"),
-    },
-    {
       path: "/result/:id",
       name: "result",
       component: () => import("../views/show-results/ResultView.vue"),
