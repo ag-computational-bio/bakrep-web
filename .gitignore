@@ -32,3 +32,4 @@ coverage
 
 .notes.md
 shell.nix
+storybook-static
