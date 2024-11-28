@@ -1,4 +1,5 @@
-import type { BaktaResult, Feature } from "@/model/BaktaResults";
+import type { BaktaResult, Feature, Sequence } from "@/model/BaktaResults";
+import cog from "./cog-helper";
 
 function genomeName(bakta: BaktaResult | undefined): string {
   if (!bakta) return "N.A.";
@@ -105,10 +106,31 @@ function lookupCogFunctionalCategories(feature: Feature): string[] {
   return [];
 }
 
+function lookupCogColorForFeature(feature: Feature): string {
+  const categories = lookupCogFunctionalCategories(feature);
+  return cog.lookupCogColor(categories, cog.ncbiCogMap);
+}
+
+function createSequence(init?: Partial<Sequence>): Sequence {
+  return {
+    id: "",
+    complete: false,
+    description: "",
+    length: 0,
+    sequence: "",
+    simple_id: "",
+    topology: "",
+    type: "",
+    ...init,
+  };
+}
+
 export default {
   genomeName,
   formattedSize,
   featureCount,
   sequencesCountString,
   lookupCogFunctionalCategories,
+  lookupCogColorForFeature,
+  createSequence,
 };

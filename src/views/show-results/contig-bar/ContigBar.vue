@@ -84,6 +84,7 @@ import {
 
 import type { Feature } from "@/model/BaktaResults";
 import sortByOrder from "@/util/sort";
+import { formatBp, formatGc } from "../formatters";
 const props = withDefaults(
   defineProps<
     {
@@ -471,20 +472,4 @@ onMounted(() => {
 onBeforeUnmount(() => {
   resizeObserver.disconnect();
 });
-
-/**
- * Format gc values that range from 0 to 1
- */
-function formatGc(gc: number) {
-  return new Intl.NumberFormat("en", {
-    style: "decimal",
-    maximumFractionDigits: 3,
-  }).format(gc);
-}
-
-function formatBp(bp: number) {
-  return new Intl.NumberFormat("en", {
-    style: "decimal",
-  }).format(bp);
-}
 </script>
