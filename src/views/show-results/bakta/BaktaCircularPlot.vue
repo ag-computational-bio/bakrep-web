@@ -12,59 +12,87 @@
     "
   >
     <template v-if="highlight">
-      <h5>{{ highlight.id }}</h5>
-      <table class="table table-sm">
-        <tbody>
-          <tr>
-            <td class="text-end">Type</td>
-            <td>{{ highlight.type }}</td>
-          </tr>
-          <tr v-if="highlight.strand">
-            <td class="text-end">Strand</td>
-            <td>{{ highlight.strand }}</td>
-          </tr>
-          <tr>
-            <td class="text-end">Coordinates</td>
-            <td>
-              {{
-                highlight.strand == "-"
-                  ? `${highlight.stop}-${highlight.start}`
-                  : `${highlight.start}-${highlight.stop}`
-              }}
-            </td>
-          </tr>
-          <tr v-if="highlight.frame">
-            <td class="text-end">Frame</td>
-            <td>{{ highlight.frame }}</td>
-          </tr>
+      <template v-if="'mean' in highlight">
+        <h5 v-if="highlight.type === 'gc'">GC content</h5>
+        <h5 v-if="highlight.type === 'gc-skew'">GC skew</h5>
+        <table class="table table-sm">
+          <tbody>
+            <tr>
+              <td class="text-end">Value:</td>
+              <td>{{ formatGc(highlight.value) }}</td>
+            </tr>
+            <tr v-if="'deviation' in highlight">
+              <td class="text-end">Deviation:</td>
+              <td>{{ formatGc(highlight.deviation) }}</td>
+            </tr>
+            <tr>
+              <td class="text-end">Mean:</td>
+              <td>{{ formatGc(highlight.mean) }}</td>
+            </tr>
+            <tr>
+              <td class="text-end">Window:</td>
+              <td>{{ highlight.pos }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
+      <template v-else>
+        <h5>{{ highlight.id }}</h5>
+        <table class="table table-sm">
+          <tbody>
+            <tr>
+              <td class="text-end">Type</td>
+              <td>{{ highlight.type }}</td>
+            </tr>
+            <tr v-if="highlight.strand">
+              <td class="text-end">Strand</td>
+              <td>{{ highlight.strand }}</td>
+            </tr>
+            <tr>
+              <td class="text-end">Coordinates</td>
+              <td>
+                {{
+                  highlight.strand == "-"
+                    ? `${highlight.stop}-${highlight.start}`
+                    : `${highlight.start}-${highlight.stop}`
+                }}
+              </td>
+            </tr>
+            <tr v-if="highlight.frame">
+              <td class="text-end">Frame</td>
+              <td>{{ highlight.frame }}</td>
+            </tr>
 
-          <tr>
-            <td class="text-end">Length</td>
-            <td>{{ formatBp(highlight.stop - highlight.start, "bp") }}</td>
-          </tr>
-          <tr>
-            <td class="text-end">Locus</td>
-            <td>{{ highlight.locus ?? "-" }}</td>
-          </tr>
-          <tr>
-            <td class="text-end">Gene</td>
-            <td>{{ highlight.gene ?? "-" }}</td>
-          </tr>
-          <tr>
-            <td class="text-end">Product</td>
-            <td>{{ highlight.product ?? "-" }}</td>
-          </tr>
+            <tr>
+              <td class="text-end">Length</td>
+              <td>{{ formatBp(highlight.stop - highlight.start, "bp") }}</td>
+            </tr>
+            <tr>
+              <td class="text-end">Locus</td>
+              <td>{{ highlight.locus ?? "-" }}</td>
+            </tr>
+            <tr>
+              <td class="text-end">Gene</td>
+              <td>{{ highlight.gene ?? "-" }}</td>
+            </tr>
+            <tr>
+              <td class="text-end">Product</td>
+              <td>{{ highlight.product ?? "-" }}</td>
+            </tr>
 
-          <tr v-if="highlight.nt">
-            <td class="text-end">GC</td>
-            <td>{{ formatGc(calcGcContent(highlight.nt, 1, false).mean) }}</td>
-          </tr>
-          <tr v-if="highlight.rbs_motif">
-            <td class="text-end">RBS motif</td>
-            <td>{{ highlight.rbs_motif }}</td>
-          </tr>
-        </tbody>
-      </table>
+            <tr v-if="highlight.nt">
+              <td class="text-end">GC</td>
+              <td>
+                {{ formatGc(calcGcContent(highlight.nt, 1, false).mean) }}
+              </td>
+            </tr>
+            <tr v-if="highlight.rbs_motif">
+              <td class="text-end">RBS motif</td>
+              <td>{{ highlight.rbs_motif }}</td>
+            </tr>
+          </tbody>
+        </table>
+      </template>
     </template>
   </div>
 </template>
@@ -72,6 +100,7 @@
 import type { Feature, Sequence } from "@/model/BaktaResults";
 import * as d3 from "d3";
 import { onMounted, ref, useTemplateRef, watch } from "vue";
+import { formatGc } from "../formatters";
 import baktaHelper from "./bakta-helper";
 import { featureTrack } from "./circluar-plot/feature-track";
 import { bpScale, formatBp } from "./circluar-plot/formatters";
@@ -83,7 +112,7 @@ import {
   calcGcSkew,
   type SlidingWindowResult,
 } from "./gc-content";
-import { formatGc } from "../formatters";
+import { findPosition } from "./circluar-plot/util";
 
 const plot = {
   width: 1000,
@@ -106,9 +135,18 @@ let radiansScale: d3.ScaleLinear<number, number, never>;
 function createOrGetGroup(
   parent: d3.Selection<SVGGElement, undefined, null, undefined>,
   clz: string,
+  handler?: (evt: MouseEvent) => void,
 ): d3.Selection<SVGGElement, undefined, null, undefined> {
   let group = parent.select<SVGGElement>(`g.${clz}`);
-  if (group.empty()) group = parent.append("g").attr("class", clz);
+  if (group.empty()) {
+    group = parent.append("g").attr("class", clz);
+    if (handler)
+      group
+        .on("mousemove", handler)
+        .on("mouseenter", handler)
+        .on("mouseleave", handler);
+  }
+
   return group;
 }
 
@@ -150,11 +188,7 @@ function calcGcDistribution(seq: Sequence) {
 }
 
 function calcGcSkewDistribution(seq: Sequence) {
-  const res = calcGcSkew(seq.sequence, 1440, true);
-  return {
-    ...res,
-    deviation: res.data.map((x) => [x[0], x[1] - res.mean] as Coordinate),
-  };
+  return calcGcSkew(seq.sequence, 1440, true);
 }
 type PlotData = {
   sequence: Sequence;
@@ -165,7 +199,7 @@ type PlotData = {
     other: Feature[];
   };
   gc: DeviationSlidingWindowResult;
-  gcSkew: DeviationSlidingWindowResult;
+  gcSkew: SlidingWindowResult;
 };
 
 const plotData = ref<PlotData>({
@@ -194,10 +228,27 @@ function computePlotData(sequence: Sequence, features: Feature[]): PlotData {
   };
 }
 
-const highlight = ref<Feature>();
+type GcHighlight = {
+  type: "gc";
+  mean: number;
+  pos: [number, number];
+  value: number;
+  deviation: number;
+};
+type GcSkewHighlight = {
+  type: "gc-skew";
+  mean: number;
+  pos: [number, number];
+  value: number;
+};
+
+const highlight = ref<Feature | GcHighlight | GcSkewHighlight>();
 const tooltipEl = useTemplateRef("tooltip");
 
-function updateTooltip(f: Feature | undefined, evt: any) {
+function updateTooltip(
+  f: Feature | GcHighlight | GcSkewHighlight | undefined,
+  evt: any,
+) {
   highlight.value = f;
   const [x, y] = [evt.clientX, evt.clientY];
   updateTooltipPosition(x, y, f != undefined);
@@ -309,9 +360,9 @@ function updatePlot() {
   const gcSkewTrack = radialAreaTrack(
     "gc-skew",
     radiansScale,
-    plotData.value.gcSkew.deviation,
+    plotData.value.gcSkew.data,
   )
-    .title("GC skew deviation")
+    .title("GC skew")
     .height(80)
     .colors({ positive: "#fb9a99", negative: "#cab2d6" });
 
@@ -325,9 +376,48 @@ function updatePlot() {
   radius = radius - cdsRevTrack.height() - trackMargin;
   features.call(otherCdsTrack.radius(radius).apply);
   radius = radius - otherCdsTrack.height() - trackMargin;
-  createOrGetGroup(plotG, "gc").call(gcTrack.radius(radius).apply);
+  createOrGetGroup(plotG, "gc", (evt) => {
+    if (evt.type === "mouseenter" || evt.type === "mousemove") {
+      const gc = plotData.value.gc;
+      const pos = findPosition(evt, radiansScale, gc.deviation);
+      if (pos >= 0 && pos < gc.data.length) {
+        const event: GcHighlight = {
+          type: "gc",
+          mean: gc.mean,
+          pos: [
+            gc.data[pos][0] - gc.windowSize,
+            gc.data[pos][0] + gc.windowSize,
+          ],
+          value: gc.data[pos][1],
+          deviation: gc.deviation[pos][1],
+        };
+        updateTooltip(event, evt);
+      }
+    } else {
+      updateTooltip(undefined, evt);
+    }
+  }).call(gcTrack.radius(radius).apply);
   radius = radius - gcSkewTrack.height() - 2 * trackMargin;
-  createOrGetGroup(plotG, "gc-skew").call(gcSkewTrack.radius(radius).apply);
+  createOrGetGroup(plotG, "gc-skew", (evt) => {
+    if (evt.type === "mouseenter" || evt.type === "mousemove") {
+      const skew = plotData.value.gcSkew;
+      const pos = findPosition(evt, radiansScale, skew.data);
+      if (pos >= 0 && pos < skew.data.length) {
+        const event: GcSkewHighlight = {
+          type: "gc-skew",
+          mean: skew.mean,
+          pos: [
+            skew.data[pos][0] - skew.windowSize,
+            skew.data[pos][0] + skew.windowSize,
+          ],
+          value: skew.data[pos][1],
+        };
+        updateTooltip(event, evt);
+      }
+    } else {
+      updateTooltip(undefined, evt);
+    }
+  }).call(gcSkewTrack.radius(radius).apply);
   updateTitle(props.sequence, plotG);
 
   if (initCall) {

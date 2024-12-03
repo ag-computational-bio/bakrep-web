@@ -103,6 +103,22 @@ class RadialAreaTrack implements RadialAreaPlotGenerator {
       .domain([-deviationMax, deviationMax])
       .nice();
 
+    let background = g.select<SVGPathElement>("path.background");
+    if (background.empty())
+      background = g
+        .append("path")
+        .attr("class", "background")
+        .attr("fill", "white")
+        .attr(
+          "d",
+          d3.arc()({
+            innerRadius: innerPlotRadius,
+            outerRadius: outerPlotRadius,
+            startAngle: 0,
+            endAngle: 2 * Math.PI,
+          }),
+        );
+
     // draw the background lines
     let backgroundLattice = g.select<SVGGElement>("g.lattice");
     if (backgroundLattice.empty())
