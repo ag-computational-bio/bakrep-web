@@ -53,7 +53,7 @@ let plotG: d3.Selection<SVGGElement, undefined, null, undefined> | undefined;
  * Scales positions to the screen plot width
  */
 let scale: d3.ScaleLinear<number, number, never>;
-
+let scaleFactor = 1;
 function createOrGetGroup(
   parent: d3.Selection<SVGGElement, undefined, null, undefined>,
   clz: string,
@@ -184,25 +184,37 @@ function updatePlot() {
     g.attr("height", plot.height);
     g.attr("style", "max-width: 100%; height: auto;");
   }
+
+  function handleScale(e: d3.D3ZoomEvent<SVGSVGElement, undefined>) {
+    scaleFactor = e.transform.k;
+    updatePlot();
+  }
   function handleZoom(e: d3.D3ZoomEvent<SVGSVGElement, undefined>) {
     if (plotG) plotG.attr("transform", e.transform.toString());
   }
   let initCall = svg == undefined;
-  const zoom = d3.zoom().on("zoom", handleZoom);
+
+  const scaleFactorZoom = d3
+    .zoom<SVGGElement, undefined>()
+    .on("zoom", handleScale)
+    .filter((e: MouseEvent) => e.ctrlKey && e.type === "wheel");
+
+  const zoom = d3
+    .zoom<SVGSVGElement, undefined>()
+    .on("zoom", handleZoom)
+    .filter(
+      (e: MouseEvent) => (!e.ctrlKey && e.type === "wheel") || e.button == 0,
+    );
   if (svg == undefined) {
-    svg = d3
-      .create("svg")
-      .call(updateSvg)
-      .call(zoom as any);
+    svg = d3.create("svg").call(updateSvg).call(zoom);
   } else svg.transition().call(updateSvg);
 
   scale = d3
-    .scaleLinear([margin.left, plot.width - margin.right])
+    .scaleLinear([margin.left, plot.width * scaleFactor - margin.right])
     .domain([0, props.sequence.length]);
 
   plotG = svg.select("g");
-  if (plotG.empty()) plotG = svg.append("g");
-
+  if (plotG.empty()) plotG = svg.append("g").call(scaleFactorZoom);
   function configureBackground(
     g:
       | d3.Selection<SVGRectElement, undefined, null, undefined>
