@@ -351,7 +351,7 @@ function updatePlot() {
     radiansScale,
     plotData.value.gc.deviation,
   )
-    .title("GC deviation")
+    .title("GC content")
     .height(80)
     .colors({ positive: "#17becf", negative: "#bcbd22" });
   const gcSkewTrack = radialAreaTrack(
@@ -415,6 +415,7 @@ function updatePlot() {
       updateTooltip(undefined, evt);
     }
   }).call(gcSkewTrack.radius(radius).apply);
+  radius = radius - gcSkewTrack.height() - 2 * trackMargin;
   updateTitle(props.sequence, plotG);
 
   if (initCall) {
