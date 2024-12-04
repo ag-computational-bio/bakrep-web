@@ -1,4 +1,5 @@
 import * as d3 from "d3";
+import { mouseToRadians } from "./util";
 
 export type Coloring = {
   positive: string;
@@ -104,11 +105,11 @@ class RadialAreaTrack implements RadialAreaPlotGenerator {
       .nice();
 
     let background = g.select<SVGPathElement>("path.background");
-    if (background.empty())
+    if (background.empty()) {
       background = g
         .append("path")
         .attr("class", "background")
-        .attr("fill", "white")
+        .attr("fill", "#fff0")
         .attr(
           "d",
           d3.arc()({
@@ -118,6 +119,32 @@ class RadialAreaTrack implements RadialAreaPlotGenerator {
             endAngle: 2 * Math.PI,
           }),
         );
+
+      // register mouse listener on group when the track is called the first time only
+      // i.e. when the background is added the first time
+      g.on("mousemove.indicator", (evt) => {
+        const angle = mouseToRadians(evt);
+
+        let helper = g.select<SVGPathElement>("path.helper");
+        if (helper.empty()) helper = g.append("path").attr("class", "helper");
+        helper
+          .attr(
+            "d",
+            d3.arc()({
+              innerRadius: innerPlotRadius,
+              outerRadius: outerPlotRadius,
+              endAngle: angle,
+              startAngle: angle,
+            }),
+          )
+          .attr("stroke", "lightgray")
+          .attr("stroke-dasharray", "1,3")
+          .style("pointer-events", "none");
+      }).on("mouseleave.indicator", () => {
+        const helper = g.select<SVGPathElement>("path.helper");
+        if (!helper.empty()) helper.remove();
+      });
+    }
 
     // draw the background lines
     let backgroundLattice = g.select<SVGGElement>("g.lattice");
@@ -130,7 +157,7 @@ class RadialAreaTrack implements RadialAreaPlotGenerator {
         | d3.Transition<SVGCircleElement, number, SVGGElement, undefined>,
     ) {
       g.attr("fill", "none");
-      g.attr("stroke", "lightgray");
+      g.attr("stroke", "#ddd");
       g.attr("r", (d) => yScale(d));
     }
     backgroundLattice

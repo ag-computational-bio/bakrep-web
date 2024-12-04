@@ -17,12 +17,22 @@ export function findPosition(
   radiansToDataScale: d3.ScaleLinear<number, number>,
   data: [number, number][],
 ) {
-  const [x, y] = d3.pointer(evt);
-  const degree = Math.atan2(x, y);
-  const position = radiansToDataScale.invert(atan2ToRadians(degree));
+  const radians = mouseToRadians(evt);
+  const position = radiansToDataScale.invert(radians);
   const v = d3.bisect(
     data.map((x) => x[0]),
     position,
   );
   return v;
+}
+
+/**
+ * Converts the mouse position to an angle in radians.
+ * @param evt
+ * @returns
+ */
+export function mouseToRadians(evt: Event): number {
+  const [x, y] = d3.pointer(evt);
+  const atan2 = Math.atan2(x, y);
+  return atan2ToRadians(atan2);
 }
