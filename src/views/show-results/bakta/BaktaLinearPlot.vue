@@ -57,16 +57,10 @@ let scale: d3.ScaleLinear<number, number, never>;
 function createOrGetGroup(
   parent: d3.Selection<SVGGElement, undefined, null, undefined>,
   clz: string,
-  handler?: (evt: MouseEvent) => void,
 ): d3.Selection<SVGGElement, undefined, null, undefined> {
   let group = parent.select<SVGGElement>(`g.${clz}`);
   if (group.empty()) {
     group = parent.append("g").attr("class", clz);
-    if (handler)
-      group
-        .on("mousemove", handler)
-        .on("mouseenter", handler)
-        .on("mouseleave", handler);
   }
 
   return group;
@@ -180,6 +174,7 @@ function updateTooltipPosition(x: number, y: number, visible: boolean) {
 }
 
 function updatePlot() {
+  const margin = { left: 30, right: 10 };
   function updateSvg(
     g:
       | d3.Selection<SVGSVGElement, undefined, null, undefined>
@@ -202,7 +197,7 @@ function updatePlot() {
   } else svg.transition().call(updateSvg);
 
   scale = d3
-    .scaleLinear([20, plot.width - 20])
+    .scaleLinear([margin.left, plot.width - margin.right])
     .domain([0, props.sequence.length]);
 
   plotG = svg.select("g");
@@ -266,12 +261,16 @@ function updatePlot() {
   const gcTrack = linearAreaTrack("gc", scale, plotData.value.gc.deviation)
     .title("GC content")
     .height(80)
-    .top(170)
     .colors({ positive: "#17becf", negative: "#bcbd22" });
-  features.call(cdsFwdTrack.top(40).apply);
-  features.call(cdsRevTrack.top(70).apply);
-  features.call(otherCdsTrack.top(100).apply);
-  createOrGetGroup(plotG, "gc").call(gcTrack.apply);
+  const gcSkewTrack = linearAreaTrack("gc", scale, plotData.value.gcSkew.data)
+    .title("GC skew")
+    .height(80)
+    .colors({ positive: "#fb9a99", negative: "#cab2d6" });
+  features.call(cdsFwdTrack.top(10).apply);
+  features.call(cdsRevTrack.top(40).apply);
+  features.call(otherCdsTrack.top(70).apply);
+  createOrGetGroup(plotG, "gc").call(gcTrack.top(100).apply);
+  createOrGetGroup(plotG, "gc-skew").call(gcSkewTrack.top(200).apply);
   return svg;
 }
 

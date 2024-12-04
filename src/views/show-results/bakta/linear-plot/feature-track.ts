@@ -95,7 +95,7 @@ class FeatureTrackGenerator implements TrackGenerator {
       g.attr("stroke", strokeFn);
       g.attr("x", (d) => scale(d.start));
       g.attr("y", top);
-      g.attr("width", (d) => scale(d.stop - d.start) - scale.range()[0]);
+      g.attr("width", (d) => scale(d.stop) - scale(d.start));
       g.attr("height", height);
     }
 

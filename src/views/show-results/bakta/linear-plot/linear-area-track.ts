@@ -110,30 +110,25 @@ class LinearAreaTrack implements LinearAreaPlotGenerator {
         .attr("fill", "#fff0")
         .attr("x", scale.range()[0])
         .attr("width", scale.range()[1] - scale.range()[0])
-        .attr("y", 0)
+        .attr("y", yScale.range()[1])
         .attr("height", this.#height);
 
       // register mouse listener on group when the track is called the first time only
       // i.e. when the background is added the first time
       g.on("mousemove.indicator", (evt) => {
-        // const angle = mouseToRadians(evt);
-        // let helper = g.select<SVGPathElement>("path.helper");
-        // if (helper.empty()) helper = g.append("path").attr("class", "helper");
-        // helper
-        //   .attr(
-        //     "d",
-        //     d3.arc()({
-        //       innerRadius: plotBottom,
-        //       outerRadius: plotTop,
-        //       endAngle: angle,
-        //       startAngle: angle,
-        //     }),
-        //   )
-        //   .attr("stroke", "lightgray")
-        //   .attr("stroke-dasharray", "1,3")
-        //   .style("pointer-events", "none");
+        const [x] = d3.pointer(evt);
+        let helper = g.select<SVGLineElement>("line.helper");
+        if (helper.empty()) helper = g.append("line").attr("class", "helper");
+        helper
+          .attr("x1", x)
+          .attr("x2", x)
+          .attr("y1", yScale.range()[0])
+          .attr("y2", yScale.range()[1])
+          .attr("stroke", "lightgray")
+          .attr("stroke-dasharray", "1,3")
+          .style("pointer-events", "none");
       }).on("mouseleave.indicator", () => {
-        const helper = g.select<SVGPathElement>("path.helper");
+        const helper = g.select<SVGLineElement>("line.helper");
         if (!helper.empty()) helper.remove();
       });
     }
@@ -164,151 +159,145 @@ class LinearAreaTrack implements LinearAreaPlotGenerator {
       );
 
     //   // draw the data
-    //   const area = d3
-    //     .areaRadial()
-    //     .curve(d3.curveLinearClosed)
-    //     .angle((d) => scale(d[0]));
-    //   let dataEl = g.select<SVGGElement>("g.data");
-    //   if (dataEl.empty()) dataEl = g.append("g").attr("class", "data");
+    const area = d3
+      .area()
+      .x((d) => scale(d[0]))
+      .y0(yScale(0))
+      .y1((d) => yScale(d[1]));
+    let dataEl = g.select<SVGGElement>("g.data");
+    if (dataEl.empty()) dataEl = g.append("g").attr("class", "data");
 
-    //   function updateAbove(
-    //     g:
-    //       | d3.Selection<SVGPathElement, undefined, null, undefined>
-    //       | d3.Transition<SVGPathElement, undefined, null, undefined>,
-    //   ) {
-    //     g.attr("fill", colors.negative);
-    //     g.attr("stroke", "none");
-    //     g.attr("stroke-width", 1.5);
-    //     g.attr(
-    //       "d",
-    //       area.innerRadius((d) => yScale(d[1])).outerRadius(plotCenter)(
-    //         negativeData,
-    //       ),
-    //     );
-    //   }
-    //   let aboveEl = dataEl.select<SVGPathElement>("path.above");
-    //   if (aboveEl.empty())
-    //     aboveEl = dataEl.append("path").attr("class", "above").call(updateAbove);
-    //   else aboveEl.transition().call(updateAbove);
+    function updateAbove(
+      g:
+        | d3.Selection<SVGPathElement, undefined, null, undefined>
+        | d3.Transition<SVGPathElement, undefined, null, undefined>,
+    ) {
+      g.attr("fill", colors.negative);
+      g.attr("stroke", "none");
+      g.attr("stroke-width", 1.5);
+      g.attr("d", area(negativeData));
+    }
+    let aboveEl = dataEl.select<SVGPathElement>("path.below");
+    if (aboveEl.empty())
+      aboveEl = dataEl.append("path").attr("class", "below").call(updateAbove);
+    else aboveEl.transition().call(updateAbove);
 
-    //   function updateBelow(
-    //     g:
-    //       | d3.Selection<SVGPathElement, undefined, null, undefined>
-    //       | d3.Transition<SVGPathElement, undefined, null, undefined>,
-    //   ) {
-    //     g.attr("fill", colors.positive);
-    //     g.attr("stroke", "none");
-    //     g.attr("stroke-width", 1.5);
-    //     g.attr(
-    //       "d",
-    //       area.outerRadius((d) => yScale(d[1])).innerRadius(plotCenter)(
-    //         positiveData,
-    //       ),
-    //     );
-    //   }
-    //   let belowEl = dataEl.select<SVGPathElement>("path.below");
-    //   if (belowEl.empty())
-    //     belowEl = dataEl.append("path").attr("class", "below").call(updateBelow);
-    //   else belowEl.transition().call(updateBelow);
+    function updateBelow(
+      g:
+        | d3.Selection<SVGPathElement, undefined, null, undefined>
+        | d3.Transition<SVGPathElement, undefined, null, undefined>,
+    ) {
+      g.attr("fill", colors.positive);
+      g.attr("stroke", "none");
+      g.attr("stroke-width", 1.5);
+      g.attr("d", area(positiveData));
+    }
+    let belowEl = dataEl.select<SVGPathElement>("path.above");
+    if (belowEl.empty())
+      belowEl = dataEl.append("path").attr("class", "above").call(updateBelow);
+    else belowEl.transition().call(updateBelow);
 
-    //   // draw the y-axis
-    //   let yAxis = g.select<SVGGElement>("g.y-axis");
-    //   if (yAxis.empty()) yAxis = g.append("g").attr("class", "y-axis");
+    // draw the y-axis
+    let yAxis = g.select<SVGGElement>("g.y-axis");
+    if (yAxis.empty()) yAxis = g.append("g").attr("class", "y-axis");
 
-    //   function updateYAxis(
-    //     g:
-    //       | d3.Selection<SVGLineElement, undefined, null, undefined>
-    //       | d3.Transition<SVGLineElement, undefined, null, undefined>,
-    //   ) {
-    //     g.attr("x1", 0);
-    //     g.attr("x2", 0);
-    //     g.attr("y1", -yScale.range()[0]);
-    //     g.attr("y2", -yScale.range()[1]);
-    //     g.attr("stroke", "black");
-    //   }
-    //   let yLine = yAxis.select<SVGLineElement>("line.y");
-    //   if (yLine.empty())
-    //     yLine = yAxis.append("line").attr("class", "y").call(updateYAxis);
-    //   else yLine.transition().call(updateYAxis);
+    function updateYAxis(
+      g:
+        | d3.Selection<SVGLineElement, undefined, null, undefined>
+        | d3.Transition<SVGLineElement, undefined, null, undefined>,
+    ) {
+      g.attr("x1", scale(0));
+      g.attr("x2", scale(0));
+      g.attr("y1", yScale.range()[0]);
+      g.attr("y2", yScale.range()[1]);
+      g.attr("stroke", "black");
+    }
+    let yLine = yAxis.select<SVGLineElement>("line.y");
+    if (yLine.empty())
+      yLine = yAxis.append("line").attr("class", "y").call(updateYAxis);
+    else yLine.transition().call(updateYAxis);
 
-    //   function updateYAxisTick(
-    //     g:
-    //       | d3.Selection<SVGLineElement, number, SVGGElement, undefined>
-    //       | d3.Transition<SVGLineElement, number, SVGGElement, undefined>,
-    //   ) {
-    //     g.attr("x1", 0);
-    //     g.attr("x2", -tickSize);
-    //     g.attr("y1", (d) => -yScale(d));
-    //     g.attr("y2", (d) => -yScale(d));
-    //     g.attr("stroke", "black");
-    //   }
-    //   yAxis
-    //     .selectAll<SVGLineElement, number>("line.tick")
-    //     .data([yScale.domain()[0], yScale.domain()[1]])
-    //     .join(
-    //       (enter) =>
-    //         enter.append("line").attr("class", "tick").call(updateYAxisTick),
-    //       (update) => update.transition().call(updateYAxisTick),
-    //     );
+    function updateYAxisTick(
+      g:
+        | d3.Selection<SVGLineElement, number, SVGGElement, undefined>
+        | d3.Transition<SVGLineElement, number, SVGGElement, undefined>,
+    ) {
+      g.attr("x1", scale(0));
+      g.attr("x2", scale(0) - tickSize);
+      g.attr("y1", (d) => yScale(d));
+      g.attr("y2", (d) => yScale(d));
+      g.attr("stroke", "black");
+    }
+    yAxis
+      .selectAll<SVGLineElement, number>("line.tick")
+      .data([yScale.domain()[0], yScale.domain()[1]])
+      .join(
+        (enter) =>
+          enter.append("line").attr("class", "tick").call(updateYAxisTick),
+        (update) => update.transition().call(updateYAxisTick),
+      );
 
-    //   type TickLabel = { y: number; text: number };
-    //   function updateTickLabel(
-    //     g:
-    //       | d3.Selection<SVGTextElement, TickLabel, SVGGElement, undefined>
-    //       | d3.Transition<SVGTextElement, TickLabel, SVGGElement, undefined>,
-    //   ) {
-    //     g.attr("x", -6);
-    //     g.attr("text-anchor", "end");
-    //     g.attr("y", (d) => d.y + 3);
-    //     g.attr("font-size", 8);
-    //     g.attr("fill", "black");
-    //     g.text((d) => d.text);
-    //   }
-    //   const labels: TickLabel[] = [
-    //     { y: -yScale.range()[0], text: yScale.domain()[0] },
-    //     { y: -yScale.range()[1], text: yScale.domain()[1] },
-    //   ];
-    //   yAxis
-    //     .selectAll<SVGTextElement, TickLabel>("text.label")
-    //     .data(labels)
-    //     .join(
-    //       (enter) =>
-    //         enter.append("text").attr("class", "label").call(updateTickLabel),
-    //       (update) => update.transition().call(updateTickLabel),
-    //     );
+    type TickLabel = { y: number; text: number };
+    function updateTickLabel(
+      g:
+        | d3.Selection<SVGTextElement, TickLabel, SVGGElement, undefined>
+        | d3.Transition<SVGTextElement, TickLabel, SVGGElement, undefined>,
+    ) {
+      g.attr("x", scale(0) - 6);
+      g.attr("text-anchor", "end");
+      g.attr("y", (d) => d.y + 3);
+      g.attr("font-size", 8);
+      g.attr("fill", "black");
+      g.text((d) => d.text);
+    }
+    const labels: TickLabel[] = [
+      { y: yScale.range()[0], text: yScale.domain()[0] },
+      { y: yScale.range()[1], text: yScale.domain()[1] },
+    ];
+    yAxis
+      .selectAll<SVGTextElement, TickLabel>("text.label")
+      .data(labels)
+      .join(
+        (enter) =>
+          enter.append("text").attr("class", "label").call(updateTickLabel),
+        (update) => update.transition().call(updateTickLabel),
+      );
 
-    //   // draw the x-axis
-    //   function updateXAxis(
-    //     g:
-    //       | d3.Selection<SVGCircleElement, undefined, null, undefined>
-    //       | d3.Transition<SVGCircleElement, undefined, SVGGElement, undefined>,
-    //   ) {
-    //     g.attr("fill", "none");
-    //     g.attr("stroke", "black");
-    //     g.attr("r", plotCenter);
-    //   }
-    //   let xAxis = yAxis.select<SVGCircleElement>("circle.x-axis");
-    //   if (xAxis.empty())
-    //     xAxis = yAxis.append("circle").attr("class", "x-axis").call(updateXAxis);
-    //   else xAxis.transition().call(updateXAxis);
+    // draw the x-axis
+    function updateXAxis(
+      g:
+        | d3.Selection<SVGLineElement, undefined, null, undefined>
+        | d3.Transition<SVGLineElement, undefined, SVGGElement, undefined>,
+    ) {
+      g.attr("fill", "none");
+      g.attr("stroke", "black");
+      g.attr("x1", scale.range()[0]);
+      g.attr("x2", scale.range()[1]);
+      g.attr("y1", yScale(0));
+      g.attr("y2", yScale(0));
+    }
+    let xAxis = yAxis.select<SVGLineElement>("line.x-axis");
+    if (xAxis.empty())
+      xAxis = yAxis.append("line").attr("class", "x-axis").call(updateXAxis);
+    else xAxis.transition().call(updateXAxis);
 
-    //   // draw the title
-    //   function updateTitle(
-    //     g:
-    //       | d3.Selection<SVGTextElement, undefined, null, undefined>
-    //       | d3.Transition<SVGTextElement, undefined, SVGGElement, undefined>,
-    //   ) {
-    //     g.attr("x", 0);
-    //     g.attr("y", -yScale.range()[1] - 8);
-    //     g.attr("text-anchor", "middle");
-    //     g.attr("font-size", 9);
-    //     g.attr("fill", "black");
-    //     g.text(title);
-    //   }
-    //   let titleEl = g.select<SVGTextElement>("text.title");
-    //   if (titleEl.empty())
-    //     titleEl = g.append("text").attr("class", "title").call(updateTitle);
-    //   else titleEl.transition().call(updateTitle);
+    // draw the title
+    function updateTitle(
+      g:
+        | d3.Selection<SVGTextElement, undefined, null, undefined>
+        | d3.Transition<SVGTextElement, undefined, SVGGElement, undefined>,
+    ) {
+      g.attr("x", scale(0));
+      g.attr("y", yScale.range()[1] - 8);
+      g.attr("text-anchor", "middle");
+      g.attr("font-size", 9);
+      g.attr("fill", "black");
+      g.text(title);
+    }
+    let titleEl = g.select<SVGTextElement>("text.title");
+    if (titleEl.empty())
+      titleEl = g.append("text").attr("class", "title").call(updateTitle);
+    else titleEl.transition().call(updateTitle);
   }
 }
 
