@@ -225,7 +225,7 @@ function updatePlot() {
     g.attr("x", 0);
     g.attr("y", 0);
     g.attr("width", plot.width);
-    g.attr("heigth", plot.height);
+    g.attr("height", plot.height);
   }
   let background = plotG.select<SVGRectElement>("rect.background");
   if (background.empty())
