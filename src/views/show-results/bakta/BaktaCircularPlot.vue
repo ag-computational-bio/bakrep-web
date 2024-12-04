@@ -106,13 +106,13 @@ import { featureTrack } from "./circluar-plot/feature-track";
 import { bpScale, formatBp } from "./circluar-plot/formatters";
 import { radialAreaTrack } from "./circluar-plot/radial-area-track";
 import { radialAxis } from "./circluar-plot/radial-axis";
+import { findPosition } from "./circluar-plot/util";
 import { lookupFeatureColor } from "./feature-colors";
 import {
   calcGcContent,
   calcGcSkew,
   type SlidingWindowResult,
 } from "./gc-content";
-import { findPosition } from "./circluar-plot/util";
 
 const plot = {
   width: 1000,
@@ -302,19 +302,16 @@ function updatePlot() {
 
   function configureBackground(
     g:
-      | d3.Selection<SVGRectElement, undefined, null, undefined>
-      | d3.Transition<SVGRectElement, undefined, null, undefined>,
+      | d3.Selection<SVGCircleElement, undefined, null, undefined>
+      | d3.Transition<SVGCircleElement, undefined, null, undefined>,
   ) {
     g.attr("class", "background");
     g.attr("fill", "white");
-    g.attr("x", -plot.width / 2);
-    g.attr("y", -plot.width / 2);
-    g.attr("width", plot.width);
-    g.attr("height", plot.height);
+    g.attr("r", plot.width / 2);
   }
-  let background = plotG.select<SVGRectElement>("rect");
+  let background = plotG.select<SVGCircleElement>("circle.background");
   if (background.empty())
-    background = plotG.append("rect").call(configureBackground);
+    background = plotG.append("circle").call(configureBackground);
   else background.transition().call(configureBackground);
 
   const axis = radialAxis(radiansScale, plot.width / 2).tickFormat((x, r) =>
