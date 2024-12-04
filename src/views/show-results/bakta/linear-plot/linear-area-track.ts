@@ -4,6 +4,12 @@ export type Coloring = {
   positive: string;
   negative: string;
 };
+/**
+ * @param evt the original mouse event
+ * @param pos the position in domain coordinates or undefined when mouse left the track *
+ */
+type OnHoverFn = (evt: MouseEvent, pos: number | undefined) => void;
+
 export interface LinearAreaPlotGenerator {
   apply(group: d3.Selection<SVGGElement, undefined, null, undefined>): void;
   title(title: string): LinearAreaPlotGenerator;
@@ -11,6 +17,7 @@ export interface LinearAreaPlotGenerator {
   colors(colors: Coloring): LinearAreaPlotGenerator;
   height(px: number): LinearAreaPlotGenerator;
   height(): number;
+  hover(fn: OnHoverFn): LinearAreaPlotGenerator;
 }
 
 export type Coordinate = [number, number];
@@ -26,6 +33,7 @@ class LinearAreaTrack implements LinearAreaPlotGenerator {
     positive: "lightgray",
   };
   #height = 50;
+  #hover: OnHoverFn | undefined;
 
   constructor(
     id: string,
@@ -59,6 +67,11 @@ class LinearAreaTrack implements LinearAreaPlotGenerator {
     return this;
   }
 
+  hover(fn: OnHoverFn) {
+    this.#hover = fn;
+    return this;
+  }
+
   get apply() {
     return this._apply.bind(this);
   }
@@ -75,7 +88,6 @@ class LinearAreaTrack implements LinearAreaPlotGenerator {
 
     const plotTop = this.#top + titleSize + titleMargin;
     const plotBottom = this.#top + this.#height;
-    const plotCenter = plotTop - (plotTop - plotBottom) / 2;
 
     // the plot layers should be:
     // 1. background orientation lines (lattice)
@@ -112,26 +124,26 @@ class LinearAreaTrack implements LinearAreaPlotGenerator {
         .attr("width", scale.range()[1] - scale.range()[0])
         .attr("y", yScale.range()[1])
         .attr("height", this.#height);
-
-      // register mouse listener on group when the track is called the first time only
-      // i.e. when the background is added the first time
-      g.on("mousemove.indicator", (evt) => {
-        const [x] = d3.pointer(evt);
-        let helper = g.select<SVGLineElement>("line.helper");
-        if (helper.empty()) helper = g.append("line").attr("class", "helper");
-        helper
-          .attr("x1", x)
-          .attr("x2", x)
-          .attr("y1", yScale.range()[0])
-          .attr("y2", yScale.range()[1])
-          .attr("stroke", "lightgray")
-          .attr("stroke-dasharray", "1,3")
-          .style("pointer-events", "none");
-      }).on("mouseleave.indicator", () => {
-        const helper = g.select<SVGLineElement>("line.helper");
-        if (!helper.empty()) helper.remove();
-      });
     }
+    // always replace the mouse listener, in case the domain changed
+    g.on("mousemove.indicator", (evt) => {
+      const [x] = d3.pointer(evt);
+      let helper = g.select<SVGLineElement>("line.helper");
+      if (helper.empty()) helper = g.append("line").attr("class", "helper");
+      helper
+        .attr("x1", x)
+        .attr("x2", x)
+        .attr("y1", yScale.range()[0])
+        .attr("y2", yScale.range()[1])
+        .attr("stroke", "lightgray")
+        .attr("stroke-dasharray", "1,3")
+        .style("pointer-events", "none");
+      if (this.#hover) this.#hover(evt, scale.invert(x));
+    }).on("mouseleave.indicator", (evt) => {
+      const helper = g.select<SVGLineElement>("line.helper");
+      if (!helper.empty()) helper.remove();
+      if (this.#hover) this.#hover(evt, undefined);
+    });
 
     // draw the background lines
     let backgroundLattice = g.select<SVGGElement>("g.lattice");

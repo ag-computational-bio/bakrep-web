@@ -261,11 +261,55 @@ function updatePlot() {
   const gcTrack = linearAreaTrack("gc", scale, plotData.value.gc.deviation)
     .title("GC content")
     .height(80)
-    .colors({ positive: "#17becf", negative: "#bcbd22" });
+    .colors({ positive: "#17becf", negative: "#bcbd22" })
+    .hover((evt, pos) => {
+      if (pos == undefined) {
+        updateTooltip(undefined, evt);
+        return;
+      }
+      const gc = plotData.value.gc;
+      const p = d3.bisect(
+        gc.data.map((x) => x[0]),
+        pos,
+      );
+      if (p >= 0 && p < gc.data.length) {
+        const event: GcTooltipData = {
+          type: "gc",
+          mean: gc.mean,
+          pos: [gc.data[p][0] - gc.windowSize, gc.data[p][0] + gc.windowSize],
+          value: gc.data[p][1],
+          deviation: gc.deviation[p][1],
+        };
+        updateTooltip(event, evt);
+      }
+    });
   const gcSkewTrack = linearAreaTrack("gc", scale, plotData.value.gcSkew.data)
     .title("GC skew")
     .height(80)
-    .colors({ positive: "#fb9a99", negative: "#cab2d6" });
+    .colors({ positive: "#fb9a99", negative: "#cab2d6" })
+    .hover((evt, pos) => {
+      if (pos == undefined) {
+        updateTooltip(undefined, evt);
+        return;
+      }
+      const data = plotData.value.gcSkew;
+      const p = d3.bisect(
+        data.data.map((x) => x[0]),
+        pos,
+      );
+      if (p >= 0 && p < data.data.length) {
+        const event: GcSkewTooltipData = {
+          type: "gc-skew",
+          mean: data.mean,
+          pos: [
+            data.data[p][0] - data.windowSize,
+            data.data[p][0] + data.windowSize,
+          ],
+          value: data.data[p][1],
+        };
+        updateTooltip(event, evt);
+      }
+    });
   features.call(cdsFwdTrack.top(10).apply);
   features.call(cdsRevTrack.top(40).apply);
   features.call(otherCdsTrack.top(70).apply);
