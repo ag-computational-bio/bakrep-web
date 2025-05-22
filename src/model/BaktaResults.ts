@@ -1,12 +1,12 @@
 import { z } from "zod";
 
 export const GenomeSchema = z.object({
-  genus: z.string(),
-  species: z.string(),
-  strain: z.string(),
-  complete: z.boolean(),
-  gram: z.string(),
-  translation_table: z.number(),
+  genus: z.string().optional(),
+  species: z.string().optional(),
+  strain: z.string().optional(),
+  complete: z.boolean().optional(),
+  gram: z.string().optional(),
+  translation_table: z.number().optional(),
 });
 
 export const StatsSchema = z.object({

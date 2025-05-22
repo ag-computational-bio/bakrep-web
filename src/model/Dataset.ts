@@ -6,8 +6,8 @@ const AttributesSchema = z.object({
   tool: z.optional(z.string()),
 });
 const ResultSchema = z.object({
-  md5: z.string(),
-  size: z.number(),
+  md5: z.string().optional(),
+  size: z.number().optional(),
   url: z.string(),
   attributes: AttributesSchema,
 });

@@ -1,4 +1,4 @@
 {
-  "bakrep-api-url": "https://bakrep.computational.bio/api/v1",
+  "bakrep-api-url": "https://bakrep.computational.bio/api/v2",
   "dbxref-api-url": "https://psos-staging.computational.bio/api/v1/dbxref/"
 }
