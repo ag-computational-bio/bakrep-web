@@ -27,7 +27,6 @@
     "jsonpointer": "^5.0.1",
     "plotly.js-dist-min": "^2.27.0",
     "vue": "^3.2.45",
-    "vue-chartjs": "^5.2.0",
     "vue-router": "^4.1.6",
     "zod": "^3.22.2"
   },

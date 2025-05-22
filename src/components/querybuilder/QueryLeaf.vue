@@ -78,10 +78,9 @@
   </div>
 </template>
 <script setup lang="ts">
-import { isRange, type LeafQuery, type Query } from "@/model/Search";
+import { isNumber, isRange, type LeafQuery, type Query } from "@/model/Search";
 import { type PropType, computed, type Ref } from "vue";
 import type { LeafRule, QueryBuilderOptions, Rule } from "./Rule";
-import { isNumber } from "chart.js/helpers";
 import RangeInput from "./input/RangeInput.vue";
 import AutocompleteInput from "../AutocompleteInput.vue";
 
