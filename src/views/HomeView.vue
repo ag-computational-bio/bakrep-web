@@ -12,7 +12,7 @@
       </div>
       <div class="col-md-12 col-lg-8">
         <div class="fw-bold fs-3">
-          661,402 bacterial genomes at your fingertips <br />
+          2,438,386 bacterial genomes at your fingertips <br />
         </div>
         <div class="mb-4 fw-bold ps-4">
           consistently processed & characterized, enriched with metadata,
