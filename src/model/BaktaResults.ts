@@ -1,9 +1,9 @@
 import { z } from "zod";
 
 export const GenomeSchema = z.object({
-  genus: z.string().optional(),
-  species: z.string().optional(),
-  strain: z.string().optional(),
+  genus: z.string().optional().nullable(),
+  species: z.string().optional().nullable(),
+  strain: z.string().optional().nullable(),
   complete: z.boolean().optional(),
   gram: z.string().optional(),
   translation_table: z.number().optional(),
@@ -62,7 +62,10 @@ const RunSchema = z.object({
 
 const VersionSchema = z.object({
   bakta: z.string(),
-  db: z.string(),
+  db: z.object({
+    version: z.string(),
+    type: z.string(),
+  }),
 });
 
 const BaktaResultSchema = z.object({
