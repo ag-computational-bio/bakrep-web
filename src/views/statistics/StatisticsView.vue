@@ -137,13 +137,13 @@ function showTab(tab: Tab) {
             </div>
           </template>
           <div class="w-100 full-height" v-if="pane === 'krona-high-abundant'">
-            <iframe src="/krona_main.html" class="w-100 full-height" />
+            <iframe src="/v2_krona_main.html" class="w-100 full-height" />
           </div>
           <div
             class="w-100 full-height"
             v-if="pane === 'krona-medium-abundant'"
           >
-            <iframe src="/krona_sub.html" class="w-100 full-height" />
+            <iframe src="/v2_krona_sub.html" class="w-100 full-height" />
           </div>
         </div>
       </div>
