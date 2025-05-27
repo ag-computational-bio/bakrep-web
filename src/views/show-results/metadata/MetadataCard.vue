@@ -17,7 +17,7 @@
 import type { Host, Instrument, Location, Metadata } from "@/model/Metadata";
 import { computed } from "vue";
 
-const props = defineProps<{ metadata: Metadata }>();
+const props = defineProps<{ metadata: Metadata | undefined }>();
 
 type Header = string;
 type Entry = { k: string; v: string };
@@ -26,6 +26,8 @@ type Description = (Header | Entry)[];
 const entries = computed(() => {
   const out: Description = [];
   const m = props.metadata;
+  if (m == undefined) return ["No medata available"];
+
   const s = m.sample;
   function add(title: string, value: string | undefined) {
     if (value) out.push({ k: title, v: value });

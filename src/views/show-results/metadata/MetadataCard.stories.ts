@@ -56,3 +56,8 @@ export const Default: Story = {
     },
   },
 };
+export const NoMetadata: Story = {
+  args: {
+    metadata: undefined,
+  },
+};
