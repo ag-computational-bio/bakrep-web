@@ -9,7 +9,7 @@ const meta: Meta<typeof BaktaCircularPlot> = {
   component: BaktaCircularPlot,
 };
 
-const result: BaktaResult = baktaResult as BaktaResult;
+const result: BaktaResult = baktaResult as unknown as BaktaResult;
 
 export default meta;
 type Story = StoryObj<typeof BaktaCircularPlot>;
