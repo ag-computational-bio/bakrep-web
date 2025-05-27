@@ -69,3 +69,4 @@ export type Sample = z.infer<typeof SampleSchema>;
 export type Host = z.infer<typeof HostSchema>;
 export type Environment = z.infer<typeof EnvironmentSchema>;
 export type Location = z.infer<typeof LocationSchema>;
+export type Instrument = z.infer<typeof InstrumentSchema>;
