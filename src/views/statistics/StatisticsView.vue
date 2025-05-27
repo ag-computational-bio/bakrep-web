@@ -71,6 +71,9 @@ function showTab(tab: Tab) {
   router.push({ query: { view: tab } });
   // pane.value = tab;
 }
+
+const kronaUrl1 = import.meta.env.BASE_URL + "/v2_krona_main.html";
+const kronaUrl2 = import.meta.env.BASE_URL + "/v2_krona_sub.html";
 </script>
 
 <template>
@@ -137,13 +140,13 @@ function showTab(tab: Tab) {
             </div>
           </template>
           <div class="w-100 full-height" v-if="pane === 'krona-high-abundant'">
-            <iframe src="/v2_krona_main.html" class="w-100 full-height" />
+            <iframe :src="kronaUrl1" class="w-100 full-height" />
           </div>
           <div
             class="w-100 full-height"
             v-if="pane === 'krona-medium-abundant'"
           >
-            <iframe src="/v2_krona_sub.html" class="w-100 full-height" />
+            <iframe :src="kronaUrl2" class="w-100 full-height" />
           </div>
         </div>
       </div>
