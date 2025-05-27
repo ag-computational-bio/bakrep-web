@@ -22,10 +22,10 @@
                   style="color: gray"
                   :href="
                     'https://www.ncbi.nlm.nih.gov/datasets/genome/' +
-                    gtdb.fastani_reference
+                    gtdb.closest_genome_reference
                   "
                   target="_blank"
-                  >{{ gtdb.fastani_reference }}</a
+                  >{{ gtdb.closest_genome_reference }}</a
                 >
               </td>
             </tr>
