@@ -8,7 +8,11 @@ import "./assets/main.css";
 import { initApi } from "./BakrepApi";
 import { initDbxrefApi } from "./DbxrefApi";
 
-fetch(import.meta.env.BASE_URL + "/config/config.json")
+const configUrl = import.meta.env.DEV
+  ? "/config/config.json"
+  : import.meta.env.BASE_URL + "/config/config.json";
+
+fetch(configUrl)
   .then((r) => {
     if (!r.ok) {
       throw "App configuration not found. Please contact the server administrator if this error persists.";
