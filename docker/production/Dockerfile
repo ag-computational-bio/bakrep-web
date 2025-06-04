@@ -6,5 +6,5 @@ LABEL org.opencontainers.image.documentation='https://github.com/ag-computationa
 LABEL org.opencontainers.image.title='Bakrep Web Frontend'
 LABEL org.opencontainers.image.description='Web frontend for bakrep'
 
-COPY docker/staging/nginx.conf /etc/nginx/conf.d/default.conf
+COPY docker/production/nginx.conf /etc/nginx/conf.d/default.conf
 COPY dist/ /usr/share/nginx/html
