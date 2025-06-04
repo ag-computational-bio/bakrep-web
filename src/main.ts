@@ -8,9 +8,11 @@ import "./assets/main.css";
 import { initApi } from "./BakrepApi";
 import { initDbxrefApi } from "./DbxrefApi";
 
+const base = import.meta.env.BASE_URL;
+
 const configUrl = import.meta.env.DEV
   ? "/config/config.json"
-  : import.meta.env.BASE_URL + "/config/config.json";
+  : base + (base.endsWith("/") ? "" : "/") + "config/config.json";
 
 fetch(configUrl)
   .then((r) => {
