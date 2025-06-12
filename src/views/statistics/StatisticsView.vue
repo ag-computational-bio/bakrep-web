@@ -72,8 +72,9 @@ function showTab(tab: Tab) {
   // pane.value = tab;
 }
 
-const kronaUrl1 = import.meta.env.BASE_URL + "/v2_krona_main.html";
-const kronaUrl2 = import.meta.env.BASE_URL + "/v2_krona_sub.html";
+const base = import.meta.env.BASE_URL ?? "/";
+const kronaUrl1 = base + "v2_krona_main.html";
+const kronaUrl2 = base + "v2_krona_sub.html";
 </script>
 
 <template>
