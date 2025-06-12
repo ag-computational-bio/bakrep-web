@@ -5,6 +5,7 @@ const items = ref([
   { href: { name: "browse" }, text: "Browse" },
   { href: { name: "search" }, text: "Search" },
   { href: { name: "statistics" }, text: "Statistics" },
+  { href: { name: "downloads" }, text: "Downloads" },
   { href: { name: "docs" }, text: "Documentation" },
   { href: { name: "about" }, text: "About" },
 ]);

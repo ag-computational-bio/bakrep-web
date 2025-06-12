@@ -50,6 +50,11 @@ const router = createRouter({
       name: "docs",
       component: () => import("../views/documentation/DocumentationMain.vue"),
     },
+    {
+      path: "/downloads",
+      name: "downloads",
+      component: () => import("../views/DownloadView.vue"),
+    },
   ],
 });
 
