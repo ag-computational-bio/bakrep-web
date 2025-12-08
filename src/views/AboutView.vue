@@ -1,7 +1,6 @@
 <template>
   <div class="container">
-    <h2>About</h2>
-    <p>&nbsp;</p>
+    <h1 class="fs-2 mb-4">About</h1>
     <p>
       BakRep is a searchable large-scale web repository for bacterial genomes
       enriched with standardized genome characterizations and related metadata.
@@ -66,7 +65,8 @@
         (Software: v1.7.0, DB: v5.0 - full)
       </li>
     </ul>
-    <h3>Publication</h3>
+
+    <h2 class="fs-4">Publication</h2>
     <p>
       BakRep – a searchable large-scale web repository for bacterial genomes,
       characterizations and metadata <br />
@@ -76,6 +76,14 @@
       <a href="https://doi.org/10.1099/mgen.0.001305">
         10.1099/mgen.0.001305
       </a>
+    </p>
+    <h2 class="fs-4">de.NBI Service Feedback</h2>
+    <p>
+      BakRep is an official de.NBI service. Please feel free to use this
+      <a href="https://www.surveymonkey.de/r/denbi-service?sc=bigi&tool=bakrep">
+        evaluation link
+      </a>
+      to provide feedback.
     </p>
   </div>
 </template>
