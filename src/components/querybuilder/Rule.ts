@@ -8,7 +8,7 @@ export type LeafRule = {
   group?: string;
   field: string;
   label: string;
-  type: "text" | "number";
+  type: "text" | "number" | "date";
   ops: RuleOp[];
 };
 
@@ -66,6 +66,9 @@ export function defaultOptions(
     },
     defaultValue(r: Rule, op: RuleOp) {
       if (r.type === "text") return "";
+      if (r.type === "date") {
+        return "";
+      }
       if (r.type === "number") {
         const orZero = (n?: number) => (n == undefined ? 0 : n);
 

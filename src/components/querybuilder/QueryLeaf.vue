@@ -59,7 +59,18 @@
               </div>
             </template>
           </template>
-          <!-- Basic number input -->
+          <!-- date input -->
+          <template v-else-if="rule.type == 'date'">
+            <div class="col">
+              <input
+                v-model="value"
+                class="form-control"
+                type="date"
+                @keydown.enter="$emit('submit')"
+                placeholder="YYYY-MM-DD"
+              />
+            </div>
+          </template>
           <template v-else>
             {{ rule }}
             {{ query }}
