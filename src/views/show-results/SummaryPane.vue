@@ -10,10 +10,10 @@ import ContigBar, {
   type ContigBarEntry,
 } from "@/views/show-results/contig-bar/ContigBar.vue";
 import DisplayAssembly from "@/views/show-results/DisplayAssembly.vue";
-import GtdbtkTaxonomy from "@/views/show-results/GtdbtkTaxonomy.vue";
-import PhylogenyTree from "@/views/show-results/PhylogenyTree.vue";
 import { computed } from "vue";
 import DisplayMetadata from "./DisplayMetadata.vue";
+import DisplayMlstTyping from "./DisplayMlstTyping.vue";
+import DisplayTaxonomicClassification from "./DisplayTaxonomicClassification.vue";
 
 const props = defineProps<{
   id: string;
@@ -72,15 +72,15 @@ function extractData(bakta: BaktaResult): ContigBarEntry[] {
 
 <template>
   <div class="row gx-2 gy-2">
-    <div class="col-lg-4 col-md-12">
+    <div class="col-lg-6 col-md-12">
       <div class="card h-100">
         <div class="card-header">Metadata</div>
         <div class="card-body">
-          <DisplayMetadata :metadata="metadata" />
+          <DisplayMetadata :metadata="metadata" :bakta="bakta" />
         </div>
       </div>
     </div>
-    <div class="col-lg-4 col-md-12">
+    <div class="col-lg-6 col-md-12">
       <div class="card h-100">
         <div class="card-header">Assembly</div>
         <div class="card-body">
@@ -88,25 +88,27 @@ function extractData(bakta: BaktaResult): ContigBarEntry[] {
         </div>
       </div>
     </div>
-    <div class="col-lg-4 col-md-12">
+  </div>
+
+  <div class="row gx-2 gy-2 my-3">
+    <div v-if="gtdbtk" class="col-lg-6 col-md-12">
       <div class="card h-100">
-        <div class="card-header">Phylogeny</div>
+        <div class="card-header">Taxonomic classification</div>
         <div class="card-body">
-          <PhylogenyTree :gtdb="gtdbtk" />
+          <DisplayTaxonomicClassification :gtdb="gtdbtk" />
+        </div>
+      </div>
+    </div>
+    <div v-if="mlst" class="col-lg-6 col-md-12">
+      <div class="card h-100">
+        <div class="card-header">MLST typing</div>
+        <div class="card-body">
+          <DisplayMlstTyping :mlst="mlst" />
         </div>
       </div>
     </div>
   </div>
-  <div class="row my-3 gx-2 gy-2">
-    <div class="col-12">
-      <div class="card h-100">
-        <div class="card-header">Taxonomy</div>
-        <div class="card-body">
-          <GtdbtkTaxonomy :gtdb="gtdbtk" :mlst="mlst" :bakta="bakta" />
-        </div>
-      </div>
-    </div>
-  </div>
+
   <div class="row gx-2 gy-2">
     <div class="col-12">
       <div class="card">

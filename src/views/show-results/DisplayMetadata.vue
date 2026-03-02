@@ -1,4 +1,7 @@
 <script setup lang="ts">
+import GridCell from "@/components/GridCell.vue";
+import GridTable from "@/components/GridTable.vue";
+import GridTitleCell from "@/components/GridTitleCell.vue";
 import type { Metadata } from "@/model/Metadata";
 defineProps<{
   metadata?: Metadata;
@@ -10,48 +13,50 @@ function getText(value: string | undefined): string {
 </script>
 
 <template>
-  <table v-if="metadata">
-    <tbody>
-      <tr>
-        <th class="text-end pe-2">Collection Date:</th>
-        <td>
-          {{ getText(metadata.sample?.collection_date) }}
-        </td>
-      </tr>
-      <tr>
-        <th class="text-end pe-2">Country:</th>
-        <td>
-          {{ getText(metadata.sample?.country) }}
-        </td>
-      </tr>
-      <tr>
-        <th class="text-end pt-3">Environment:</th>
-      </tr>
-      <tr class="ps-2">
-        <th class="text-end pe-2">Biome:</th>
-        <td>
-          {{ getText(metadata.sample?.environment?.biome) }}
-        </td>
-      </tr>
-      <tr>
-        <th class="text-end pe-2">Feature:</th>
-        <td>
-          {{ getText(metadata.sample?.environment?.feature) }}
-        </td>
-      </tr>
-      <tr>
-        <th class="text-end pe-2">Material:</th>
-        <td>
-          {{ getText(metadata.sample?.environment?.material) }}
-        </td>
-      </tr>
-      <tr>
-        <th class="text-end pe-2">Isolation Source:</th>
-        <td>
-          {{ getText(metadata.sample?.isolation_source) }}
-        </td>
-      </tr>
-    </tbody>
-  </table>
-  <div v-else>No metadata available</div>
+  <GridTable>
+    <template v-if="metadata">
+      <GridTitleCell>Strain:</GridTitleCell>
+      <GridCell>
+        {{ getText(metadata.sample?.strain) }}
+      </GridCell>
+      <GridTitleCell>Sub strain:</GridTitleCell>
+      <GridCell>
+        {{ getText(metadata.sample?.sub_strain) }}
+      </GridCell>
+
+      <GridTitleCell class="mt-2">Collection Date:</GridTitleCell>
+      <GridCell class="mt-2">
+        {{ getText(metadata.sample?.collection_date) }}
+      </GridCell>
+
+      <GridTitleCell>Country:</GridTitleCell>
+      <GridCell>
+        {{ getText(metadata.sample?.country) }}
+      </GridCell>
+
+      <GridTitleCell class="mt-2">Environment</GridTitleCell>
+      <GridCell> </GridCell>
+
+      <GridTitleCell>Biome:</GridTitleCell>
+      <GridCell>
+        {{ getText(metadata.sample?.environment?.biome) }}
+      </GridCell>
+
+      <GridTitleCell>Feature:</GridTitleCell>
+      <GridCell>
+        {{ getText(metadata.sample?.environment?.feature) }}
+      </GridCell>
+
+      <GridTitleCell>Material:</GridTitleCell>
+      <GridCell>
+        {{ getText(metadata.sample?.environment?.material) }}
+      </GridCell>
+
+      <GridTitleCell>Isolation Source:</GridTitleCell>
+      <GridCell>
+        {{ getText(metadata.sample?.isolation_source) }}
+      </GridCell>
+    </template>
+    <template v-else> No metadata available </template>
+  </GridTable>
 </template>

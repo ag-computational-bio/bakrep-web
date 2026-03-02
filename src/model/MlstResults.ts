@@ -1,7 +1,7 @@
 import { z } from "zod";
 
 const MlstEntrySchema = z.object({
-  alleles: z.optional(z.nullable(z.record(z.string()))),
+  alleles: z.optional(z.nullable(z.record(z.string(), z.string()))),
   id: z.string(),
   sequence_type: z.string(),
   scheme: z.string(),

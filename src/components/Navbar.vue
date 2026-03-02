@@ -30,7 +30,7 @@ const items = ref([
       </button>
       <div class="collapse navbar-collapse" id="navbarSupportedContent">
         <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-          <template v-for="{ href, text } in items" :key="href">
+          <template v-for="{ href, text } in items" :key="href.name">
             <li>
               <router-link class="nav-link" :to="href">{{ text }}</router-link>
             </li>

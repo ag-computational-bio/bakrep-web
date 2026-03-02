@@ -1,48 +1,26 @@
 <template>
-  <table class="table statstable">
+  <GridTable>
     <template v-if="bakta">
-      <tr>
-        <th class="text-end pe-2" scope="row">Genome size:</th>
-        <td>{{ bakta.stats.size.toLocaleString("gb") + " bp" }}</td>
-      </tr>
-      <tr>
-        <th class="text-end pe-2" scope="row">GC:</th>
-        <td>{{ ratioToPercentage(bakta.stats.gc) }}</td>
-      </tr>
-      <tr>
-        <th class="text-end pe-2" scope="row">No. sequences:</th>
-        <td>{{ bakta.stats.no_sequences }}</td>
-      </tr>
-    </template>
-    <template v-if="bakta">
-      <tr>
-        <th class="text-end pe-2" scope="row">N50:</th>
-        <td>{{ bakta.stats.n50.toLocaleString("gb") + " bp" }}</td>
-      </tr>
-    </template>
-    <template v-else>
-      <tr>
-        <th class="text-end pe-2" scope="row">NA</th>
-      </tr>
+      <GridTitleCell>Genome size:</GridTitleCell>
+      <GridCell>{{ bakta.stats.size.toLocaleString("gb") + " bp" }}</GridCell>
+
+      <GridTitleCell>GC:</GridTitleCell>
+      <GridCell>{{ ratioToPercentage(bakta.stats.gc) }}</GridCell>
+
+      <GridTitleCell>No. sequences:</GridTitleCell>
+      <GridCell>{{ bakta.stats.no_sequences }}</GridCell>
+
+      <GridTitleCell>N50:</GridTitleCell>
+      <GridCell>{{ bakta.stats.n50.toLocaleString("gb") + " bp" }}</GridCell>
     </template>
     <template v-if="checkm">
-      <tr>
-        <th class="text-end pe-2" scope="row">Completeness:</th>
-        <td>{{ checkm.quality.completeness + " %" }}</td>
-      </tr>
+      <GridTitleCell>Completeness:</GridTitleCell>
+      <GridCell>{{ checkm.quality.completeness + " %" }}</GridCell>
+
+      <GridTitleCell>Contamination:</GridTitleCell>
+      <GridCell>{{ checkm.quality.contamination + " %" }}</GridCell>
     </template>
-    <template v-if="checkm">
-      <tr>
-        <th class="text-end pe-2" scope="row">Contamination:</th>
-        <td>{{ checkm.quality.contamination + " %" }}</td>
-      </tr>
-    </template>
-    <template v-else>
-      <tr>
-        <th class="text-end pe-2" scope="row">NA</th>
-      </tr>
-    </template>
-  </table>
+  </GridTable>
 </template>
 
 <script setup lang="ts">
@@ -50,6 +28,9 @@ import type { BaktaResult } from "@/model/BaktaResults";
 import type { CheckmResult } from "@/model/CheckmResults";
 import type { PropType } from "vue";
 import { ratioToPercentage } from "@/util";
+import GridTable from "@/components/GridTable.vue";
+import GridCell from "@/components/GridCell.vue";
+import GridTitleCell from "@/components/GridTitleCell.vue";
 
 defineProps({
   bakta: { type: Object as PropType<BaktaResult> },
