@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 
 import ContigBar from "./ContigBar.vue";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { computed, ref } from "vue";
 import contigs92 from "./92-contigs.json";
 import contigs1 from "./1-contig.json";

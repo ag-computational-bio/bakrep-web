@@ -1,7 +1,7 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 
 import AutocompleteInput from "./AutocompleteInput.vue";
-import { fn } from "@storybook/test";
+import { fn } from "storybook/test";
 import { ref } from "vue";
 const meta: Meta<typeof AutocompleteInput> = {
   component: AutocompleteInput,

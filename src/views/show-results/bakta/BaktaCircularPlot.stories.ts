@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from "@storybook/vue3";
+import type { Meta, StoryObj } from "@storybook/vue3-vite";
 
 import BaktaCircularPlot from "./BaktaCircularPlot.vue";
 import baktaResult from "@/example-data/bakta-result.json";

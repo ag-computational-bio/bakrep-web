@@ -1,7 +1,8 @@
 <template>
-  <div ref="canvas"></div>
+  <div ref="canvas" style="background-color: green"></div>
   <div
     ref="tooltip"
+    :key="sequence.id"
     style="
       position: fixed;
       background-color: white;
@@ -190,20 +191,30 @@ function updatePlot() {
     updatePlot();
   }
   function handleZoom(e: d3.D3ZoomEvent<SVGSVGElement, undefined>) {
-    if (plotG) plotG.attr("transform", e.transform.toString());
+    console.log(e);
+    if (plotG)
+      plotG.attr(
+        "transform",
+        `translate(${e.transform.x},0) scale(${e.transform.k})`,
+      );
   }
   let initCall = svg == undefined;
 
   const scaleFactorZoom = d3
     .zoom<SVGGElement, undefined>()
+    .scaleExtent([1, props.sequence.length / 100])
     .on("zoom", handleScale)
-    .filter((e: MouseEvent) => e.ctrlKey && e.type === "wheel");
-
+    .filter((e: MouseEvent) => !e.ctrlKey && e.type === "wheel");
   const zoom = d3
     .zoom<SVGSVGElement, undefined>()
     .on("zoom", handleZoom)
+    .translateExtent([
+      [0, 0],
+      [plot.width * 3, 0],
+    ])
     .filter(
-      (e: MouseEvent) => (!e.ctrlKey && e.type === "wheel") || e.button == 0,
+      (e: MouseEvent) =>
+        (e.ctrlKey && e.type === "wheel") || (e.buttons === 1 && e.button == 0),
     );
   if (svg == undefined) {
     svg = d3.create("svg").call(updateSvg).call(zoom);
@@ -224,7 +235,7 @@ function updatePlot() {
     g.attr("fill", "white");
     g.attr("x", 0);
     g.attr("y", 0);
-    g.attr("width", plot.width);
+    g.attr("width", plot.width * scaleFactor);
     g.attr("height", plot.height);
   }
   let background = plotG.select<SVGRectElement>("rect.background");
@@ -235,7 +246,9 @@ function updatePlot() {
   const axis = d3
     .axisTop(scale)
     .tickFormat((d) => formatBp(d as number, bpScale(scale.domain()[1])));
-  createOrGetGroup(plotG, "ruler").call(axis);
+  createOrGetGroup(plotG, "ruler")
+    .attr("transform", "translate(0,20)")
+    .call(axis);
   if (initCall) {
     svg.call(zoom.transform as any, d3.zoomIdentity.translate(0, 30));
   }
@@ -272,7 +285,7 @@ function updatePlot() {
 
   const gcTrack = linearAreaTrack("gc", scale, plotData.value.gc.deviation)
     .title("GC content")
-    .height(80)
+    .height(50)
     .colors({ positive: "#17becf", negative: "#bcbd22" })
     .hover((evt, pos) => {
       if (pos == undefined) {
@@ -297,7 +310,7 @@ function updatePlot() {
     });
   const gcSkewTrack = linearAreaTrack("gc", scale, plotData.value.gcSkew.data)
     .title("GC skew")
-    .height(80)
+    .height(50)
     .colors({ positive: "#fb9a99", negative: "#cab2d6" })
     .hover((evt, pos) => {
       if (pos == undefined) {
@@ -322,11 +335,11 @@ function updatePlot() {
         updateTooltip(event, evt);
       }
     });
-  features.call(cdsFwdTrack.top(10).apply);
-  features.call(cdsRevTrack.top(40).apply);
-  features.call(otherCdsTrack.top(70).apply);
-  createOrGetGroup(plotG, "gc").call(gcTrack.top(100).apply);
-  createOrGetGroup(plotG, "gc-skew").call(gcSkewTrack.top(200).apply);
+  features.call(cdsFwdTrack.top(25).apply);
+  features.call(cdsRevTrack.top(55).apply);
+  features.call(otherCdsTrack.top(85).apply);
+  createOrGetGroup(plotG, "gc").call(gcTrack.top(115).apply);
+  createOrGetGroup(plotG, "gc-skew").call(gcSkewTrack.top(185).apply);
   return svg;
 }
 

@@ -2,6 +2,7 @@
   <div ref="canvas"></div>
   <div
     ref="tooltip"
+    :key="sequence.id"
     style="
       position: fixed;
       background-color: white;
