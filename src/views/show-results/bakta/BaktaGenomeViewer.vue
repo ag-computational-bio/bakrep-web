@@ -110,7 +110,7 @@ function setupIgv() {
 
   const config = {
     reference: {
-      id: genus.value,
+      id: genus.value + "",
       fastaURL: fastaUrl.value,
       indexed: false,
       tracks: tracks,
@@ -156,10 +156,7 @@ const fastaUrl = computed(() => {
   const blob = new Blob([fastaData.value], { type: "text/plain" });
   return URL.createObjectURL(blob);
 });
-const genus = computed(() => {
-  if (props.data) return props.data.genome.genus;
-  return "";
-});
+const genus = computed(() => props.data?.genome.genus ?? "");
 watch(() => props.data, refresh);
 onMounted(setupIgv);
 onBeforeUnmount(destroyIgv);
