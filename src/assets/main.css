@@ -1,3 +1,6 @@
+@import "bootstrap/dist/css/bootstrap.css";
+@import "bootstrap-icons/font/bootstrap-icons.css";
+
 body {
   --header-height: 80px;
   --footer-height: 80px;
