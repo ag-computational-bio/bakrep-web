@@ -6,7 +6,6 @@
   "compilerOptions": {
     "target": "ES2023",
     "composite": true,
-    "baseUrl": ".",
     "paths": {
       "@/*": ["./src/*"]
     },
